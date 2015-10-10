@@ -1,0 +1,23 @@
+{
+  "name": "ShootEmUpGame",
+  "version": "1.0.0",
+  "description": "Shooting Game",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Khaleed/ShootEmUpGame"
+  },
+  "author": "Khalid Omar Ali",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Khaleed/ShootEmUpGame/issues"
+  },
+  "homepage": "https://github.com/Khaleed/ShootEmUpGame",
+  "dependencies": {
+    "express": "^4.13.3",
+    "socket.io": "^1.3.7"
+  }
+}
