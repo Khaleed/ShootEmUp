@@ -1,5 +1,6 @@
 // Game Constructor
 function Game() {
+	
 	var screen = document.getElementById('screen').getContext('2d');
 	var self = this;
 	// spaceraiders is real-time and therefore we need something
@@ -20,9 +21,9 @@ Game.prototype =  {
 	draw: function(screen) {
 		console.log('hey there');
 	}
-
 }; 
-
+// fired when scripts are loaded
+// and canvas is ready to be drawn on
 window.addEventListener('load', function() {
 	new Game();
 });
