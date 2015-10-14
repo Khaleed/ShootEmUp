@@ -23,7 +23,7 @@ player.update = function() {
 };
 // update the enemy's game logic on every key pressed
 invader.update = function() {
-
+	this.x += 1;
 };
 // add listeners for when they let the key go
 document.addEventListener('keyup', function(e) {
@@ -47,6 +47,7 @@ document.addEventListener('keydown', function(e) {
 		}
 	}
 });
+
 
 // updating game loop
 function update() {
