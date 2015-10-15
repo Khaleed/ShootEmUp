@@ -12,29 +12,16 @@ canvas.height = 600;
 // set initial coordinates of canvas
 var x = 0;
 var y = 0;
-// instantiate player obj
-var player = new Player(32, 32);
-// instantiate invader obj
-var invader = new Enemy(32, 32);
+var telBorder = 500;
 
-// update the player's game logic on every key pressed
-player.update = function() {
-
-};
-// update the enemy's game logic on every key pressed
-invader.update = function() {
-	this.x += 1;
-};
 // add listeners for when they let the key go
 document.addEventListener('keyup', function(e) {
 	if (e.keyCode === 37) {
 		// move player
-		// player.x -= 8;
 	} else if (e.keyCode === 39) {
 		// player.x += 8;
 	}
 });
-
 // when they push down
 document.addEventListener('keydown', function(e) {
 	if (e.keyCode === 37) {
@@ -48,20 +35,28 @@ document.addEventListener('keydown', function(e) {
 	}
 });
 
-
 // updating game loop
 function update() {
-	// clear screen to get ready for next frame
 	ctx.clearRect(0, 0, 400, 600);
-	drawRect(player);
-	drawRect(invader);
+	
 	player.update();
-	invader.update();
-	//player.y+=1;
-	setTimeout(update, 30);
-}
+	drawRect(player);
 
-update();
+	enemies.forEach(function(item, indx, array) {
+		item.update();
+		drawRect(item);
+		// controller logic
+		// if any touch the left-side of the screen
+		// change direction 
+		if( item.x < 0 || item.x > 400 - item.w) {
+			enemies.forEach(function(item){
+			item.velX *= -1;
+			item.y += 35;	
+			});
+		}
+	});
+	setTimeout(update, 1);
+}
 
 // make a Rectangle class
 function Rectangle(x, y, w, h) {
@@ -70,6 +65,9 @@ function Rectangle(x, y, w, h) {
 	this.w = w;
 	this.h = h;
 	this.color = 'white';
+	this.update = function() {
+
+	};
 }
 // make a Player class that inherits from Rectangle
 function Player(x, y) {
@@ -77,13 +75,29 @@ function Player(x, y) {
 	Rectangle.call(this, canvas.width/2, canvas.height-50, 32, 32);
 	this.color = 'blue';
 }
-
 // Enemy inherits from Rectangle
 function Enemy(x, y) {
 	// inherit from Rectangle
 	Rectangle.call(this, x, y, 35, 35);
 	this.color = 'red';
+	// initially go right
+	this.velX = 1;
+	this.update = function() {
+	// make enemy move
+	this.x += this.velX;
+	if (this.y > telBorder) {
+		this.y = 0;
+	}
+ };
 }
+
+
+var enemies = [];
+for (var i = 0; i < 4; i += 1) {
+	// space out enemies
+	enemies.push(new Enemy(45*i, 20));
+}
+var player = new Player(32, 32);
 
 // draw any rectangle
 function drawRect(rect) {
@@ -92,3 +106,12 @@ function drawRect(rect) {
 	// draw rect
 	ctx.fillRect(rect.x, rect.y, rect.w, rect.h);
 }
+
+update();
+
+
+
+
+
+
+
