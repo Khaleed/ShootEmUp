@@ -8,12 +8,13 @@ if (canvas.getContext === undefined) {
 	var ctx = canvas.getContext('2d');
 }
 // set properties of canvas
-canvas.width = 400;
+canvas.width = 800;
 canvas.height = 600;
 // set initial coordinates of canvas
 var x = 0;
 var y = 0;
 var telePortBorder = 500;
+var velX = 2;
 // add listeners for when they let the key go
 document.addEventListener('keyup', function(e) {
 	if (e.keyCode === 37) {
@@ -29,20 +30,29 @@ document.addEventListener('keydown', function(e) {
 			player.x -= 8;
 		}
 	} else if (e.keyCode === 39) {
-		if (player.x < 400 - 32) {
+		if (player.x < canvas.width - 32) {
 			player.x += 8;
 		}
 	}
 });
-
 // updating game loop
 function update() {
 	// clear rect on every frame
-	ctx.clearRect(0, 0, 400, 600);
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
 	
 	player.update();
 	drawRect(player);
-    
+	var leftMostEnemPix = enemies[0].x;
+	var rightMostEnemPix = enemies[enemies.length - 1].x + enemies[0].w;
+
+	if (leftMostEnemPix < 0 || rightMostEnemPix > canvas.width) {
+			console.log('hi');
+	        velX *= -1;
+			enemies.forEach(function(item) {
+			item.y += 35;	
+			});
+	}
+
 	enemies.forEach(function(item, indx, array) {
 		console.log(item);
 		item.update();
@@ -50,13 +60,7 @@ function update() {
 		// controller logic
 		// if any touch the left-side of the screen
 		// change direction 
-		if( item.x < 0 || item.x > 400 - item.w) {
-			console.log('hi');
-			enemies.forEach(function(item) {
-			item.velX *= -1;
-			item.y += 35;	
-			});
-		}
+		
 	});
 	setTimeout(update, 1);
 }
@@ -83,21 +87,22 @@ function Enemy(x, y) {
 	Rectangle.call(this, x, y, 35, 35);
 	this.color = 'red';
 	// initially go right
-	this.velX = 1;
 	this.update = function() {
 	// make enemy move
-	this.x += this.velX;
+	this.x += velX;
 	// set enemies back to top    
 	if (this.y > telePortBorder) {
-		this.y = 0;
+		this.y -= 500;
 	}
  };
 }
-// logic for movements of individual enemies
+// logic for creating enemies
 var enemies = [];
-for (var i = 0; i < 4; i += 1) {
+for (var i = 0; i < 4; i += 1) { // this loop controls width of block of enemies
+	for (var j = 0; j < 4; j += 1) { // this loop controls height of block of enemies
 	// space out enemies
-	enemies.push(new Enemy(45*i, 20));
+	    enemies.push(new Enemy(45*i, 20 + 45*j));
+	}
 }
 var player = new Player(32, 32);
 // draw any rectangle

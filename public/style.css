@@ -6,8 +6,9 @@ body, canvas {
 }
 
 canvas {	
-    height: 600px;
-	width: 400px;
+    /*height: 600px;
+	width: 800px;
+	*/
 	background-color: black;
 	margin: auto;
 	display: block;
