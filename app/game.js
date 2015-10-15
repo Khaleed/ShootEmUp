@@ -1,3 +1,4 @@
+'use strict';
 // grab canvas/screen
 var canvas = document.getElementById('screen');
 // fallback if canvas is not supported
@@ -12,8 +13,7 @@ canvas.height = 600;
 // set initial coordinates of canvas
 var x = 0;
 var y = 0;
-var telBorder = 500;
-
+var telePortBorder = 500;
 // add listeners for when they let the key go
 document.addEventListener('keyup', function(e) {
 	if (e.keyCode === 37) {
@@ -37,19 +37,22 @@ document.addEventListener('keydown', function(e) {
 
 // updating game loop
 function update() {
+	// clear rect on every frame
 	ctx.clearRect(0, 0, 400, 600);
 	
 	player.update();
 	drawRect(player);
-
+    
 	enemies.forEach(function(item, indx, array) {
+		console.log(item);
 		item.update();
 		drawRect(item);
 		// controller logic
 		// if any touch the left-side of the screen
 		// change direction 
 		if( item.x < 0 || item.x > 400 - item.w) {
-			enemies.forEach(function(item){
+			console.log('hi');
+			enemies.forEach(function(item) {
 			item.velX *= -1;
 			item.y += 35;	
 			});
@@ -57,7 +60,6 @@ function update() {
 	});
 	setTimeout(update, 1);
 }
-
 // make a Rectangle class
 function Rectangle(x, y, w, h) {
 	this.x = x;
@@ -85,20 +87,19 @@ function Enemy(x, y) {
 	this.update = function() {
 	// make enemy move
 	this.x += this.velX;
-	if (this.y > telBorder) {
+	// set enemies back to top    
+	if (this.y > telePortBorder) {
 		this.y = 0;
 	}
  };
 }
-
-
+// logic for movements of individual enemies
 var enemies = [];
 for (var i = 0; i < 4; i += 1) {
 	// space out enemies
 	enemies.push(new Enemy(45*i, 20));
 }
 var player = new Player(32, 32);
-
 // draw any rectangle
 function drawRect(rect) {
 	// set color of rect
