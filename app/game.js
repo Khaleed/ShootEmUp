@@ -147,6 +147,7 @@ function bulletEnemyCollision() {
 		    	// remove an invader
 		    	enemies.splice(j, 1);
 		    	friendlyFire.splice(i, 1);
+		    	break;
 		    }
 		}
 	}
