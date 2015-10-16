@@ -16,6 +16,7 @@ var y = 0;
 var telePortBorder = 500;
 var velX = 2;
 var bulletVel = 10;
+var playerVel = 10;
 // add listeners for when they let the key go
 document.addEventListener('keyup', function(e) {
 	if (e.keyCode === 37) {
@@ -37,7 +38,7 @@ document.addEventListener('keydown', function(e) {
 	}
 	// condition for shooting
 	else if (e.keyCode === 32) {
-	   friendlyFire.push(new Bullet(player.x, player.y));
+	   friendlyFire.push(new Bullet(player.x + player.w/2, player.y));
 	}
 });
 // updating game loop
@@ -68,11 +69,9 @@ function update() {
 		console.log(item);
 		item.update();
 		drawRect(item);
-		// controller logic
-		// if any touch the left-side of the screen
-		// change direction 
-		
 	});
+	// detect collision
+	bulletEnemyCollision();
 	setTimeout(update, 1);
 }
 // make a Rectangle class
@@ -133,6 +132,24 @@ function drawRect(rect) {
 	ctx.fillStyle = rect.color;
 	// draw rect
 	ctx.fillRect(rect.x, rect.y, rect.w, rect.h);
+}
+
+function bulletEnemyCollision() {
+	for (var i = 0; i < friendlyFire.length; i+=1) {
+		for (var j = 0; j < enemies.length; j += 1) {
+		// this for when bullets and enemies collide
+		    var c1 = enemies[j].x < friendlyFire[i].x + friendlyFire[i].w; // right edge of bullet is to the right of left edge of enemy
+		    var c2 = friendlyFire[i].x < enemies[j].x + enemies[j].w; // left edge of bullet is to the left of right edge of enemy
+		    var c3 = enemies[j].y + enemies[j].h > friendlyFire[i].y; // top edge of bullet is above bottom edge of enemy
+		    var c4 = friendlyFire[i].y + friendlyFire[i].h > enemies[j].y // if the bottom edge of the bullet is below the top edge of the enemy
+		    // collision has happened
+		    if (c1 && c2 && c3 && c4) {
+		    	// remove an invader
+		    	enemies.splice(j, 1);
+		    	friendlyFire.splice(i, 1);
+		    }
+		}
+	}
 }
 
 update();
