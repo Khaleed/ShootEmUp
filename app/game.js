@@ -15,6 +15,7 @@ var x = 0;
 var y = 0;
 var telePortBorder = 500;
 var velX = 2;
+var bulletVel = 10;
 // add listeners for when they let the key go
 document.addEventListener('keyup', function(e) {
 	if (e.keyCode === 37) {
@@ -34,6 +35,10 @@ document.addEventListener('keydown', function(e) {
 			player.x += 8;
 		}
 	}
+	// condition for shooting
+	else if (e.keyCode === 32) {
+	   friendlyFire.push(new Bullet(player.x, player.y));
+	}
 });
 // updating game loop
 function update() {
@@ -52,7 +57,13 @@ function update() {
 			item.y += 35;	
 			});
 	}
-
+		// this causes bullets to move upwards
+		friendlyFire.forEach(function(item, indx, array) {
+		console.log(item);
+		item.update();
+		drawRect(item);
+	});
+ 
 	enemies.forEach(function(item, indx, array) {
 		console.log(item);
 		item.update();
@@ -96,6 +107,16 @@ function Enemy(x, y) {
 	}
  };
 }
+// create Bullet class
+function Bullet(x, y) {
+	Rectangle.call(this, x, y, 5, 15);
+	this.color = 'white';
+	this.update = function() {
+	// fire bullet
+	this.y -= bulletVel;
+	// set enemies back to top
+	}    
+}
 // logic for creating enemies
 var enemies = [];
 for (var i = 0; i < 4; i += 1) { // this loop controls width of block of enemies
@@ -104,6 +125,7 @@ for (var i = 0; i < 4; i += 1) { // this loop controls width of block of enemies
 	    enemies.push(new Enemy(45*i, 20 + 45*j));
 	}
 }
+var friendlyFire = [];
 var player = new Player(32, 32);
 // draw any rectangle
 function drawRect(rect) {
