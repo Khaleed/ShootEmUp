@@ -21,11 +21,11 @@ var playerVel = 10;
 document.addEventListener('keyup', function(e) {
 	if (e.keyCode === 37) {
 		if (player.x > 0) {
-			player.x -= 8;
+			player.x -= 2;
 		}
 	} else if (e.keyCode === 39) {
 		if (player.x < canvas.width - 32) {
-			player.x += 8;
+			player.x += 2;
 		}
 	}
 });
