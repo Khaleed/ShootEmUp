@@ -16,29 +16,24 @@ var y = 0;
 var telePortBorder = 500;
 var velX = 2;
 var bulletVel = 10;
-var playerVel = 10;
+var playerVel = 5;
+// if keys are pressed
+var rightPressedKey = false;
+var leftPressedKey = false;
 // add listeners for when they let the key go
 document.addEventListener('keyup', function(e) {
 	if (e.keyCode === 37) {
-		if (player.x > 0) {
-			player.x -= 2;
-		}
+		leftPressedKey = false;
 	} else if (e.keyCode === 39) {
-		if (player.x < canvas.width - 32) {
-			player.x += 2;
-		}
+		rightPressedKey = false;
 	}
 });
 // when they push down
 document.addEventListener('keydown', function(e) {
 	if (e.keyCode === 37) {
-		if (player.x > 0) {
-			player.x -= 8;
-		}
+		leftPressedKey = true;
 	} else if (e.keyCode === 39) {
-		if (player.x < canvas.width - 32) {
-			player.x += 8;
-		}
+		rightPressedKey = true;
 	}
 	// condition for shooting
 	else if (e.keyCode === 32) {
@@ -74,6 +69,16 @@ function update() {
 		item.update();
 		drawRect(item);
 	});
+	if (leftPressedKey === true) {
+		if (player.x > 0) {
+			player.x -= playerVel;
+		}
+	}
+	if (rightPressedKey === true) {
+		if (player.x < canvas.width - 32) {
+			player.x += playerVel;
+		}
+	}
 	// detect collision
 	bulletEnemyCollision();
 	setTimeout(update, 1);
