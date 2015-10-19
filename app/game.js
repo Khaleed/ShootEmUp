@@ -20,8 +20,10 @@ window.addEventListener('load', function() {
 	var velX = 2;
 	var bulletVel = 10;
 	var playerVel = 5;
-	var gameRunning = true;
-	// if keys are pressed
+	var gameRunning = false;
+	var playerBullets = [];
+	var player = new Player(32, 32);
+	var enemies = [];
 	var rightPressedKey = false;
 	var leftPressedKey = false;
 	// add listeners for when they let the key go
@@ -44,6 +46,25 @@ window.addEventListener('load', function() {
 			playerBullets.push(new Bullet(player.x + player.w / 2, player.y));
 		}
 	});
+
+	function reset() {
+		enemies = [];
+		playerBullets = [];
+		player = new Player();
+		status.innerHTML = '';
+		createEnemyBodies();
+		gameRunning = true;
+	}
+
+	function createEnemyBodies() {
+		// logic for creating enemies
+		for (var i = 0; i < 8; i += 1) { // this loop controls width of block of enemies
+			for (var j = 0; j < 8; j += 1) { // this loop controls height of block of enemies
+				// space out enemies
+				enemies.push(new Enemy(45 * i, 20 + 45 * j));
+			}
+		}
+	}
 	// animation loop because space invaders is a real-time game
 	function update() {
 		// clear rect on every frame
@@ -96,9 +117,8 @@ window.addEventListener('load', function() {
 
 		};
 	}
-
 	// make a Player class that inherits from Rectangle
-	function Player(x, y) {
+	function Player() {
 		// inherit from Rectangle
 		Rectangle.call(this, canvas.width / 2, canvas.height - 50, 32, 32);
 		this.color = 'blue';
@@ -129,16 +149,6 @@ window.addEventListener('load', function() {
 			// set enemies back to top
 		}
 	}
-	// logic for creating enemies
-	var enemies = [];
-	for (var i = 0; i < 8; i += 1) { // this loop controls width of block of enemies
-		for (var j = 0; j < 8; j += 1) { // this loop controls height of block of enemies
-			// space out enemies
-			enemies.push(new Enemy(45 * i, 20 + 45 * j));
-		}
-	}
-	var playerBullets = [];
-	var player = new Player(32, 32);
 	// draw any rectangle
 	function drawRect(rect) {
 		// set color of rect
@@ -170,4 +180,5 @@ window.addEventListener('load', function() {
 		}
 	}
 	update();
+	reset();
 });
