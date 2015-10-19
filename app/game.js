@@ -18,10 +18,9 @@ window.addEventListener('load', function() {
 	var y = 0;
 	var telePortBorder = 500;
 	var velX = 2;
-	var bulletVel = 10;
 	var playerVel = 5;
 	var gameRunning = false;
-	var playerBullets = [];
+	var bullets = [];
 	var player = new Player(32, 32);
 	var enemies = [];
 	var rightPressedKey = false;
@@ -43,13 +42,14 @@ window.addEventListener('load', function() {
 		}
 		// condition for shooting
 		else if (e.keyCode === 32) {
-			playerBullets.push(new Bullet(player.x + player.w / 2, player.y));
+			// this tells which direction the bullet to go
+			bullets.push(new Bullet(player.x + player.w / 2, player.y, -1));
 		}
 	});
-
+	// reset game
 	function reset() {
 		enemies = [];
-		playerBullets = [];
+		bullets = [];
 		player = new Player();
 		status.innerHTML = '';
 		createEnemyBodies();
@@ -81,8 +81,8 @@ window.addEventListener('load', function() {
 					item.y += 35;
 				});
 			}
-			// this causes playerBullets to move upwards
-			playerBullets.forEach(function(item, indx, array) {
+			// this causes bullets to move upwards
+			bullets.forEach(function(item, indx, array) {
 				item.update();
 				drawRect(item);
 			});
@@ -114,9 +114,10 @@ window.addEventListener('load', function() {
 		this.h = h;
 		this.color = 'white';
 		this.update = function() {
-
+			// placeholder
 		};
 	}
+
 	// make a Player class that inherits from Rectangle
 	function Player() {
 		// inherit from Rectangle
@@ -128,7 +129,7 @@ window.addEventListener('load', function() {
 		// inherit from Rectangle
 		Rectangle.call(this, x, y, 25, 25);
 		this.color = 'red';
-		// initially go right
+		// initially go right (brain of enemy)
 		this.update = function() {
 			// make enemy move
 			this.x += velX;
@@ -137,16 +138,21 @@ window.addEventListener('load', function() {
 				gameRunning = false;
 				status.innerHTML = 'You lose';
 			}
+			// randomly create bullets
+			if (Math.floor(Math.random() * 7) == 6) {
+				// adding a bullet to the list
+				bullets.push(new Bullet(this.x, this.y, +1));
+			}
 		};
 	}
 	// create Bullet class
-	function Bullet(x, y) {
+	function Bullet(x, y, d) {
 		Rectangle.call(this, x, y, 5, 15);
 		this.color = 'white';
+		this.d = d;
 		this.update = function() {
 			// fire bullet
-			this.y -= bulletVel;
-			// set enemies back to top
+			this.y += this.d;
 		}
 	}
 	// draw any rectangle
@@ -157,24 +163,42 @@ window.addEventListener('load', function() {
 		ctx.fillRect(rect.x, rect.y, rect.w, rect.h);
 	}
 
+	function rectCollide(r1, r2) {
+		var c1 = r1.x < r2.x + r2.w; // right edge of bullet is to the right of left edge of enemy
+		var c2 = r2.x < r1.x + r1.w; // left edge of bullet is to the left of right edge of enemy
+		var c3 = r1.y + r1.h > r2.y; // top edge of bullet is above bottom edge of enemy
+		var c4 = r2.y + r2.h > r1.y // if the bottom edge of the bullet is below the top edge of the enemy
+			// collision has happened
+		if (c1 && c2 && c3 && c4) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 	function bulletEnemyCollision() {
-		for (var i = 0; i < playerBullets.length; i += 1) {
-			for (var j = 0; j < enemies.length; j += 1) {
-				// this is for when playerBullets and enemies collide
-				var c1 = enemies[j].x < playerBullets[i].x + playerBullets[i].w; // right edge of bullet is to the right of left edge of enemy
-				var c2 = playerBullets[i].x < enemies[j].x + enemies[j].w; // left edge of bullet is to the left of right edge of enemy
-				var c3 = enemies[j].y + enemies[j].h > playerBullets[i].y; // top edge of bullet is above bottom edge of enemy
-				var c4 = playerBullets[i].y + playerBullets[i].h > enemies[j].y // if the bottom edge of the bullet is below the top edge of the enemy
-					// collision has happened
-				if (c1 && c2 && c3 && c4) {
-					// remove an invader
-					enemies.splice(j, 1);
-					playerBullets.splice(i, 1);
+		for (var i = 0; i < bullets.length; i += 1) {
+			// if it is the player's bullets
+			if (bullets[i].d === -1) {
+				for (var j = 0; j < enemies.length; j += 1) {
+					// this is for when bullets and enemies collide
+						// collision has happened
+					if (rectCollide(enemies[i], bullets[i]) === true) {
+						// remove an invader and bullet
+						enemies.splice(j, 1);
+						bullets.splice(i, 1);
+					}
 					if (enemies.length === 0) {
 						gameRunning = false;
 						status.innerHTML = 'You win';
 					}
-					break;
+				}
+			}
+			// this is the enemies bullets
+			else {
+				if (rectCollide(bullets[i], player)) {
+					gameRunning = false;
+					status.innerHTML = 'You lose';
 				}
 			}
 		}
