@@ -138,10 +138,10 @@ window.addEventListener('load', function() {
 				gameRunning = false;
 				status.innerHTML = 'You lose';
 			}
-			// randomly create bullets
-			if (Math.floor(Math.random() * 7) == 6) {
+			// randomly create bullets   ->  how do I make these bullets go slower and less bullets
+			if (Math.floor(Math.random() * 30) == 6) { // 0 to 6
 				// adding a bullet to the list
-				bullets.push(new Bullet(this.x, this.y, +1));
+				bullets.push(new Bullet(this.x, this.y, +0.1));
 			}
 		};
 	}
@@ -169,11 +169,7 @@ window.addEventListener('load', function() {
 		var c3 = r1.y + r1.h > r2.y; // top edge of bullet is above bottom edge of enemy
 		var c4 = r2.y + r2.h > r1.y // if the bottom edge of the bullet is below the top edge of the enemy
 			// collision has happened
-		if (c1 && c2 && c3 && c4) {
-			return true;
-		} else {
-			return false;
-		}
+		return (c1 && c2 && c3 && c4);
 	}
 
 	function bulletEnemyCollision() {
@@ -183,7 +179,7 @@ window.addEventListener('load', function() {
 				for (var j = 0; j < enemies.length; j += 1) {
 					// this is for when bullets and enemies collide
 						// collision has happened
-					if (rectCollide(enemies[i], bullets[i]) === true) {
+					if (rectCollide(enemies[j], bullets[i]) === true) {
 						// remove an invader and bullet
 						enemies.splice(j, 1);
 						bullets.splice(i, 1);
