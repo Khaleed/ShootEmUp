@@ -1,4 +1,6 @@
-// make a Square classnpm install -g node-inspector
+
+
+// make a Square class
 function Square(x, y, w, h) {
 	this.x = x;
 	this.y = y;
@@ -25,13 +27,13 @@ function Enemy(x, y) {
 	this.update = function() {
 		// make enemy move
 		this.x += velX;
-		// set enemies back to top    
+		// player loses if enemies reach the bottom   
 		if (this.y > telePortBorder) {
 			gameRunning = false;
 			status.innerHTML = 'You lose';
 		}
-		// randomly create bullets   ->  how do I make these bullets go slower and less bullets
-		if (Math.floor(Math.random() * 30) == 6) { // 0 to 6
+		// randomly create bullets
+		if (Math.floor(Math.random() * 41) == 40) { // 0 to 40
 			// adding a bullet to the list
 			bullets.push(new Bullet(this.x, this.y, +0.1));
 		}

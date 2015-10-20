@@ -54,17 +54,21 @@
 	'use strict';
 	// var tracker = require('./tracking.js');
 	var models = __webpack_require__(2);
-	var initialiseTrack = __webpack_require__(3);
-
 	var Square = models.Square;
 	var Enemy = models.Enemy;
 	var Player = models.Player;
 	var Bullet = models.Bullet;
+	var initialiseTrack = __webpack_require__(3);
+	var States = __webpack_require__(4);
+	var gameState = new States();
+	// run keystate.js immediately
+	__webpack_require__(5)(gameState);
 
 	window.addEventListener('load', function () {
 		// grab canvas/screen
 		var canvas = document.getElementById('screen');
 		var status = document.getElementById('status');
+
 		// fallback if canvas is not supported
 		if (canvas.getContext === undefined) {
 			console.error('browser does not support canvas');
@@ -75,90 +79,40 @@
 		canvas.width = 800;
 		canvas.height = 600;
 		// set states
-		var x = 0;
-		var y = 0;
-		var telePortBorder = 500;
-		var velX = 2;
-		var playerVel = 5;
-		var gameRunning = false;
-		var bullets = [];
-		var player = new Player(32, 32);
-		var enemies = [];
-		var rightPressedKey = false;
-		var leftPressedKey = false;
-		// add listeners for when they let the key go
-		document.addEventListener('keyup', function (e) {
-			if (e.keyCode === 37) {
-				leftPressedKey = false;
-			} else if (e.keyCode === 39) {
-				rightPressedKey = false;
-			}
-		});
-		// when they push down
-		document.addEventListener('keydown', function (e) {
-			if (e.keyCode === 37) {
-				leftPressedKey = true;
-			} else if (e.keyCode === 39) {
-				rightPressedKey = true;
-			}
-			// condition for shooting
-			else if (e.keyCode === 32) {
-					// this tells which direction the bullet to go
-					bullets.push(new Bullet(player.x + player.w / 2, player.y, -1));
-				}
-		});
-		// reset game
-		function reset() {
-			enemies = [];
-			bullets = [];
-			player = new Player();
-			status.innerHTML = '';
-			createEnemyBodies();
-			gameRunning = true;
-		}
-
-		function createEnemyBodies() {
-			// logic for creating enemies
-			for (var i = 0; i < 8; i += 1) {
-				// this loop controls width of block of enemies
-				for (var j = 0; j < 8; j += 1) {
-					// this loop controls height of block of enemies
-					// space out enemies
-					enemies.push(new Enemy(45 * i, 20 + 45 * j));
-				}
-			}
-		}
 		// animation loop because space invaders is a real-time game
 		function update() {
 			// clear rect on every frame
+			var player = gameState.player;
 			ctx.clearRect(0, 0, canvas.width, canvas.height);
-			if (gameRunning) {
+			if (gameState.gameRunning) {
 				player.update();
 				drawRect(player);
-				var leftMostEnemPix = enemies[0].x;
-				var rightMostEnemPix = enemies[enemies.length - 1].x + enemies[0].w;
+				var leftMostEnemPix = gameState.enemies[0].x;
+				var rightMostEnemPix = gameState.enemies[enemies.length - 1].x + gameState.enemies[0].w;
 
 				if (leftMostEnemPix < 0 || rightMostEnemPix > canvas.width) {
-					velX *= -1;
-					enemies.forEach(function (item) {
+					gameState.velX *= -1;
+					gameState.enemies.forEach(function (item) {
 						item.y += 35;
 					});
 				}
 				// this causes bullets to move upwards
-				bullets.forEach(function (item, indx, array) {
+				gameState.bullets.forEach(function (item, indx, array) {
 					item.update();
 					drawRect(item);
 				});
 
-				enemies.forEach(function (item, indx, array) {
+				gameState.enemies.forEach(function (item, indx, array) {
 					item.update();
 					drawRect(item);
 				});
+
 				if (leftPressedKey === true) {
 					if (player.x > 0) {
 						player.x -= playerVel;
 					}
 				}
+
 				if (rightPressedKey === true) {
 					if (player.x < canvas.width - 32) {
 						player.x += playerVel;
@@ -176,7 +130,7 @@
 			// draw rect
 			ctx.fillRect(rect.x, rect.y, rect.w, rect.h);
 		}
-
+		// if two squares collide
 		function rectCollide(r1, r2) {
 			var c1 = r1.x < r2.x + r2.w; // right edge of bullet is to the right of left edge of enemy
 			var c2 = r2.x < r1.x + r1.w; // left edge of bullet is to the left of right edge of enemy
@@ -187,27 +141,28 @@
 		}
 
 		function bulletEnemyCollision() {
-			for (var i = 0; i < bullets.length; i += 1) {
+			for (var i = 0; i < gameState.bullets.length; i += 1) {
 				// if it is the player's bullets
-				if (bullets[i].d === -1) {
-					for (var j = 0; j < enemies.length; j += 1) {
+				if (gameState.bullets[i].d === -1) {
+					for (var j = 0; j < gameState.enemies.length; j += 1) {
 						// this is for when bullets and enemies collide
 						// collision has happened
-						if (rectCollide(enemies[j], bullets[i]) === true) {
+						if (rectCollide(enemies[j], gameState.bullets[i]) === true) {
 							// remove an invader and bullet
-							enemies.splice(j, 1);
-							bullets.splice(i, 1);
+							gameState.enemies.splice(j, 1);
+							gameState.bullets.splice(i, 1);
 						}
-						if (enemies.length === 0) {
-							gameRunning = false;
+						if (gameState.enemies.length === 0) {
+							gameState.gameRunning = false;
 							status.innerHTML = 'You win';
 						}
 					}
 				}
-				// this is the enemies bullets
+				// if the bullets of the enemy hit the player
+				// pause the game and show a message that the player loses
 				else {
 						if (rectCollide(bullets[i], player)) {
-							gameRunning = false;
+							gameState.gameRunning = false;
 							status.innerHTML = 'You lose';
 						}
 					}
@@ -221,7 +176,9 @@
 /* 2 */
 /***/ function(module, exports) {
 
-	// make a Square classnpm install -g node-inspector
+	
+
+	// make a Square class
 	'use strict';
 
 	function Square(x, y, w, h) {
@@ -250,14 +207,14 @@
 		this.update = function () {
 			// make enemy move
 			this.x += velX;
-			// set enemies back to top   
+			// player loses if enemies reach the bottom  
 			if (this.y > telePortBorder) {
 				gameRunning = false;
 				status.innerHTML = 'You lose';
 			}
-			// randomly create bullets   ->  how do I make these bullets go slower and less bullets
-			if (Math.floor(Math.random() * 30) == 6) {
-				// 0 to 6
+			// randomly create bullets
+			if (Math.floor(Math.random() * 41) == 40) {
+				// 0 to 40
 				// adding a bullet to the list
 				bullets.push(new Bullet(this.x, this.y, +0.1));
 			}
@@ -332,6 +289,77 @@
 		// utility to read <canvas>, <img>, <video>
 		var trackerTask = tracking.track('#gameVid', myTracker);
 		//
+	};
+
+/***/ },
+/* 4 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var Player = __webpack_require__(2).Player;
+
+	function States() {
+		this.x = 0, this.y = 0, this.velX = 2, this.playerVel = 5;
+		this.gameRunning = false, this.bullets = [], this.player = new Player(32, 32);
+		this.enemies = [];
+	}
+
+	// reset game
+	States.prototype.reset = function () {
+		this.enemies = [];
+		this.bullets = [];
+		this.player = new Player();
+		this.createEnemyBodies();
+		this.gameRunning = true;
+	};
+
+	States.prototype.createEnemyBodies = function () {
+		// logic for creating enemies
+		for (var i = 0; i < 8; i += 1) {
+			// this loop controls width of block of enemies
+			for (var j = 0; j < 8; j += 1) {
+				// this loop controls height of block of enemies
+				// space out enemies
+				this.enemies.push(new Enemy(45 * i, 20 + 45 * j));
+			}
+		}
+	};
+
+	module.exports = States;
+
+/***/ },
+/* 5 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	module.exports = function (state) {
+		var rightPressedKey = false;
+		var leftPressedKey = false;
+		// add listeners for when they let the key go
+		document.addEventListener('keyup', function (e) {
+			if (e.keyCode === 37) {
+				leftPressedKey = false;
+			} else if (e.keyCode === 39) {
+				rightPressedKey = false;
+			}
+		});
+		// when they push down
+		document.addEventListener('keydown', function (e) {
+			if (e.keyCode === 37) {
+				leftPressedKey = true;
+			} else if (e.keyCode === 39) {
+				rightPressedKey = true;
+			}
+			// condition for shooting
+			else if (e.keyCode === 32) {
+					// this tells which direction the bullet to go
+					state.bullets.push(new Bullet(state.player.x + state.player.w / 2, state.player.y, -1));
+				} else if (e.keyCode === 82) {
+					state.reset();
+				}
+		});
 	};
 
 /***/ }
