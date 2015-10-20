@@ -73,8 +73,6 @@
 	// pass the new instance of States to addListeners function
 	// from keystates
 	keys.addListeners(gameState);
-	var leftPressedKey = keys.leftPressedKey;
-	var rightPressedKey = keys.rightPressedKey;
 	// listen to when the DOM loads and then run animation loop
 	window.addEventListener('load', function () {
 		// fallback if canvas is not supported
@@ -93,6 +91,8 @@
 			// set the left and right most enemy positions
 			var leftMostEnemPix = gameState.enemies[0].x;
 			var rightMostEnemPix = gameState.enemies[gameState.enemies.length - 1].x + gameState.enemies[0].w;
+			var leftPressedKey = keys.leftPressedKey;
+			var rightPressedKey = keys.rightPressedKey;
 			// keep clearing the canvas
 			ctx.clearRect(0, 0, canvas.width, canvas.height);
 			// as long as the game is running
@@ -137,10 +137,20 @@
 						player.x += playerVel;
 					}
 				}
+				// make enemy shoot
+				enemyShoots();
 				// detect collision
 				bulletEnemyCollision();
 			}
 			setTimeout(update, 1);
+		}
+
+		function enemyShoots() {
+			var randIndx = Math.floor(Math.random() * enemies.length - 1);
+			// select a random enemy
+			var enemy = enemies[randIndx];
+			// adding a bullet to the list where enemy is
+			state.bullets.push(new Bullet(enemy.x, enemy.y, +0.1));
 		}
 		// draw any Square
 		function drawRect(rect) {
@@ -240,12 +250,6 @@
 			if (this.y > state.telePortBorder) {
 				state.gameRunning = false;
 				status.innerHTML = 'You lose';
-			}
-			// randomly create bullets
-			if (Math.floor(Math.random() * 41) == 40) {
-				// 0 to 40
-				// adding a bullet to the list
-				state.bullets.push(new Bullet(this.x, this.y, +0.1));
 			}
 		};
 	}

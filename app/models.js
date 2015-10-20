@@ -35,11 +35,6 @@ function Enemy(x, y) {
 			state.gameRunning = false;
 			status.innerHTML = 'You lose';
 		}
-		// randomly create bullets
-		if (Math.floor(Math.random() * 41) == 40) { // 0 to 40
-			// adding a bullet to the list
-			state.bullets.push(new Bullet(this.x, this.y, +0.1));
-		}
 	};
 }
 // create Bullet class

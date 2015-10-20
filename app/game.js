@@ -12,7 +12,7 @@ var Bullet = models.Bullet;
 // module that holds canvas and status elems
 var inputs = require('./inputs.js');
 var canvas = inputs.canvas;
-var status = inputs.status; 
+var status = inputs.status;
 // module that holds the tracking stuff
 var initialiseTrack = require('./tracking.js');
 // module to hold keystates 
@@ -20,8 +20,6 @@ var keys = require('./keystates.js');
 // pass the new instance of States to addListeners function
 // from keystates
 keys.addListeners(gameState);
-var leftPressedKey = keys.leftPressedKey;
-var rightPressedKey = keys.rightPressedKey;
 // listen to when the DOM loads and then run animation loop
 window.addEventListener('load', () => {
 	// fallback if canvas is not supported
@@ -40,6 +38,8 @@ window.addEventListener('load', () => {
 		// set the left and right most enemy positions
 		var leftMostEnemPix = gameState.enemies[0].x;
 		var rightMostEnemPix = gameState.enemies[gameState.enemies.length - 1].x + gameState.enemies[0].w;
+		var leftPressedKey = keys.leftPressedKey;
+		var rightPressedKey = keys.rightPressedKey;
 		// keep clearing the canvas
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
 		// as long as the game is running
@@ -54,7 +54,7 @@ window.addEventListener('load', () => {
 				gameState.velX *= -1;
 				// make enemies go down
 				gameState.enemies.forEach(function(item) {
-					item.y += 25;   
+					item.y += 25;
 				});
 			}
 			// loop through all bullets
@@ -84,10 +84,21 @@ window.addEventListener('load', () => {
 					player.x += playerVel;
 				}
 			}
+			// make enemy shoot
+			enemyShoots();
 			// detect collision
 			bulletEnemyCollision();
 		}
 		setTimeout(update, 1);
+	}
+
+	function enemyShoots() {
+		var randIndx = Math.floor(Math.random() * enemies.length-1);  
+		// select a random enemy
+		var enemy = enemies[randIndx];
+		// adding a bullet to the list where enemy is
+		state.bullets.push(new Bullet(enemy.x, enemy.y, +0.1));
+	
 	}
 	// draw any Square
 	function drawRect(rect) {
@@ -102,7 +113,7 @@ window.addEventListener('load', () => {
 		var c2 = s2.x < s1.x + s1.w; // left edge of bullet is to the left of right edge of enemy
 		var c3 = s1.y + s1.h > s2.y; // top edge of bullet is above bottom edge of enemy
 		var c4 = s2.y + s2.h > s1.y // if the bottom edge of the bullet is below the top edge of the enemy
-		// collision has happened
+			// collision has happened
 		console.log('collision has happened: ' + c1 && c2 && c3 && c4);
 		return (c1 && c2 && c3 && c4);
 	}
