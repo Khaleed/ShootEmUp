@@ -1,21 +1,23 @@
-// export function passing in the state (which is the new instance of States)
-module.exports =  function (state) { 
-	var rightPressedKey = false;
-	var leftPressedKey = false;
+// export function passing in the state (which is the new instance of States) 
+module.exports =  {
+	rightPressedKey: false,
+	leftPressedKey: false,
+	addListeners: function (state) { 
+	var self = this;
 	// add listeners for when they let the key go
-	document.addEventListener('keyup', e => {
+	document.addEventListener('keyup', e => { 
 		if (e.keyCode === 37) {
-			leftPressedKey = false;
+			self.leftPressedKey = false;
 		} else if (e.keyCode === 39) {
-			rightPressedKey = false;
+			self.rightPressedKey = false;
 		}
 	});
 	// when they push down
 	document.addEventListener('keydown', e => {
 		if (e.keyCode === 37) {
-			leftPressedKey = true;
+			self.leftPressedKey = true;
 		} else if (e.keyCode === 39) {
-			rightPressedKey = true;
+			self.rightPressedKey = true;
 		}
 		// condition for shooting
 		else if (e.keyCode === 32) {
@@ -26,4 +28,5 @@ module.exports =  function (state) {
 			state.reset();
 		}
 	});
+	}
 };

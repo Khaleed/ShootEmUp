@@ -1,6 +1,7 @@
 var path = require('path')
 
 module.exports = {
+    devtool: 'eval',
     entry: {
         app: ['./app/game.js']
     },

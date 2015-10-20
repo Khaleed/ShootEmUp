@@ -1,5 +1,8 @@
-// I need to grab canvas and status which are elements out of scope
-
+// I need to grab canvas and status elem
+// from inputs module
+var inputs = require('./inputs.js');
+var canvas = inputs.canvas;
+var status = inputs.status;
 // make a Square class
 function Square(x, y, w, h) {
 	this.x = x;
@@ -11,7 +14,6 @@ function Square(x, y, w, h) {
 		// placeholder
 	};
 }
-
 // make a Player class that inherits from Square
 function Player() {
 	// inherit from Square
@@ -21,21 +23,22 @@ function Player() {
 // Enemy inherits from Square
 function Enemy(x, y) {
 	// inherit from Square
+	// uisng call to chain constructors
 	Square.call(this, x, y, 25, 25);
 	this.color = 'red';
 	// initially go right (brain of enemy)
-	this.update = function() {
+	this.update = function(state) {
 		// make enemy move
-		this.x += velX;
+		this.x += state.velX;
 		// player loses if enemies reach the bottom   
-		if (this.y > telePortBorder) {
-			gameRunning = false;
+		if (this.y > state.telePortBorder) {
+			state.gameRunning = false;
 			status.innerHTML = 'You lose';
 		}
 		// randomly create bullets
 		if (Math.floor(Math.random() * 41) == 40) { // 0 to 40
 			// adding a bullet to the list
-			bullets.push(new Bullet(this.x, this.y, +0.1));
+			state.bullets.push(new Bullet(this.x, this.y, +0.1));
 		}
 	};
 }

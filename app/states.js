@@ -1,4 +1,5 @@
 var Player = require('./models.js').Player;
+var Enemy = require('./models.js').Enemy;
 
 function States () {
 	this.x = 0,

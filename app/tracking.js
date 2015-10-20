@@ -1,3 +1,4 @@
+// take a look at it tomorrow
 module.exports = function initialiseTrack (tracking) {
 // create custom color for green
 tracking.ColorTracker.registerColor('blue', function(r, g, b) {

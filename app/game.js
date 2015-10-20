@@ -10,12 +10,18 @@ var Enemy = models.Enemy;
 var Player = models.Player;
 var Bullet = models.Bullet;
 // module that holds canvas and status elems
-var input = require('./inputs.js');
+var inputs = require('./inputs.js');
+var canvas = inputs.canvas;
+var status = inputs.status; 
 // module that holds the tracking stuff
 var initialiseTrack = require('./tracking.js');
-// run keystate.js immediately passing in the new instance of States
-require('./keystates.js')(gameState);
-
+// module to hold keystates 
+var keys = require('./keystates.js');
+// pass the new instance of States to addListeners function
+// from keystates
+keys.addListeners(gameState);
+var leftPressedKey = keys.leftPressedKey;
+var rightPressedKey = keys.rightPressedKey;
 // listen to when the DOM loads and then run animation loop
 window.addEventListener('load', () => {
 	// fallback if canvas is not supported
@@ -33,7 +39,7 @@ window.addEventListener('load', () => {
 		var player = gameState.player;
 		// set the left and right most enemy positions
 		var leftMostEnemPix = gameState.enemies[0].x;
-		var rightMostEnemPix = gameState.enemies[enemies.length - 1].x + gameState.enemies[0].w;
+		var rightMostEnemPix = gameState.enemies[gameState.enemies.length - 1].x + gameState.enemies[0].w;
 		// keep clearing the canvas
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
 		// as long as the game is running
@@ -42,13 +48,13 @@ window.addEventListener('load', () => {
 			player.update();
 			// draw player
 			drawRect(player);
-			// ensure that enemies don't pass the borders of the screen
+			// ensure that enemies doesn't pass the borders of the screen
 			if (leftMostEnemPix < 0 || rightMostEnemPix > canvas.width) {
 				// if they do, move them in the opposite direction
 				gameState.velX *= -1;
 				// make enemies go down
 				gameState.enemies.forEach(function(item) {
-					item.y += 35;
+					item.y += 25;   
 				});
 			}
 			// loop through all bullets
@@ -60,7 +66,7 @@ window.addEventListener('load', () => {
 			// loop thorugh all enemies
 			gameState.enemies.forEach(function(item, indx, array) {
 				// update and draw each enemy
-				item.update();
+				item.update(gameState);
 				drawRect(item);
 			});
 			// make the movement of the player more smooth
@@ -104,17 +110,17 @@ window.addEventListener('load', () => {
 	function bulletEnemyCollision() {
 		// loop through all the bullets
 		for (var i = 0; i < gameState.bullets.length; i += 1) {
-			// if it is the player's bullets (the bullets going down)
+			// if it is the player's bullets (the bullets going up)
 			if (gameState.bullets[i].d === -1) {
 				// loop through all the enemies
 				for (var j = 0; j < gameState.enemies.length; j += 1) {
-					// if bullets and enemies collide
+					// if bullets and enemies collided
 					if (sqCollide(enemies[j], gameState.bullets[i]) === true) {
 						// remove the invader and the bullet
 						gameState.enemies.splice(j, 1);
 						gameState.bullets.splice(i, 1);
 					}
-					// as long as no enemies remain
+					// as long as there no enemies left
 					if (gameState.enemies.length === 0) {
 						// pause the game
 						gameState.gameRunning = false;
@@ -123,10 +129,10 @@ window.addEventListener('load', () => {
 					}
 				}
 			}
-			// otherwise the bullets are from the enemy (those bullets that are going up)
+			// otherwise the bullets are from the enemy (those bullets that are going down)
 			else {
 				// if enemey bullets collide with the player
-				if (sqCollide(bullets[i], player)) {
+				if (sqCollide(gameState.bullets[i], gameState.player)) {
 					// pause the game
 					gameState.gameRunning = false;
 					// show that player loses
@@ -135,6 +141,6 @@ window.addEventListener('load', () => {
 			}
 		}
 	}
-	update();
 	gameState.reset();
+	update();
 });
