@@ -1,4 +1,4 @@
-
+// I need to grab canvas and status which are elements out of scope
 
 // make a Square class
 function Square(x, y, w, h) {

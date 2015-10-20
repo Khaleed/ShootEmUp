@@ -1,3 +1,4 @@
+// export function passing in the state (which is the new instance of States)
 module.exports =  function (state) { 
 	var rightPressedKey = false;
 	var leftPressedKey = false;
