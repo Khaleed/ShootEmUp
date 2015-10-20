@@ -1,3 +1,4 @@
+module.exports = function initialiseTrack (tracking) {
 // create custom color for green
 tracking.ColorTracker.registerColor('blue', function(r, g, b) {
 	if (r < 50 && g < 50 && b > 200) {
@@ -43,3 +44,4 @@ myTracker.on('track', function(event) {
 // utility to read <canvas>, <img>, <video> 
 var trackerTask = tracking.track('#gameVid', myTracker);
 //
+}

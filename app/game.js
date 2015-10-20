@@ -1,6 +1,15 @@
 'use strict';
+// var tracker = require('./tracking.js');
+var models = require('./models.js');
+var initialiseTrack = require('./tracking');
 
-window.addEventListener('load', function() {
+
+var Square = models.Square;
+var Enemy = models.Enemy;
+var Player = models.Player;
+var Bullet = models.Bullet;
+
+window.addEventListener('load', () => {
 	// grab canvas/screen
 	var canvas = document.getElementById('screen');
 	var status = document.getElementById('status');
@@ -13,7 +22,7 @@ window.addEventListener('load', function() {
 	// set properties of canvas
 	canvas.width = 800;
 	canvas.height = 600;
-	// set initial coordinates of canvas
+	// set states
 	var x = 0;
 	var y = 0;
 	var telePortBorder = 500;
@@ -26,7 +35,7 @@ window.addEventListener('load', function() {
 	var rightPressedKey = false;
 	var leftPressedKey = false;
 	// add listeners for when they let the key go
-	document.addEventListener('keyup', function(e) {
+	document.addEventListener('keyup', e => {
 		if (e.keyCode === 37) {
 			leftPressedKey = false;
 		} else if (e.keyCode === 39) {
@@ -34,7 +43,7 @@ window.addEventListener('load', function() {
 		}
 	});
 	// when they push down
-	document.addEventListener('keydown', function(e) {
+	document.addEventListener('keydown', e => {
 		if (e.keyCode === 37) {
 			leftPressedKey = true;
 		} else if (e.keyCode === 39) {
@@ -106,56 +115,7 @@ window.addEventListener('load', function() {
 		}
 		setTimeout(update, 1);
 	}
-	// make a Rectangle classnpm install -g node-inspector
-	function Rectangle(x, y, w, h) {
-		this.x = x;
-		this.y = y;
-		this.w = w;
-		this.h = h;
-		this.color = 'white';
-		this.update = function() {
-			// placeholder
-		};
-	}
-
-	// make a Player class that inherits from Rectangle
-	function Player() {
-		// inherit from Rectangle
-		Rectangle.call(this, canvas.width / 2, canvas.height - 50, 32, 32);
-		this.color = 'blue';
-	}
-	// Enemy inherits from Rectangle
-	function Enemy(x, y) {
-		// inherit from Rectangle
-		Rectangle.call(this, x, y, 25, 25);
-		this.color = 'red';
-		// initially go right (brain of enemy)
-		this.update = function() {
-			// make enemy move
-			this.x += velX;
-			// set enemies back to top    
-			if (this.y > telePortBorder) {
-				gameRunning = false;
-				status.innerHTML = 'You lose';
-			}
-			// randomly create bullets   ->  how do I make these bullets go slower and less bullets
-			if (Math.floor(Math.random() * 30) == 6) { // 0 to 6
-				// adding a bullet to the list
-				bullets.push(new Bullet(this.x, this.y, +0.1));
-			}
-		};
-	}
-	// create Bullet class
-	function Bullet(x, y, d) {
-		Rectangle.call(this, x, y, 5, 15);
-		this.color = 'white';
-		this.d = d;
-		this.update = function() {
-			// fire bullet
-			this.y += this.d;
-		}
-	}
-	// draw any rectangle
+	// draw any Square
 	function drawRect(rect) {
 		// set color of rect
 		ctx.fillStyle = rect.color;
@@ -202,3 +162,4 @@ window.addEventListener('load', function() {
 	update();
 	reset();
 });
+
