@@ -1,5 +1,8 @@
 // grab canvas and status
-module.exports = {
+var inputs = {
 	canvas: document.getElementById('screen'),
 	status: document.getElementById('status')
-};
+}
+
+module.exports = inputs
+

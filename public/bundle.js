@@ -131,6 +131,7 @@
 						player.x -= playerVel;
 					}
 				}
+
 				// same logic as above if the right key is pressed down
 				if (rightPressedKey === true) {
 					if (player.x < canvas.width - 32) {
@@ -408,10 +409,12 @@
 	// grab canvas and status
 	'use strict';
 
-	module.exports = {
+	var inputs = {
 		canvas: document.getElementById('screen'),
 		status: document.getElementById('status')
 	};
+
+	module.exports = inputs;
 
 /***/ }
 /******/ ]);

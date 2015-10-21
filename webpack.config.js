@@ -1,9 +1,12 @@
 var path = require('path')
 
 module.exports = {
-    devtool: 'eval',
+    devtool: 'source-map',
     entry: {
         app: ['./app/game.js']
+    },
+    devServer: {
+        contentBase: "public/"
     },
     output: {
         path: path.resolve(__dirname, 'public'),

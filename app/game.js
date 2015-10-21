@@ -78,6 +78,7 @@ window.addEventListener('load', () => {
 					player.x -= playerVel;
 				}
 			}
+
 			// same logic as above if the right key is pressed down
 			if (rightPressedKey === true) {
 				if (player.x < canvas.width - 32) {
