@@ -54,7 +54,7 @@ window.addEventListener('load', () => {
 				gameState.enemies.forEach(function(item) {
 					// enemy keeps going down
 					item.y += gameState.velY;
-					if (item.y === gameState.killZone) {
+					if (item.y > gameState.killZone) {
 						gameState.gameRunning === false;
 						status.innerHTML = 'You lose';
 					}
@@ -72,10 +72,9 @@ window.addEventListener('load', () => {
 				item.update(gameState);
 				drawRect(item);
 			});
-			// make the movement of the gameState.player more smooth
-			// by checking if the left key is pressed down
+			// make the movement of the player more smooth
 			if (leftPressedKey === true) {
-				// and if the gameState.player is not beyond the left-most side of the screen
+				// and if the player is not beyond the left-most side of the screen
 				if (gameState.player.x > 0) {
 					// keep going left
 					gameState.player.x -= gameState.playerVel;
@@ -114,11 +113,11 @@ window.addEventListener('load', () => {
 	}
 	// if two squares collide
 	function sqCollide(s1, s2) {
-		var c1 = s1.x < s2.x + s2.w; // right edge of bullet is to the right of left edge of enemy
-		var c2 = s2.x < s1.x + s1.w; // left edge of bullet is to the left of right edge of enemy
-		var c3 = s1.y + s1.h > s2.y; // top edge of bullet is above bottom edge of enemy
-		var c4 = s2.y + s2.h > s1.y // if the bottom edge of the bullet is below the top edge of the enemy
-			// collision has happened
+		var c1 = s1.x < s2.x + s2.w; // right edge of square 1 is to the right of left edge of square 2
+		var c2 = s2.x < s1.x + s1.w; // left edge of square 1 is to the left of right edge of square 2
+		var c3 = s1.y + s1.h > s2.y; // top edge of square 1 is above bottom edge of square 2
+		var c4 = s2.y + s2.h > s1.y //  bottom edge of the square 1 is below the top edge of the square 2
+		// collision has happened
 		return (c1 && c2 && c3 && c4);
 	}
 
