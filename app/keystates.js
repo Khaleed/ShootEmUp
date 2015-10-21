@@ -1,26 +1,24 @@
 // export function passing in the state (which is the new instance of States) 
-var models = require('./models.js');
-var Bullet = models.Bullet;
+import {Bullet} from './models';
 
-module.exports =  {
+export default {
 	rightPressedKey: false,
 	leftPressedKey: false,
-	addListeners: function (state) { 
-	var self = this;
+	addListeners: function (state) {
 	// add listeners for when they let the key go
-	document.addEventListener('keyup', e => { 
+	document.addEventListener('keyup', e => {
 		if (e.keyCode === 37) {
-			self.leftPressedKey = false;
+			this.leftPressedKey = false;
 		} else if (e.keyCode === 39) {
-			self.rightPressedKey = false;
+			this.rightPressedKey = false;
 		}
 	});
 	// when they push down
 	document.addEventListener('keydown', e => {
 		if (e.keyCode === 37) {
-			self.leftPressedKey = true;
+			this.leftPressedKey = true;
 		} else if (e.keyCode === 39) {
-			self.rightPressedKey = true;
+			this.rightPressedKey = true;
 		}
 		// condition for shooting
 		else if (e.keyCode === 32) {
