@@ -1,22 +1,18 @@
 'use strict';
 console.log('hi');
 // module that holds main game states
-var States = require('./states.js');
-var gameState = new States();
-// module that holds the data/model
-var models = require('./models.js');
-var Square = models.Square;
-var Enemy = models.Enemy;
-var Player = models.Player;
-var Bullet = models.Bullet;
+import States from './states';
+import {Square, Enemy, Player, Bullet}  from './models';
+import inputs  from './inputs';
+import initialiseTrack from './tracking';
+import keys  from './keystates';
+
+let gameState = new States();
 // module that holds canvas and status elems
-var inputs = require('./inputs.js');
-var canvas = inputs.canvas;
-var status = inputs.status;
+let canvas = inputs.canvas;
+let status = inputs.status;
 // module that holds the tracking stuff
-var initialiseTrack = require('./tracking.js');
-// module to hold keystates 
-var keys = require('./keystates.js');
+// module to hold keystates
 // pass the new instance of States to addListeners function
 // from keystates
 keys.addListeners(gameState);
@@ -113,10 +109,10 @@ window.addEventListener('load', () => {
 	}
 	// if two squares collide
 	function sqCollide(s1, s2) {
-		var c1 = s1.x < s2.x + s2.w; // right edge of square 1 is to the right of left edge of square 2
-		var c2 = s2.x < s1.x + s1.w; // left edge of square 1 is to the left of right edge of square 2
-		var c3 = s1.y + s1.h > s2.y; // top edge of square 1 is above bottom edge of square 2
-		var c4 = s2.y + s2.h > s1.y //  bottom edge of the square 1 is below the top edge of the square 2
+		const c1 = s1.x < s2.x + s2.w; // right edge of square 1 is to the right of left edge of square 2
+		const c2 = s2.x < s1.x + s1.w; // left edge of square 1 is to the left of right edge of square 2
+		const c3 = s1.y + s1.h > s2.y; // top edge of square 1 is above bottom edge of square 2
+		const c4 = s2.y + s2.h > s1.y //  bottom edge of the square 1 is below the top edge of the square 2
 		// collision has happened
 		return (c1 && c2 && c3 && c4);
 	}
