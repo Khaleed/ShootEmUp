@@ -1,5 +1,5 @@
 'use strict';
-
+console.log('hi');
 // module that holds main game states
 var States = require('./states.js');
 var gameState = new States();
@@ -52,7 +52,8 @@ window.addEventListener('load', () => {
 				gameState.velX *= -1;
 				// make enemies go down
 				gameState.enemies.forEach(function(item) {
-					//
+					// enemy keeps going down
+					item.y += gameState.velY;
 					if (item.y === gameState.killZone) {
 						gameState.gameRunning === false;
 						status.innerHTML = 'You lose';
@@ -74,7 +75,6 @@ window.addEventListener('load', () => {
 			// make the movement of the gameState.player more smooth
 			// by checking if the left key is pressed down
 			if (leftPressedKey === true) {
-				console.log('leftPressedKey: ', leftPressedKey);
 				// and if the gameState.player is not beyond the left-most side of the screen
 				if (gameState.player.x > 0) {
 					// keep going left
@@ -125,17 +125,18 @@ window.addEventListener('load', () => {
 	function bulletEnemyCollision() {
 		// loop through all the bullets
 		for (var i = 0; i < gameState.bullets.length; i += 1) {
-			// if it is the player's bullets (the bullets going up)
+			// if it is the player's bullets (the bullets that are going up)
 			if (gameState.bullets[i].d === -1) {
 				// loop through all the enemies
 				for (var j = 0; j < gameState.enemies.length; j += 1) {
-					// if bullets and enemies collided
+					// if player's bullets hit the enemies
 					if (sqCollide(gameState.enemies[j], gameState.bullets[i]) === true) {
 						// remove the invader and the bullet
 						gameState.enemies.splice(j, 1);
 						gameState.bullets.splice(i, 1);
 						// as long as there no enemies left
 						if (gameState.enemies.length === 0) {
+							console.log(gameState.enemies.length === 0);
 							// pause the game
 							gameState.gameRunning = false;
 							// the player wins
