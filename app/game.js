@@ -94,11 +94,11 @@ window.addEventListener('load', () => {
 	}
 
 	function enemyShoots() {
-		var randIndx = Math.floor(Math.random() * enemies.length-1);  
+		var randIndx = Math.floor(Math.random() * gameState.enemies.length-1);  
 		// select a random enemy
-		var enemy = enemies[randIndx];
-		// adding a bullet to the list where enemy is
-		state.bullets.push(new Bullet(enemy.x, enemy.y, +0.1));
+		var enemy = gameState.enemies[randIndx];
+		// adding a bullet to the enemy
+		gameState.bullets.push(new Bullet(enemy.x, enemy.y, +0.1));
 	
 	}
 	// draw any Square
