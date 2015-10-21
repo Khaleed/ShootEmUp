@@ -72,17 +72,18 @@ window.addEventListener('load', () => {
 			// make the movement of the player more smooth
 			// by checking if the left key is pressed down
 			if (leftPressedKey === true) {
+				console.log('leftPressedKey: ' , leftPressedKey);
 				// and if the player is not beyond the left-most side of the screen
 				if (player.x > 0) {
 					// keep going left
-					player.x -= playerVel;
+					player.x -= gameState.playerVel;
 				}
 			}
 
 			// same logic as above if the right key is pressed down
 			if (rightPressedKey === true) {
 				if (player.x < canvas.width - 32) {
-					player.x += playerVel;
+					player.x += gameState.playerVel;
 				}
 			}
 			// make enemy shoot
@@ -94,7 +95,7 @@ window.addEventListener('load', () => {
 	}
 
 	function enemyShoots() {
-		var randIndx = Math.floor(Math.random() * gameState.enemies.length-1);  
+		var randIndx = Math.floor(Math.random() * (gameState.enemies.length-1));  
 		// select a random enemy
 		var enemy = gameState.enemies[randIndx];
 		// adding a bullet to the enemy
@@ -114,8 +115,7 @@ window.addEventListener('load', () => {
 		var c2 = s2.x < s1.x + s1.w; // left edge of bullet is to the left of right edge of enemy
 		var c3 = s1.y + s1.h > s2.y; // top edge of bullet is above bottom edge of enemy
 		var c4 = s2.y + s2.h > s1.y // if the bottom edge of the bullet is below the top edge of the enemy
-			// collision has happened
-		console.log('collision has happened: ' + c1 && c2 && c3 && c4);
+		// collision has happened
 		return (c1 && c2 && c3 && c4);
 	}
 
