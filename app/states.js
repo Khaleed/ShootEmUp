@@ -1,5 +1,5 @@
-var Player = require('./models.js').Player;
-var Enemy = require('./models.js').Enemy;
+let Player = require('./models.js').Player;
+let Enemy = require('./models.js').Enemy;
 
 function States () {
 	this.x = 0;

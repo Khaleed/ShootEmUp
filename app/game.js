@@ -19,10 +19,11 @@ keys.addListeners(gameState);
 // listen to when the DOM loads and then run animation loop
 window.addEventListener('load', () => {
 	// fallback if canvas is not supported
+	let ctx;
 	if (canvas.getContext === undefined) {
 		console.error('browser does not support canvas');
 	} else {
-		var ctx = canvas.getContext('2d');
+		ctx = canvas.getContext('2d');
 	}
 	// set properties of canvas
 	canvas.width = 800;
@@ -34,10 +35,10 @@ window.addEventListener('load', () => {
 		// as long as the game is running
 		if (gameState.gameRunning) {
 			// set the left and right most enemy positions
-			var leftMostEnemPix = gameState.enemies[0].x;
-			var rightMostEnemPix = gameState.enemies[gameState.enemies.length - 1].x + gameState.enemies[0].w;
-			var leftPressedKey = keys.leftPressedKey;
-			var rightPressedKey = keys.rightPressedKey;
+			let leftMostEnemPix = gameState.enemies[0].x;
+			let rightMostEnemPix = gameState.enemies[gameState.enemies.length - 1].x + gameState.enemies[0].w;
+			let leftPressedKey = keys.leftPressedKey;
+			let rightPressedKey = keys.rightPressedKey;
 			// update player
 			gameState.player.update();
 			// draw gameState.player
@@ -119,11 +120,11 @@ window.addEventListener('load', () => {
 
 	function bulletEnemyCollision() {
 		// loop through all the bullets
-		for (var i = 0; i < gameState.bullets.length; i += 1) {
+		for (let i = 0; i < gameState.bullets.length; i += 1) {
 			// if it is the player's bullets (the bullets that are going up)
 			if (gameState.bullets[i].d === -1) {
 				// loop through all the enemies
-				for (var j = 0; j < gameState.enemies.length; j += 1) {
+				for (let j = 0; j < gameState.enemies.length; j += 1) {
 					// if player's bullets hit the enemies
 					if (sqCollide(gameState.enemies[j], gameState.bullets[i]) === true) {
 						// remove the invader and the bullet
@@ -131,7 +132,6 @@ window.addEventListener('load', () => {
 						gameState.bullets.splice(i, 1);
 						// as long as there no enemies left
 						if (gameState.enemies.length === 0) {
-							console.log(gameState.enemies.length === 0);
 							// pause the game
 							gameState.gameRunning = false;
 							// the player wins
