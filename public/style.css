@@ -10,3 +10,8 @@ canvas {
 	margin: auto;
 	display: block;
 }
+
+#inst, #status {
+	padding-top: 10px;
+	text-align: center;
+}

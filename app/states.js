@@ -2,12 +2,12 @@ var Player = require('./models.js').Player;
 var Enemy = require('./models.js').Enemy;
 
 function States () {
-	this.x = 0,
-	this.y = 0,
-	this.velX = 2,
+	this.x = 0;
+	this.y = 0;
+	this.velX = 2;
 	this.playerVel = 5;
-	this.gameRunning = false,
-	this.bullets = [],
+	this.gameRunning = false;
+	this.bullets = [];
 	this.player = new Player(32, 32);
 	this.enemies = [];
 }

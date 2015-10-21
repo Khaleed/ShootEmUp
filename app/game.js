@@ -33,8 +33,6 @@ window.addEventListener('load', () => {
 	canvas.height = 600;
 	// set animation loop because space invaders is a real-time game
 	function update() {
-		// a new instance of player
-		var player = gameState.player;
 		// keep clearing the canvas
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
 		// as long as the game is running
@@ -45,16 +43,20 @@ window.addEventListener('load', () => {
 			var leftPressedKey = keys.leftPressedKey;
 			var rightPressedKey = keys.rightPressedKey;
 			// update player
-			player.update();
-			// draw player
-			drawRect(player);
+			gameState.player.update();
+			// draw gameState.player
+			drawRect(gameState.player);
 			// ensure that enemies doesn't pass the borders of the screen
 			if (leftMostEnemPix < 0 || rightMostEnemPix > canvas.width) {
 				// if they do, move them in the opposite direction
 				gameState.velX *= -1;
 				// make enemies go down
 				gameState.enemies.forEach(function(item) {
-					item.y += 25;
+					//
+					if (item.y === gameState.killZone) {
+						gameState.gameRunning === false;
+						status.innerHTML = 'You lose';
+					}
 				});
 			}
 			// loop through all bullets
@@ -69,23 +71,23 @@ window.addEventListener('load', () => {
 				item.update(gameState);
 				drawRect(item);
 			});
-			// make the movement of the player more smooth
+			// make the movement of the gameState.player more smooth
 			// by checking if the left key is pressed down
 			if (leftPressedKey === true) {
 				console.log('leftPressedKey: ', leftPressedKey);
-				// and if the player is not beyond the left-most side of the screen
-				if (player.x > 0) {
+				// and if the gameState.player is not beyond the left-most side of the screen
+				if (gameState.player.x > 0) {
 					// keep going left
-					player.x -= gameState.playerVel;
+					gameState.player.x -= gameState.playerVel;
 				}
 			}
 			// same logic as above if the right key is pressed down
 			if (rightPressedKey === true) {
-				if (player.x < canvas.width - 32) {
-					player.x += gameState.playerVel;
+				if (gameState.player.x < canvas.width - 32) {
+					gameState.player.x += gameState.playerVel;
 				}
 			}
-			if ((Math.random()*100) <= 1){
+			if ((Math.random() * 100) <= 1) {
 				enemyShoots();
 			}
 			// make enemy shoot
@@ -112,7 +114,6 @@ window.addEventListener('load', () => {
 	}
 	// if two squares collide
 	function sqCollide(s1, s2) {
-		
 		var c1 = s1.x < s2.x + s2.w; // right edge of bullet is to the right of left edge of enemy
 		var c2 = s2.x < s1.x + s1.w; // left edge of bullet is to the left of right edge of enemy
 		var c3 = s1.y + s1.h > s2.y; // top edge of bullet is above bottom edge of enemy
@@ -133,13 +134,14 @@ window.addEventListener('load', () => {
 						// remove the invader and the bullet
 						gameState.enemies.splice(j, 1);
 						gameState.bullets.splice(i, 1);
-					}
-					// as long as there no enemies left
-					if (gameState.enemies.length === 0) {
-						// pause the game
-						gameState.gameRunning = false;
-						// the player wins
-						status.innerHTML = 'You win';
+						// as long as there no enemies left
+						if (gameState.enemies.length === 0) {
+							// pause the game
+							gameState.gameRunning = false;
+							// the player wins
+							status.innerHTML = 'You win';
+						}
+						break;
 					}
 				}
 			}
