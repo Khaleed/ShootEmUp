@@ -79,7 +79,6 @@ window.addEventListener('load', () => {
 					player.x -= gameState.playerVel;
 				}
 			}
-
 			// same logic as above if the right key is pressed down
 			if (rightPressedKey === true) {
 				if (player.x < canvas.width - 32) {
@@ -127,7 +126,7 @@ window.addEventListener('load', () => {
 				// loop through all the enemies
 				for (var j = 0; j < gameState.enemies.length; j += 1) {
 					// if bullets and enemies collided
-					if (sqCollide(enemies[j], gameState.bullets[i]) === true) {
+					if (sqCollide(gameState.enemies[j], gameState.bullets[i]) === true) {
 						// remove the invader and the bullet
 						gameState.enemies.splice(j, 1);
 						gameState.bullets.splice(i, 1);

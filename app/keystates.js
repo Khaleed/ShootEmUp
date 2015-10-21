@@ -1,4 +1,7 @@
 // export function passing in the state (which is the new instance of States) 
+var models = require('./models.js');
+var Bullet = models.Bullet;
+
 module.exports =  {
 	rightPressedKey: false,
 	leftPressedKey: false,
