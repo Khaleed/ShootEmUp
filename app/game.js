@@ -35,15 +35,15 @@ window.addEventListener('load', () => {
 	function update() {
 		// a new instance of player
 		var player = gameState.player;
-		// set the left and right most enemy positions
-		var leftMostEnemPix = gameState.enemies[0].x;
-		var rightMostEnemPix = gameState.enemies[gameState.enemies.length - 1].x + gameState.enemies[0].w;
-		var leftPressedKey = keys.leftPressedKey;
-		var rightPressedKey = keys.rightPressedKey;
 		// keep clearing the canvas
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
 		// as long as the game is running
 		if (gameState.gameRunning) {
+			// set the left and right most enemy positions
+			var leftMostEnemPix = gameState.enemies[0].x;
+			var rightMostEnemPix = gameState.enemies[gameState.enemies.length - 1].x + gameState.enemies[0].w;
+			var leftPressedKey = keys.leftPressedKey;
+			var rightPressedKey = keys.rightPressedKey;
 			// update player
 			player.update();
 			// draw player
@@ -72,7 +72,7 @@ window.addEventListener('load', () => {
 			// make the movement of the player more smooth
 			// by checking if the left key is pressed down
 			if (leftPressedKey === true) {
-				console.log('leftPressedKey: ' , leftPressedKey);
+				console.log('leftPressedKey: ', leftPressedKey);
 				// and if the player is not beyond the left-most side of the screen
 				if (player.x > 0) {
 					// keep going left
@@ -85,8 +85,10 @@ window.addEventListener('load', () => {
 					player.x += gameState.playerVel;
 				}
 			}
+			if ((Math.random()*100) <= 1){
+				enemyShoots();
+			}
 			// make enemy shoot
-			enemyShoots();
 			// detect collision
 			bulletEnemyCollision();
 		}
@@ -94,12 +96,12 @@ window.addEventListener('load', () => {
 	}
 
 	function enemyShoots() {
-		var randIndx = Math.floor(Math.random() * (gameState.enemies.length-1));  
+		var randIndx = Math.floor(Math.random() * (gameState.enemies.length - 1));
 		// select a random enemy
 		var enemy = gameState.enemies[randIndx];
 		// adding a bullet to the enemy
 		gameState.bullets.push(new Bullet(enemy.x, enemy.y, +0.1));
-	
+
 	}
 	// draw any Square
 	function drawRect(rect) {
@@ -110,11 +112,12 @@ window.addEventListener('load', () => {
 	}
 	// if two squares collide
 	function sqCollide(s1, s2) {
+		
 		var c1 = s1.x < s2.x + s2.w; // right edge of bullet is to the right of left edge of enemy
 		var c2 = s2.x < s1.x + s1.w; // left edge of bullet is to the left of right edge of enemy
 		var c3 = s1.y + s1.h > s2.y; // top edge of bullet is above bottom edge of enemy
 		var c4 = s2.y + s2.h > s1.y // if the bottom edge of the bullet is below the top edge of the enemy
-		// collision has happened
+			// collision has happened
 		return (c1 && c2 && c3 && c4);
 	}
 
