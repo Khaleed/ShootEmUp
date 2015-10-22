@@ -4,6 +4,8 @@ import {Bullet} from './models';
 export default {
 	rightPressedKey: false,
 	leftPressedKey: false,
+	spacePressedKey: false,
+	rPressedKey: false,
 	addListeners: function (state) {
 	// add listeners for when they let the key go
 	document.addEventListener('keyup', e => {
@@ -11,6 +13,10 @@ export default {
 			this.leftPressedKey = false;
 		} else if (e.keyCode === 39) {
 			this.rightPressedKey = false;
+		} else if (e.keyCode === 32) {
+			this.spacePressedKey = false;
+		} else if (e.keyCode === 82) {
+			this.rPressedKey = false;
 		}
 	});
 	// when they push down
@@ -22,11 +28,11 @@ export default {
 		}
 		// condition for shooting
 		else if (e.keyCode === 32) {
-			// this tells which direction the bullet to go
-			state.bullets.push(new Bullet(state.player.x + state.player.w / 2, state.player.y, -1));
+			this.spacePressedKey = true;
 		}
+		// restart game
 		else if (e.keyCode === 82) {
-			state.reset();
+			this.rPressedKey = true;
 		}
 	});
 	}

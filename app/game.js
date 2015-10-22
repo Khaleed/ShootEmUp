@@ -2,10 +2,13 @@
 console.log('hi');
 // module that holds main game states
 import States from './states';
-import {Square, Enemy, Player, Bullet}  from './models';
-import inputs  from './inputs';
+import {
+	Square, Enemy, Player, Bullet
+}
+from './models';
+import inputs from './inputs';
 import initialiseTrack from './tracking';
-import keys  from './keystates';
+import keys from './keystates';
 
 let gameState = new States();
 // module that holds canvas and status elems
@@ -34,15 +37,18 @@ window.addEventListener('load', () => {
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
 		// as long as the game is running
 		if (gameState.gameRunning) {
-			// set the left and right most enemy positions
-			let leftMostEnemPix = gameState.enemies[0].x;
-			let rightMostEnemPix = gameState.enemies[gameState.enemies.length - 1].x + gameState.enemies[0].w;
+			// left and right states
 			let leftPressedKey = keys.leftPressedKey;
 			let rightPressedKey = keys.rightPressedKey;
+			let spacePressedKey = keys.spacePressedKey;
+			let rPressedKey = keys.rPressedKey;
 			// update player
 			gameState.player.update();
 			// draw gameState.player
 			drawRect(gameState.player);
+			// set the left and right most enemy positions - collision with boundary
+			let leftMostEnemPix = gameState.enemies[0].x;
+			let rightMostEnemPix = gameState.enemies[gameState.enemies.length - 1].x + gameState.enemies[0].w;
 			// ensure that enemies doesn't pass the borders of the screen
 			if (leftMostEnemPix < 0 || rightMostEnemPix > canvas.width) {
 				// if they do, move them in the opposite direction
@@ -52,7 +58,7 @@ window.addEventListener('load', () => {
 					// enemy keeps going down
 					item.y += gameState.velY;
 					if (item.y > gameState.killZone) {
-						gameState.gameRunning === false;
+						gameState.gameRunning = false;
 						status.innerHTML = 'You lose';
 					}
 				});
@@ -83,6 +89,22 @@ window.addEventListener('load', () => {
 					gameState.player.x += gameState.playerVel;
 				}
 			}
+			if (gameState.playerBulletNFrameCounter > 0) {
+				// decrement counter
+				gameState.playerBulletNFrameCounter -= 1;
+			}
+			// handle spacekey
+			if (spacePressedKey === true) {
+				// this tells which direction the bullet to go
+				if (gameState.playerBulletNFrameCounter === 0) {
+					gameState.bullets.push(new Bullet(gameState.player.x + gameState.player.w / 2, gameState.player.y, -1));
+					// reset counter
+					gameState.playerBulletNFrameCounter = gameState.playerFinalBulletNFrameCount;
+				}
+			}
+			if (rPressedKey === true) {
+				gameState.reset();
+			}
 			if ((Math.random() * 100) <= 1) {
 				enemyShoots();
 			}
@@ -98,7 +120,7 @@ window.addEventListener('load', () => {
 		// select a random enemy
 		var enemy = gameState.enemies[randIndx];
 		// adding a bullet to the enemy
-		gameState.bullets.push(new Bullet(enemy.x, enemy.y, +0.1));
+		gameState.bullets.push(new Bullet(enemy.x, enemy.y, + 1));
 
 	}
 	// draw any Square
@@ -114,7 +136,7 @@ window.addEventListener('load', () => {
 		const c2 = s2.x < s1.x + s1.w; // left edge of square 1 is to the left of right edge of square 2
 		const c3 = s1.y + s1.h > s2.y; // top edge of square 1 is above bottom edge of square 2
 		const c4 = s2.y + s2.h > s1.y //  bottom edge of the square 1 is below the top edge of the square 2
-		// collision has happened
+			// collision has happened
 		return (c1 && c2 && c3 && c4);
 	}
 

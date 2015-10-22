@@ -11,6 +11,11 @@ function States () {
 	this.bullets = [];
 	this.player = new Player(32, 32);
 	this.enemies = [];
+	// frame counter
+	this.playerBulletNFrameCounter = 0;
+	// how many frames between every bullet generated
+	// edited to time period 
+	this.playerFinalBulletNFrameCount = 50;
 }
 
 // reset game
