@@ -1,3 +1,5 @@
+'use strict';
+
 let Player = require('./models.js').Player;
 let Enemy = require('./models.js').Enemy;
 

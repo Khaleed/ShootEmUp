@@ -1,4 +1,5 @@
 'use strict';
+
 console.log('hi');
 // module that holds main game states
 import States from './states';
@@ -120,7 +121,7 @@ window.addEventListener('load', () => {
 		// select a random enemy
 		var enemy = gameState.enemies[randIndx];
 		// adding a bullet to the enemy
-		gameState.bullets.push(new Bullet(enemy.x, enemy.y, + 1));
+		gameState.bullets.push(new Bullet(enemy.x, enemy.y, +1));
 
 	}
 	// draw any Square
@@ -141,35 +142,25 @@ window.addEventListener('load', () => {
 	}
 
 	function bulletEnemyCollision() {
-		// loop through all the bullets
 		for (let i = 0; i < gameState.bullets.length; i += 1) {
-			// if it is the player's bullets (the bullets that are going up)
+			// if it is the player's bullets 
 			if (gameState.bullets[i].d === -1) {
-				// loop through all the enemies
 				for (let j = 0; j < gameState.enemies.length; j += 1) {
-					// if player's bullets hit the enemies
 					if (sqCollide(gameState.enemies[j], gameState.bullets[i]) === true) {
-						// remove the invader and the bullet
 						gameState.enemies.splice(j, 1);
 						gameState.bullets.splice(i, 1);
-						// as long as there no enemies left
 						if (gameState.enemies.length === 0) {
-							// pause the game
 							gameState.gameRunning = false;
-							// the player wins
 							status.innerHTML = 'You win';
 						}
 						break;
 					}
 				}
 			}
-			// otherwise the bullets are from the enemy (those bullets that are going down)
+			// then it's the enemies' bullets
 			else {
-				// if enemey bullets collide with the player
 				if (sqCollide(gameState.bullets[i], gameState.player)) {
-					// pause the game
 					gameState.gameRunning = false;
-					// show that player loses
 					status.innerHTML = 'You lose';
 				}
 			}

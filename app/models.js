@@ -1,7 +1,6 @@
-// I need to grab canvas and status elem
-// from inputs module
-import inputs from './inputs'
+'use strict';
 
+import inputs from './inputs'
 const canvas = inputs.canvas;
 let status = inputs.status;
 
