@@ -7,7 +7,7 @@ function States () {
 	this.x = 0;
 	this.y = 0;
 	this.velX = 2;
-	this.velY = 2;
+	this.velY = 10;
 	this.playerVel = 5;
 	this.gameRunning = false;
 	this.bullets = [];

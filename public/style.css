@@ -12,6 +12,7 @@ canvas {
 }
 
 #inst, #status {
-	padding-top: 10px;
+	padding-top: 24px;
+	font-size: 24px;
 	text-align: center;
 }

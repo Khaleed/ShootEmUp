@@ -1,6 +1,5 @@
 'use strict';
 
-console.log('hi');
 // module that holds main game states
 import States from './states';
 import {
@@ -43,6 +42,7 @@ window.addEventListener('load', () => {
 			let rightPressedKey = keys.rightPressedKey;
 			let spacePressedKey = keys.spacePressedKey;
 			let rPressedKey = keys.rPressedKey;
+			console.log(rPressedKey);
 			// update player
 			gameState.player.update();
 			// draw gameState.player
@@ -99,11 +99,13 @@ window.addEventListener('load', () => {
 				// this tells which direction the bullet to go
 				if (gameState.playerBulletNFrameCounter === 0) {
 					gameState.bullets.push(new Bullet(gameState.player.x + gameState.player.w / 2, gameState.player.y, -1));
+					inputs.playerShootSound.play();
 					// reset counter
 					gameState.playerBulletNFrameCounter = gameState.playerFinalBulletNFrameCount;
 				}
 			}
 			if (rPressedKey === true) {
+				console.log(rightPressedKey);
 				gameState.reset();
 			}
 			if ((Math.random() * 100) <= 1) {
@@ -121,8 +123,10 @@ window.addEventListener('load', () => {
 		// select a random enemy
 		var enemy = gameState.enemies[randIndx];
 		// adding a bullet to the enemy
-		gameState.bullets.push(new Bullet(enemy.x, enemy.y, +1));
-
+		var b = new Bullet(enemy.x, enemy.y, +1);
+		b.color = '#FF9900';
+		gameState.bullets.push(b);
+		inputs.invaderShootSound.play();
 	}
 	// draw any Square
 	function drawRect(rect) {
@@ -147,6 +151,7 @@ window.addEventListener('load', () => {
 			if (gameState.bullets[i].d === -1) {
 				for (let j = 0; j < gameState.enemies.length; j += 1) {
 					if (sqCollide(gameState.enemies[j], gameState.bullets[i]) === true) {
+						inputs.invaderDiesSound.play();
 						gameState.enemies.splice(j, 1);
 						gameState.bullets.splice(i, 1);
 						if (gameState.enemies.length === 0) {
@@ -160,6 +165,7 @@ window.addEventListener('load', () => {
 			// then it's the enemies' bullets
 			else {
 				if (sqCollide(gameState.bullets[i], gameState.player)) {
+					inputs.playerDiesSound.play();
 					gameState.gameRunning = false;
 					status.innerHTML = 'You lose';
 				}

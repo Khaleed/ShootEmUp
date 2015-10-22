@@ -1,3 +1,5 @@
+'use strict';
+
 // take a look at it tomorrow
 module.exports = function initialiseTrack (tracking) {
 // create custom color for green

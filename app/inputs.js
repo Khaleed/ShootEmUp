@@ -5,5 +5,5 @@ export default {
 	playerShootSound: document.getElementById('player-shoots'),
 	invaderShootSound: document.getElementById('invader-shoots'),
 	invaderDiesSound: document.getElementById('invader-explodes'),
-	playerDiesSound: document.getElementById('player-explodes');
+	playerDiesSound: document.getElementById('player-explodes')
 }

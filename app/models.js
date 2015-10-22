@@ -40,7 +40,7 @@ export function Enemy(x, y) {
 }
 // create Bullet class
 export function Bullet(x, y, d) {
-	Square.call(this, x, y, 5, 15);
+	Square.call(this, x, y, 5, 5);
 	this.color = 'white';
 	this.d = d;
 	this.update = () => {
