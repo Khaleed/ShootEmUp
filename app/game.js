@@ -1,48 +1,29 @@
-'use strict';
-
-// module that holds main game states
 import States from './states';
-import {
-	Square, Enemy, Player, Bullet
-}
+import { Square, Enemy, Player, Bullet}
 from './models';
 import inputs from './inputs';
 import initialiseTrack from './tracking';
 import keys from './keystates';
-
 let gameState = new States();
-// module that holds canvas and status elems
 let canvas = inputs.canvas;
 let status = inputs.status;
-// module that holds the tracking stuff
-// module to hold keystates
-// pass the new instance of States to addListeners function
-// from keystates
 keys.addListeners(gameState);
-// listen to when the DOM loads and then run animation loop
 window.addEventListener('load', () => {
-	// fallback if canvas is not supported
 	let ctx;
 	if (canvas.getContext === undefined) {
 		console.error('browser does not support canvas');
 	} else {
 		ctx = canvas.getContext('2d');
 	}
-	// set properties of canvas
 	canvas.width = 800;
 	canvas.height = 600;
-	// set animation loop because space invaders is a real-time game
 	function update() {
-		// keep clearing the canvas
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
-		// as long as the game is running
 		if (gameState.gameRunning) {
-			// left and right states
 			let leftPressedKey = keys.leftPressedKey;
 			let rightPressedKey = keys.rightPressedKey;
 			let spacePressedKey = keys.spacePressedKey;
 			let rPressedKey = keys.rPressedKey;
-			console.log(rPressedKey);
 			// update player
 			gameState.player.update();
 			// draw gameState.player
@@ -118,14 +99,16 @@ window.addEventListener('load', () => {
 		setTimeout(update, 1);
 	}
 
+	function pressRtoReset () {
+		
+	}
+
 	function enemyShoots() {
-		var randIndx = Math.floor(Math.random() * (gameState.enemies.length - 1));
-		// select a random enemy
-		var enemy = gameState.enemies[randIndx];
-		// adding a bullet to the enemy
-		var b = new Bullet(enemy.x, enemy.y, +1);
+		let randIndx = Math.floor(Math.random() * (gameState.enemies.length - 1));
+		let	enemy = gameState.enemies[randIndx];
+		let	b = new Bullet(enemy.x, enemy.y, +1);
 		b.color = '#FF9900';
-		gameState.bullets.push(b);
+		gameState.bullets.push(b);		
 		inputs.invaderShootSound.play();
 	}
 	// draw any Square
@@ -135,7 +118,7 @@ window.addEventListener('load', () => {
 		// draw rect
 		ctx.fillRect(rect.x, rect.y, rect.w, rect.h);
 	}
-	// if two squares collide
+	
 	function sqCollide(s1, s2) {
 		const c1 = s1.x < s2.x + s2.w; // right edge of square 1 is to the right of left edge of square 2
 		const c2 = s2.x < s1.x + s1.w; // left edge of square 1 is to the left of right edge of square 2

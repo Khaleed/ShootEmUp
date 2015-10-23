@@ -1,5 +1,3 @@
-'use strict';
-
 import inputs from './inputs'
 const canvas = inputs.canvas;
 let status = inputs.status;
@@ -18,7 +16,7 @@ export function Square(x, y, w, h) {
 // make a Player class that inherits from Square
 export function Player() {
 	// inherit from Square
-	Square.call(this, canvas.width / 2, canvas.height - 50, 32, 32);
+	Square.call(this, canvas.width / 2, canvas.height - 50, 25, 25);
 	this.color = 'blue';
 }
 // Enemy inherits from Square
