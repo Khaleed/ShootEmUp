@@ -9,6 +9,7 @@ let gameState = new States();
 let canvas = inputs.canvas;
 let status = inputs.status;
 keys.addListeners(gameState);
+
 window.addEventListener('load', () => {
 	let ctx;
 	if (canvas.getContext === undefined) {
@@ -24,7 +25,7 @@ window.addEventListener('load', () => {
 		if (gameState.gameRunning) {
 			gameState.player.update();
 			drawRect(gameState.player);
-			integorrateKeyStates();
+			interrogateKeyStates();
 			enemyCollision();
 			// loop through all bullets
 			gameState.bullets.forEach(function(item, indx, array) {
@@ -38,13 +39,14 @@ window.addEventListener('load', () => {
 				item.update(gameState);
 				drawRect(item);
 			});
+			enemyShootsAI();
 			// detect collision
-			bulletEnemyCollision();
+			bulletCollision();
 		}
 		setTimeout(update, 1);
 	}
 
-	function integorrateKeyStates() {
+	function interrogateKeyStates() {
 		let leftPressedKey = keys.leftPressedKey;
 		let rightPressedKey = keys.rightPressedKey;
 		let spacePressedKey = keys.spacePressedKey;
@@ -81,6 +83,9 @@ window.addEventListener('load', () => {
 			console.log(rightPressedKey);
 			gameState.reset();
 		}
+	}
+
+	function enemyShootsAI() {
 		if ((Math.random() * 100) <= 1) {
 			enemyShoots();
 		}
@@ -131,7 +136,7 @@ window.addEventListener('load', () => {
 		return (c1 && c2 && c3 && c4);
 	}
 
-	function bulletEnemyCollision() {
+	function bulletCollision() {
 		for (let i = 0; i < gameState.bullets.length; i += 1) {
 			// if it is the player's bullets 
 			if (gameState.bullets[i].d === -1) {
