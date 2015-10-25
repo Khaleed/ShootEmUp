@@ -4,7 +4,6 @@ import {
 }
 from './models';
 import inputs from './inputs';
-import initialiseTrack from './tracking';
 import keys from './keystates';
 let gameState = new States();
 let canvas = inputs.canvas;
