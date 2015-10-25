@@ -46,3 +46,9 @@ export function Bullet(x, y, d) {
 		this.y += this.d;
 	};
 }
+
+ function Shoe (size, color) {
+ 	
+ }
+
+
