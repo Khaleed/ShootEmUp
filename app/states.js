@@ -3,40 +3,37 @@
 let Player = require('./models.js').Player;
 let Enemy = require('./models.js').Enemy;
 
-function States () {
-	this.x = 0;
-	this.y = 0;
-	this.velX = 2;
-	this.velY = 10;
-	this.playerVel = 5;
-	this.gameRunning = false;
-	this.killZone = 500;
-	this.bullets = [];
-	this.player = Player();
-	this.enemies = [];
-	// frame counter
-	this.playerBulletNframeCounter = 0;
-	// how many frames between every bullet generated
-	// edited to time period 
-	this.playerFinalBulletNframeCount = 50;
+function GameState (args) {
+	let {
+		x = 0,
+		y = 0,
+		gameRunning = false,
+		bullets = [],
+		enemies = createEnemyBodies(),
+		player = Player({}),
+		playerBulletNframeCounter = 0,
+		playerFinalBulletNframeCount = 0
+	} = args;
+
+	return Object.freeze({
+		velX: 2,
+		velY: 10,
+		playerVel: 5,
+		killZone: 500,
+		x, y, gameRunning, bullets
+		enemies, playerFinalBulletNframeCount,
+		playerBulletNframeCounter, player
+	});
 }
 
-// reset game
-States.prototype.reset = function () {
-	this.enemies = [];
-	this.bullets = [];
-	this.player = Player();
-	this.createEnemyBodies();
-	this.gameRunning = true;
-}
-
-States.prototype.createEnemyBodies = function () {
-	for (var i = 0; i < 8; i += 1) { // controls width of enemies
-		for (var j = 0; j < 8; j += 1) { // controls height of enemies
-			// space out enemies
-			this.enemies.push(Enemy({x: 45 * i, y: 20 + 45 * j}));
-		}
-	}
+function createEnemyBodies (){
+	let range = Array(8).keys();
+	// [0, 1, 2, 3...7]
+	return range.map(function(i){
+		return range.map(function(j){
+	  		return Enemy({x: 45 * i, y: 20 + 45 * j});
+	  	});
+ 	}).reduce((result, next) => result.concat(next));
 }
 
 module.exports = States; // fix this in line with ES6/ES7

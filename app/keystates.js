@@ -3,7 +3,7 @@ export default {
 	leftPressedKey: false,
 	spacePressedKey: false,
 	rPressedKey: false,
-	addListeners: function (state) {
+	addListeners: function () {
 	// add listeners for when they let the key go
 	document.addEventListener('keyup', e => {
 		if (e.keyCode === 37) {

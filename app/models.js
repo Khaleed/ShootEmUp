@@ -2,15 +2,12 @@ import inputs from './inputs'
 const canvas = inputs.canvas;
 let status = inputs.status;
 
-// // make a Square class
-// // export function Square(args) {
-// 	return args;
-// // }
 // // make a Player class that inherits from Square
-export function Player() {
+export function Player(args) {
+	let { x = canvas.width / 2 } = args;
 	// inherit from Square
 	return {
-		x: canvas.width / 2,
+		x,
 		y: canvas.height - 50,
 		w: 25,
 		h: 25,
@@ -33,14 +30,10 @@ export function Enemy(args) {
 		w: 25,
 			h: 25,
 			color: 'red',
-			update: state => {
+			update: velX => {
 				// make enemy move
-				that.x += state.velX;
-				// player loses if enemies reach the bottom
-				if (that.y > state.telePortBorder) { // => fix this logic
-					state.gameRunning = false;
-					status.innerHTML = 'You lose';
-				}
+				let x = that.x + velX;
+				return Enemy({x, y: that.y});
 			}
 	}
 	return that;
@@ -54,24 +47,36 @@ export function Bullet(args) {
 		x,
 		y,
 		w: 5,
-		h: 5,
-		d,
-		color,
+			h: 5,
+			d,
+			color,
 			update: () => {
-				// fire bullet
-				that.y += that.d;
+				return Bullet({
+					x: that.x,
+					y: that.y + that.d,
+					d: that.d,
+					color: that.color
+				})
 			}
 	}
 
 	return that;
 }
 
-export function PlayerBullet(args){
-	let{x, y} = args;
-	return Bullet({x, y, d: -1, color: 'white'})
+export function PlayerBullet(args) {
+	let {
+		x, y
+	} = args;
+	return Bullet({
+		x, y, d: -1, color: 'white'
+	})
 }
 
-export function EnemyBullet(args){
-	let{x, y} = args;
-	return Bullet({x, y, d: 1, color: '#FF9900'})
+export function EnemyBullet(args) {
+	let {
+		x, y
+	} = args;
+	return Bullet({
+		x, y, d: 1, color: '#FF9900'
+	})
 }

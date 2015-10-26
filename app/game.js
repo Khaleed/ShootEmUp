@@ -1,4 +1,4 @@
-import States from './states';
+import GameState from './states';
 import {
 	Square, Enemy, Player, EnemyBullet, PlayerBullet
 }
@@ -8,10 +8,9 @@ import keys from './keystates';
 
 (function() {
 
-	let gameState = new States();
 	let canvas = inputs.canvas;
 	let status = inputs.status;
-	keys.addListeners(gameState);
+	keys.addListeners();
 
 	window.addEventListener('load', () => {
 		let ctx;
@@ -23,61 +22,96 @@ import keys from './keystates';
 		canvas.width = 800;
 		canvas.height = 600;
 
-		function update() {
-			ctx.clearRect(0, 0, canvas.width, canvas.height);			
+		function update(gameState) {		
 			if (gameState.gameRunning) {
-				gameState.player.update();
-				drawRect(gameState.player);
-				interrogateKeyStates();
-				enemyCollisionWithBorder();
-				// loop through all bullets
-				gameState.bullets.forEach(function(item, indx, array) {
-					// update and draw each bullet
-					item.update();
-					drawRect(item);
+				//gsw = game state with
+				let gswKeys = interrogateKeyStates(gameState);
+				let {
+					x, y, gameRunning, bullets
+					enemies, playerFinalBulletNframeCount,
+					playerBulletNframeCounter, player
+				} = gswKeys;
+				let newPlayer = player.update();
+				let newBullets = gameState.bullets.map((bullet) => bullet.update());
+				let newEnemies = gameState.enemies.map((enemy) => enemy.update(gameState.velX));
+				let gswNewPlayer = GameState({
+					x, y, gameRunning, newBullets
+					newEnemies, playerFinalBulletNframeCount,
+					playerBulletNframeCounter, newPlayer
 				});
-				// loop thorugh all enemies
-				gameState.enemies.forEach(function(item, indx, array) {
-					// update and draw each enemy
-					item.update(gameState);
-					drawRect(item);
-				});
-				enemyShootsAI();
-				// detect collision
-				bulletCollision();
+
+				let gswBorderColl = enemyCollisionWithBorder(gswNewPlayer);
+				let gswShootAI = enemyShootsAI(gswBorderColl);
+				let gswFinal = bulletCollision(gswShootAI);
+				draw(gwsFinal);
+			} else {
+				draw(gameState);
 			}
-			setTimeout(update, 1);
+
 		}
 
-		function interrogateKeyStates() {
+		function draw(gameState){
+			ctx.clearRect(0, 0, canvas.width, canvas.height);	
+			gameState.enemies.forEach(function(item, indx, array) {
+				// draw each enemy
+				drawRect(item);
+			});
+			gameState.bullets.forEach(function(item, indx, array) {
+				drawRect(item);
+			});
+
+			drawRect(gameState.player);
+
+			setTimeout(() => update(gameState), 1);
+		};
+
+		function interrogateKeyStates(gameState) {
 			let leftPressedKey = keys.leftPressedKey;
 			let rightPressedKey = keys.rightPressedKey;
 			let spacePressedKey = keys.spacePressedKey;
 			let rPressedKey = keys.rPressedKey;
+
+			let {
+				x, y, gameRunning, bullets
+				enemies, playerFinalBulletNframeCount,
+				playerBulletNframeCounter, player
+			} = gameState;
+
 			// make the movement of the player more smooth
-			if (leftPressedKey === true) {
-				// and if the player is not beyond the left-most side of the screen
-				if (gameState.player.x > 0) {
-					// keep going left
-					gameState.player.x -= gameState.playerVel;
-				}
+			let moveLeft = leftPressedKey === true && gameState.player.x > 0;
+			let moveRight = rightPressedKey === true && gameState.player.x < canvas.width - 32
+			let dir = 0;
+			if(moveLeft){
+				dir = -1;
+			} else if(moveRight){
+				dir = 1;
 			}
-			// same logic as above if the right key is pressed down
-			if (rightPressedKey === true) {
-				if (gameState.player.x < canvas.width - 32) {
-					gameState.player.x += gameState.playerVel;
-				}
-			}
-			// handle spacekey
-			if (spacePressedKey === true) {
-				playerShoots();
-			}
+			let newX = gameState.player.x + dir*gameState.playerVel;
+			let newPlayer = Player(newX);
+
+			let newGameState = GameState({
+				x, y, gameRunning, bullets
+				enemies, playerFinalBulletNframeCount,
+				playerBulletNframeCounter, newPlayer
+			});
+
+			let shoot = spacePressedKey === true
 			if (rPressedKey === true) {
-				gameState.reset();
+				return GameState();
+			} else if(shoot){
+				return playerShoots(newGameState)
+			} else{
+				return newGameState;
 			}
 		}
 
-		function playerShoots() {
+		function playerShoots(gameState) {
+			let {
+				x, y, gameRunning, bullets
+				enemies, playerFinalBulletNframeCount,
+				playerBulletNframeCounter, player
+			} = gameState;
+
 			if (gameState.playerBulletNframeCounter > 0) {
 				gameState.playerBulletNframeCounter -= 1;
 			}
@@ -87,15 +121,43 @@ import keys from './keystates';
 				inputs.playerShootSound.play();
 				gameState.playerBulletNframeCounter = gameState.playerFinalBulletNframeCount;
 			}
+
+			let newGameState = GameState({
+				x, y, gameRunning, bullets
+				enemies, playerFinalBulletNframeCount,
+				playerBulletNframeCounter, player
+			});
+
+			return newGameState;
 		}
 
-		function enemyShootsAI() {
+		function enemyShootsAI(gameState) {
+			let {
+				x, y, gameRunning, bullets
+				enemies, playerFinalBulletNframeCount,
+				playerBulletNframeCounter, player
+			} = gameState;
+
 			if ((Math.random() * 100) <= 1) {
-				enemyShoots();
+				enemyShoots(gameState);
 			}
+
+			let newGameState = GameState({
+				x, y, gameRunning, bullets
+				enemies, playerFinalBulletNframeCount,
+				playerBulletNframeCounter, player
+			});
+
+			return newGameState;
 		}
 
-		function enemyCollisionWithBorder() {
+		function enemyCollisionWithBorder(gameState) {
+			let {
+				x, y, gameRunning, bullets
+				enemies, playerFinalBulletNframeCount,
+				playerBulletNframeCounter, player
+			} = gameState;
+
 			// set the left and right most enemy positions - collision with boundary
 			let leftMostEnemPix = gameState.enemies[0].x;
 			let rightMostEnemPix = gameState.enemies[gameState.enemies.length - 1].x + gameState.enemies[0].w;
@@ -113,14 +175,36 @@ import keys from './keystates';
 					}
 				});
 			}
+
+			let newGameState = GameState({
+				x, y, gameRunning, bullets
+				enemies, playerFinalBulletNframeCount,
+				playerBulletNframeCounter, player
+			});
+
+			return newGameState;
 		}
 
-		function enemyShoots() {
+		function enemyShoots(gameState) {
+			let {
+				x, y, gameRunning, bullets
+				enemies, playerFinalBulletNframeCount,
+				playerBulletNframeCounter, player
+			} = gameState;
+
 			let randIndx = Math.floor(Math.random() * (gameState.enemies.length - 1));
 			let enemy = gameState.enemies[randIndx];
 			let b = EnemyBullet({x: enemy.x, y: enemy.y});
-			gameState.bullets.push(b);
+			gameState.bullets.push(b); 
 			inputs.invaderShootSound.play();
+
+			let newGameState = GameState({
+				x, y, gameRunning, bullets
+				enemies, playerFinalBulletNframeCount,
+				playerBulletNframeCounter, player
+			});
+
+			return newGameState;
 		}
 		
 		function drawRect(rect) {
@@ -137,7 +221,13 @@ import keys from './keystates';
 			return (c1 && c2 && c3 && c4);
 		}
 
-		function bulletCollision() {
+		function bulletCollision(gameState) {
+			let {
+				x, y, gameRunning, bullets
+				enemies, playerFinalBulletNframeCount,
+				playerBulletNframeCounter, player
+			} = gameState;
+
 			for (let i = 0; i < gameState.bullets.length; i += 1) {
 				// if it is the player's bullets 
 				if (gameState.bullets[i].d === -1) {
@@ -163,9 +253,16 @@ import keys from './keystates';
 					}
 				}
 			}
+
+			let newGameState = GameState({
+				x, y, gameRunning, bullets
+				enemies, playerFinalBulletNframeCount,
+				playerBulletNframeCounter, player
+			});
+
+			return newGameState;
 		}
-		gameState.reset();
-		update();
+		update(GameState());
 	});
 
 }());
