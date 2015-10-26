@@ -77,14 +77,12 @@ import keys from './keystates';
 			}
 		}
 
-		function playerBulletNframeCounter() {
-			if (gameState.playerBulletNframeCounter > 0) {
-				return gameState.playerBulletNframeCounter -= 1;
-			}
-		}
-
 		function playerShoots() {
-			if (playerBulletNframeCounter() === 0) {
+			if (gameState.playerBulletNframeCounter > 0) {
+				gameState.playerBulletNframeCounter -= 1;
+			}
+
+			if (gameState.playerBulletNframeCounter === 0) {
 				gameState.bullets.push(new Bullet(gameState.player.x + gameState.player.w / 2, gameState.player.y, -1));
 				inputs.playerShootSound.play();
 				gameState.playerBulletNframeCounter = gameState.playerFinalBulletNframeCount;
