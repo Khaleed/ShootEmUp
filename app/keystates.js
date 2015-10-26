@@ -1,5 +1,3 @@
-import {Bullet} from './models';
-
 export default {
 	rightPressedKey: false,
 	leftPressedKey: false,

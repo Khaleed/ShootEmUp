@@ -12,7 +12,7 @@ function States () {
 	this.gameRunning = false;
 	this.killZone = 500;
 	this.bullets = [];
-	this.player = new Player(32, 32);
+	this.player = Player();
 	this.enemies = [];
 	// frame counter
 	this.playerBulletNframeCounter = 0;
@@ -25,7 +25,7 @@ function States () {
 States.prototype.reset = function () {
 	this.enemies = [];
 	this.bullets = [];
-	this.player = new Player();
+	this.player = Player();
 	this.createEnemyBodies();
 	this.gameRunning = true;
 }
@@ -34,9 +34,9 @@ States.prototype.createEnemyBodies = function () {
 	for (var i = 0; i < 8; i += 1) { // controls width of enemies
 		for (var j = 0; j < 8; j += 1) { // controls height of enemies
 			// space out enemies
-			this.enemies.push(new Enemy(45 * i, 20 + 45 * j));
+			this.enemies.push(Enemy({x: 45 * i, y: 20 + 45 * j}));
 		}
 	}
 }
 
-module.exports = States;
+module.exports = States; // fix this in line with ES6/ES7

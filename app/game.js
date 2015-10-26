@@ -1,6 +1,6 @@
 import States from './states';
 import {
-	Square, Enemy, Player, Bullet
+	Square, Enemy, Player, EnemyBullet, PlayerBullet
 }
 from './models';
 import inputs from './inputs';
@@ -29,7 +29,7 @@ import keys from './keystates';
 				gameState.player.update();
 				drawRect(gameState.player);
 				interrogateKeyStates();
-				enemyCollision();
+				enemyCollisionWithBorder();
 				// loop through all bullets
 				gameState.bullets.forEach(function(item, indx, array) {
 					// update and draw each bullet
@@ -83,7 +83,7 @@ import keys from './keystates';
 			}
 
 			if (gameState.playerBulletNframeCounter === 0) {
-				gameState.bullets.push(new Bullet(gameState.player.x + gameState.player.w / 2, gameState.player.y, -1));
+				gameState.bullets.push(PlayerBullet({x: gameState.player.x + gameState.player.w / 2, y: gameState.player.y}));
 				inputs.playerShootSound.play();
 				gameState.playerBulletNframeCounter = gameState.playerFinalBulletNframeCount;
 			}
@@ -95,7 +95,7 @@ import keys from './keystates';
 			}
 		}
 
-		function enemyCollision() {
+		function enemyCollisionWithBorder() {
 			// set the left and right most enemy positions - collision with boundary
 			let leftMostEnemPix = gameState.enemies[0].x;
 			let rightMostEnemPix = gameState.enemies[gameState.enemies.length - 1].x + gameState.enemies[0].w;
@@ -118,8 +118,7 @@ import keys from './keystates';
 		function enemyShoots() {
 			let randIndx = Math.floor(Math.random() * (gameState.enemies.length - 1));
 			let enemy = gameState.enemies[randIndx];
-			let b = new Bullet(enemy.x, enemy.y, +1);
-			b.color = '#FF9900';
+			let b = EnemyBullet({x: enemy.x, y: enemy.y});
 			gameState.bullets.push(b);
 			inputs.invaderShootSound.play();
 		}
