@@ -24,7 +24,7 @@ import keys from './keystates';
 		canvas.height = 600;
 
 		function update() {
-			ctx.clearRect(0, 0, canvas.width, canvas.height);
+			ctx.clearRect(0, 0, canvas.width, canvas.height);			
 			if (gameState.gameRunning) {
 				gameState.player.update();
 				drawRect(gameState.player);
@@ -123,11 +123,9 @@ import keys from './keystates';
 			gameState.bullets.push(b);
 			inputs.invaderShootSound.play();
 		}
-		// draw any Square
+		
 		function drawRect(rect) {
-			// set color of rect
 			ctx.fillStyle = rect.color;
-			// draw rect
 			ctx.fillRect(rect.x, rect.y, rect.w, rect.h);
 		}
 
@@ -157,7 +155,7 @@ import keys from './keystates';
 						}
 					}
 				}
-				// then it's the enemies' bullets
+				// else it's the enemies' bullets
 				else {
 					if (sqCollide(gameState.bullets[i], gameState.player)) {
 						inputs.playerDiesSound.play();

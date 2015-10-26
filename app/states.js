@@ -10,6 +10,7 @@ function States () {
 	this.velY = 10;
 	this.playerVel = 5;
 	this.gameRunning = false;
+	this.killZone = 500;
 	this.bullets = [];
 	this.player = new Player(32, 32);
 	this.enemies = [];
