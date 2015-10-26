@@ -14,10 +14,10 @@ function States () {
 	this.player = new Player(32, 32);
 	this.enemies = [];
 	// frame counter
-	this.playerBulletNFrameCounter = 0;
+	this.playerBulletNframeCounter = 0;
 	// how many frames between every bullet generated
 	// edited to time period 
-	this.playerFinalBulletNFrameCount = 50;
+	this.playerFinalBulletNframeCount = 50;
 }
 
 // reset game
@@ -30,9 +30,8 @@ States.prototype.reset = function () {
 }
 
 States.prototype.createEnemyBodies = function () {
-	// logic for creating enemies
-	for (var i = 0; i < 8; i += 1) { // this loop controls width of block of enemies
-		for (var j = 0; j < 8; j += 1) { // this loop controls height of block of enemies
+	for (var i = 0; i < 8; i += 1) { // controls width of enemies
+		for (var j = 0; j < 8; j += 1) { // controls height of enemies
 			// space out enemies
 			this.enemies.push(new Enemy(45 * i, 20 + 45 * j));
 		}

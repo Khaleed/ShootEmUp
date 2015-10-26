@@ -47,8 +47,5 @@ export function Bullet(x, y, d) {
 	};
 }
 
- function Shoe (size, color) {
- 	
- }
 
 

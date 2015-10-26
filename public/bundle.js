@@ -129,23 +129,26 @@
 					gameState.player.x += gameState.playerVel;
 				}
 			}
-			if (gameState.playerBulletNFrameCounter > 0) {
-				// decrement counter
-				gameState.playerBulletNFrameCounter -= 1;
-			}
 			// handle spacekey
 			if (spacePressedKey === true) {
-				// this tells which direction the bullet to go
-				if (gameState.playerBulletNFrameCounter === 0) {
-					gameState.bullets.push(new _models.Bullet(gameState.player.x + gameState.player.w / 2, gameState.player.y, -1));
-					_inputs2['default'].playerShootSound.play();
-					// reset counter
-					gameState.playerBulletNFrameCounter = gameState.playerFinalBulletNFrameCount;
-				}
+				playerShoots();
 			}
 			if (rPressedKey === true) {
-				console.log(rightPressedKey);
 				gameState.reset();
+			}
+		}
+	
+		function playerBulletnframeCounter() {
+			if (gameState.playerBulletnFrameCounter > 0) {
+				return gameState.playerBulletnFrameCounter -= 1;
+			}
+		}
+	
+		function playerShoots() {
+			if (playerBulletnFrameCounter === 0) {
+				gameState.bullets.push(new _models.Bullet(gameState.player.x + gameState.player.w / 2, gameState.player.y, -1));
+				_inputs2['default'].playerShootSound.play();
+				gameState.playerBulletnFrameCounter = gameState.playerFinalBulletnFrameCount;
 			}
 		}
 	
@@ -265,10 +268,10 @@
 		this.player = new Player(32, 32);
 		this.enemies = [];
 		// frame counter
-		this.playerBulletNFrameCounter = 0;
+		this.playerBulletNframeCounter = 0;
 		// how many frames between every bullet generated
 		// edited to time period
-		this.playerFinalBulletNFrameCount = 50;
+		this.playerFinalBulletNframeCount = 50;
 	}
 	
 	// reset game
