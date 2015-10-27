@@ -1,82 +1,91 @@
 import inputs from './inputs'
 const canvas = inputs.canvas;
 let status = inputs.status;
+// this allows us to temporarily clone an object
+// and make changes on that new obj 
+export function AssocMixin (constr, args) {
+	return (prop, val) => {
+		let newArgs = Object.assign({}, args);
+		newArgs[prop] = val;
+		return constr(newArgs);
+	}
+}
 
-// // make a Player class that inherits from Square
+export function MergeMixin (constr, args) {
+	return function (obj) {
+		// clone args to mutate it
+		let copy = Object.assign({}, args);
+		// newArgs over-rides everything in obj
+		let newArgs = Object.assign(copy, obj);
+		return constr(newArgs);
+	}
+}
+
 export function Player(args) {
 	let { x = canvas.width / 2 } = args;
-	// inherit from Square
-	return {
+	let assoc = AssocMixin(Player, args);
+	let merge = MergeMixin(Player, args);
+	let that = Object.freeze({
 		x,
 		y: canvas.height - 50,
 		w: 25,
 		h: 25,
 		color: 'blue',
+		assoc,
+		merge,
 		update: () => {
-			// placeholderå 
+		    return that; 
 		}
-	};
+	});
+	return that;
 }
-// Enemy inherits from Square
+
 export function Enemy(args) {
-	// de-structure
-	let {
-		x, y
-	} = args;
-	// create obj that we can talk about it
-	let that = {
+	let { x, y } = args;
+	let assoc = AssocMixin(Enemy, args);
+	let merge = MergeMixin(Enemy, args);
+	let that = Object.freeze({
 		x,
 		y,
 		w: 25,
-			h: 25,
-			color: 'red',
-			update: velX => {
-				// make enemy move
-				let x = that.x + velX;
-				return Enemy({x, y: that.y});
-			}
-	}
+		h: 25,
+		color: 'red',
+		assoc,
+		merge,
+		update: () => assoc("x", x + velX )
+	});
 	return that;
 }
-// create Bullet class
+
 export function Bullet(args) {
-	let {
-		x, y, d, color
-	} = args
-	let that = {
+	let { x, y, d, color } = args;
+	let assoc = AssocMixin(Bullet, args); // interface-style inheritance
+	let merge = MergeMixin(Bullet, args);
+	let that = Object.freeze({
 		x,
 		y,
 		w: 5,
-			h: 5,
-			d,
-			color,
-			update: () => {
-				return Bullet({
-					x: that.x,
-					y: that.y + that.d,
-					d: that.d,
-					color: that.color
-				})
-			}
-	}
-
+		h: 5,
+		d,
+		color,
+		assoc,
+		merge,
+		update: () => assoc("y", y + d)
+	});
 	return that;
 }
-
+// if base class has assoc/merge, then sub-classes have that too
+// as long as you are returning a call to the base-class
 export function PlayerBullet(args) {
-	let {
-		x, y
-	} = args;
+	let { x, y } = args;
 	return Bullet({
 		x, y, d: -1, color: 'white'
-	})
+	});
 }
 
 export function EnemyBullet(args) {
-	let {
-		x, y
-	} = args;
+	let { x, y } = args;
 	return Bullet({
 		x, y, d: 1, color: '#FF9900'
-	})
+	});
 }
