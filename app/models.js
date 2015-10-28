@@ -2,7 +2,7 @@ import inputs from './inputs'
 const canvas = inputs.canvas;
 let status = inputs.status;
 // this allows us to temporarily clone an object
-// and make changes on that new obj 
+// and make changes on that new obj
 export function AssocMixin (constr, args) {
 	return (prop, val) => {
 		let newArgs = Object.assign({}, args);

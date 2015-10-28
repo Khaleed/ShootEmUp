@@ -6,6 +6,7 @@ export default {
 	addListeners: function () {
 	// add listeners for when they let the key go
 	document.addEventListener('keyup', e => {
+		// switch statement
 		if (e.keyCode === 37) {
 			this.leftPressedKey = false;
 		} else if (e.keyCode === 39) {
