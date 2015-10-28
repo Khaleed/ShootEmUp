@@ -27,7 +27,6 @@ export default {
 			this.spacePressedKey = true;
 		}
 		else if (e.keyCode === 82) {
-			console.log(e.keyCode === 82);
 			this.rPressedKey = true;
 		}
 	});

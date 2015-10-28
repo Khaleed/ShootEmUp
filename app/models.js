@@ -7,7 +7,7 @@ export function AssocMixin (constr, args) {
 	return (prop, val) => {
 		let newArgs = Object.assign({}, args);
 		newArgs[prop] = val;
-		return constr(newArgs);
+		return constr(newArgs);	
 	}
 }
 
@@ -52,7 +52,7 @@ export function Enemy(args) {
 		color: 'red',
 		assoc,
 		merge,
-		update: () => assoc("x", x + velX )
+		update: velX => assoc("x", x + velX)
 	});
 	return that;
 }

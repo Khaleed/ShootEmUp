@@ -2,7 +2,9 @@
 
 let Player = require('./models.js').Player;
 let Enemy = require('./models.js').Enemy;
-
+let EnemyBullet = require('./models.js').EnemyBullet;
+let AssocMixin = require('./models.js').AssocMixin;
+let MergeMixin = require('./models.js').MergeMixin;
 
 function sqCollide(s1, s2) {
 	const c1 = s1.x < s2.x + s2.w; // right edge of square 1 is to the right of left edge of square 2
@@ -13,11 +15,19 @@ function sqCollide(s1, s2) {
 	return (c1 && c2 && c3 && c4);
 }
 
+function range (start, end) {
+	let result = [];
+	for (let i = start; i < end; i +=1) {
+		result.push(i);
+	}
+	return Object.freeze(result);
+}
+
 function createEnemyBodies() {
-	let range = Array(8).keys();
+	let iter = range(0, 8);
 	// [0, 1, 2, 3...7]
-	return range.map(function(i) {
-		return range.map(function(j) {
+	return iter.map(function(i) {
+		return iter.map(function(j) {
 			return Enemy({
 				x: 45 * i,
 				y: 20 + 45 * j
@@ -33,15 +43,17 @@ function GameState(args) {
 	inputs,
 	x = 0,
 	y = 0,
-	gameRunning = false,
+	gameRunning = true,
 	bullets = [],
 	enemies = createEnemyBodies(),
 	player = Player({}),
 	playerBulletNframeCounter = 0,
 	playerFinalBulletNframeCount = 0
 	} = args;
-	let enemies = Object.freeze(enemies);
-	let bullets = Object.freeze(bullets);
+	let assoc = AssocMixin(GameState, args);
+	let merge = MergeMixin(GameState, args);
+	Object.freeze(enemies);
+	Object.freeze(bullets);
 	let velX = 2;
 	let velY = 10;
 	let playerVel = 5;
@@ -63,7 +75,7 @@ function GameState(args) {
 			dir = 1;
 		}
 
-		let newPlayer = player.assoc("x", player.x + dir * playerVel;);
+		let newPlayer = player.assoc("x", player.x + dir * playerVel);
 		// get new GameState 
 		let newGameState = assoc("player", newPlayer);
 
@@ -87,7 +99,7 @@ function GameState(args) {
 			return newGameState;
 		} else {
 			// return old obj since there is no change
-			return that;
+			return that; 
 		}
 	}
 
@@ -115,7 +127,7 @@ function GameState(args) {
 		if ((Math.random() * 100) <= 1) {
 			return enemyShoots();
 		} else {
-			return that;
+			return that; // current game state
 		}
 	}
 
@@ -138,16 +150,18 @@ function GameState(args) {
 					newGameRunning = false;
 					inputs.status.innerHTML = 'You lose';
 				}
+				return enemy.assoc('y', newY);
 			});
 		}
 		let newGameState = merge({velX: newVelX, gameRunning: newGameRunning, enemies: newEnemies});
+		console.log('newGameState' + newEnemies);
 		return newGameState;
 	};
 
 	function enemyShoots() {
 		let randIndx = Math.floor(Math.random() * (enemies.length - 1));
 		let enemy = enemies[randIndx];
-		let newBullets = Array.Clone(bullets);
+		let newBullets = Object.assign([], bullets);
 		let b = EnemyBullet({
 			x: enemy.x,
 			y: enemy.y
@@ -196,14 +210,19 @@ function GameState(args) {
 		x,
 		y,
 		gameRunning,
-		bullets
+		bullets,
 		enemies,
 		playerFinalBulletNframeCount,
 		playerBulletNframeCounter,
 		player,
-		update
+		update,
+		bulletCollision,
+		enemyCollisionWithBorder,
+		enemyShootsAI,
+		assoc,
+		merge,
 	});
 	return that;
 }
 
-module.exports = States;
+module.exports = GameState;
