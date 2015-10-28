@@ -34,7 +34,9 @@ import keys from './keystates';
 			gameState.bullets.forEach(function(item, indx, array) {
 				drawRect(item);
 			});
-			drawRect(gameState.player);
+			if (gameState.player) {
+				drawRect(gameState.player);
+			}
 			setTimeout(() => update(gameState), 1);
 		};
 

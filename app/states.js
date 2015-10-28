@@ -3,6 +3,7 @@
 let Player = require('./models.js').Player;
 let Enemy = require('./models.js').Enemy;
 let EnemyBullet = require('./models.js').EnemyBullet;
+let PlayerBullet = require('./models.js').PlayerBullet;
 let AssocMixin = require('./models.js').AssocMixin;
 let MergeMixin = require('./models.js').MergeMixin;
 
@@ -48,13 +49,13 @@ function GameState(args) {
 	enemies = createEnemyBodies(),
 	player = Player({}),
 	playerBulletNframeCounter = 0,
-	playerFinalBulletNframeCount = 0
+	playerFinalBulletNframeCount = 40,
+	velX = 2
 	} = args;
 	let assoc = AssocMixin(GameState, args);
 	let merge = MergeMixin(GameState, args);
 	Object.freeze(enemies);
 	Object.freeze(bullets);
-	let velX = 2;
 	let velY = 10;
 	let playerVel = 5;
 	let killZone = 500;
@@ -66,7 +67,7 @@ function GameState(args) {
 		let rPressedKey = keys.rPressedKey;
 
 		let moveLeft = leftPressedKey === true && player.x > 0;
-		let moveRight = rightPressedKey === true && player.x < canvas.width - 32;
+		let moveRight = rightPressedKey === true && player.x < inputs.canvas.width - 32;
 		let dir = 0;
 
 		if (moveLeft) {
@@ -75,13 +76,16 @@ function GameState(args) {
 			dir = 1;
 		}
 
-		let newPlayer = player.assoc("x", player.x + dir * playerVel);
+		let newPlayer = player;
+		if(player){
+			newPlayer = player.assoc("x", player.x + dir * playerVel);
+		}
 		// get new GameState 
 		let newGameState = assoc("player", newPlayer);
 
 		let shoot = spacePressedKey === true
 		if (rPressedKey === true) {
-			return GameState();
+			return GameState({keys, inputs});
 		} else if (shoot) {
 			return newGameState.playerShoots()
 		} else {
@@ -91,21 +95,24 @@ function GameState(args) {
 
 	function update() {
 		if (gameRunning) {
-			let newGameState = merge({
-				bullets: bullets.map(bullet => bullet.update()),
-				player: player.update(),
-				enemies: enemies.map(enemy => enemy.update(velX))
-			}).enemyCollisionWithBorder().enemyShootsAI().bulletCollision();
-			return newGameState;
+			return interrogateKeyStates().updateBodies().enemyCollisionWithBorder().enemyShootsAI().bulletCollision();
 		} else {
 			// return old obj since there is no change
-			return that; 
+			return interrogateKeyStates(); 
 		}
+	}
+
+	function updateBodies() {
+		return merge({
+			bullets: bullets.map(bullet => bullet.update()),
+			player: player.update(),
+			enemies: enemies.map(enemy => enemy.update(velX))
+		})
 	}
 
 	function playerShoots() {
 		let newCounter = playerBulletNframeCounter;
-		let newBullets = Array.Clone(bullets);
+		let newBullets = Object.assign([], bullets);
 		
 		if (playerBulletNframeCounter > 0) {
 			newCounter = playerBulletNframeCounter - 1;
@@ -119,7 +126,8 @@ function GameState(args) {
 			inputs.playerShootSound.play();
 			newCounter = playerFinalBulletNframeCount;
 		}
-		let newGameState = merge({counter: newCounter, bullets: newBullets});
+		let newGameState = merge({playerBulletNframeCounter: newCounter, bullets: newBullets});
+		console.log(newBullets.map(b => b.d))
 		return newGameState;
 	};
 
@@ -131,30 +139,33 @@ function GameState(args) {
 		}
 	}
 
+	function die() {
+		inputs.playerDiesSound.play();
+		inputs.status.innerHTML = 'You lose';
+		return merge({gameRunning: false, bullets: [], enemies: [], player: false});
+	}
+
 	function enemyCollisionWithBorder() {
 		// set the left and right most enemy positions - collision with boundary
 		let leftMostEnemPix = enemies[0].x;
 		let rightMostEnemPix = enemies[enemies.length - 1].x + enemies[0].w;
 		let newVelX = velX;
-		let newGameRunning = gameRunning;
 		let newEnemies = enemies;
 		// ensure that enemies doesn't pass the borders of the screen
 		if (leftMostEnemPix < 0 || rightMostEnemPix > inputs.canvas.width) {
 			// if they do, move them in the opposite direction
-			newVelX = velX * -1;
+			newVelX = newVelX * -1;
 			// make enemies go down
 			newEnemies = enemies.map(enemy => {
 				// enemy keeps going down
 				let newY = enemy.y + velY;
 				if (newY > killZone) {
-					newGameRunning = false;
-					inputs.status.innerHTML = 'You lose';
+					return die();
 				}
 				return enemy.assoc('y', newY);
 			});
 		}
-		let newGameState = merge({velX: newVelX, gameRunning: newGameRunning, enemies: newEnemies});
-		console.log('newGameState' + newEnemies);
+		let newGameState = merge({velX: newVelX, enemies: newEnemies});
 		return newGameState;
 	};
 
@@ -174,8 +185,9 @@ function GameState(args) {
 
 	function bulletCollision() {
 	    let newGameRunning = gameRunning;
-	    let newBullets = bullets;
-	    let newEnemies = enemies;
+	    let newBullets = Object.assign([], bullets);
+	    let newEnemies = Object.assign([], enemies);
+	    let newPlayer = player;
 
 		for (let i = 0; i < newBullets.length; i += 1) {
 			// if it is the player's newBullets 
@@ -194,12 +206,8 @@ function GameState(args) {
 				}
 			}
 			// else it is the enemies' bullets
-			else {
-				if (sqCollide(newBullets[i], player)) {
-					inputs.playerDiesSound.play();
-					newGameRunning = false;
-					inputs.status.innerHTML = 'You lose';
-				}
+			else if (sqCollide(newBullets[i], player)) {
+					return die();
 			}
 		}
 		let newGameState = merge({gameRunning: newGameRunning, bullets: newBullets, enemies: newEnemies});
@@ -219,6 +227,8 @@ function GameState(args) {
 		bulletCollision,
 		enemyCollisionWithBorder,
 		enemyShootsAI,
+		updateBodies,
+		playerShoots,
 		assoc,
 		merge,
 	});
