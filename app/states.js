@@ -26,7 +26,6 @@ function range (start, end) {
 
 function createEnemyBodies() {
 	let iter = range(0, 8);
-	// [0, 1, 2, 3...7]
 	return iter.map(function(i) {
 		return iter.map(function(j) {
 			return Enemy({

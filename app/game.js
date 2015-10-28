@@ -19,16 +19,14 @@ import keys from './keystates';
 		}
 		canvas.width = 800;
 		canvas.height = 600;
-
-		function update(gameState){
+		// game loop
+		function update(gameState) {
 			let newGameState = gameState.update();
 			draw(newGameState);
 		};
-
 		function draw(gameState) {
 			ctx.clearRect(0, 0, canvas.width, canvas.height);
 			gameState.enemies.forEach(function(item, indx, array) {
-				// draw each enemy
 				drawRect(item);
 			});
 			gameState.bullets.forEach(function(item, indx, array) {
@@ -44,7 +42,6 @@ import keys from './keystates';
 			ctx.fillStyle = rect.color;
 			ctx.fillRect(rect.x, rect.y, rect.w, rect.h);
 		}
-
 		draw(GameState({keys: keys, inputs}));
 	});
 
