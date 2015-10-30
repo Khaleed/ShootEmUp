@@ -54,34 +54,42 @@ export default function GameState(args) {
 		let rightPressedKey = keys.rightPressedKey;
 		let spacePressedKey = keys.spacePressedKey;
 		let rPressedKey = keys.rPressedKey;
-
-		let moveLeft = leftPressedKey === true && player.x > 0;
-		let moveRight = rightPressedKey === true && player.x < inputs.canvas.width - 32;
-		let dir = 0;
-
-		if (moveLeft) {
-			dir = -1;
-		} else if (moveRight) {
-			dir = 1;
-		}
-
-		let newPlayer = player;
-		if (player){
-			newPlayer = player.assoc("x", player.x + dir * playerVel);
-		}
-		// get new GameState 
-		let newGameState = assoc("player", newPlayer);
-
-		let shoot = spacePressedKey === true
 		if (rPressedKey === true) {
-			return GameState({keys, inputs});
-		} else if (shoot) {
-			return newGameState.playerShoots()
+			return GameState({
+				keys, inputs
+			});
+		}
+
+		if (gameRunning) {
+
+			let moveLeft = leftPressedKey === true && player.x > 0;
+			let moveRight = rightPressedKey === true && player.x < inputs.canvas.width - 32;
+			let dir = 0;
+
+			if (moveLeft) {
+				dir = -1;
+			} else if (moveRight) {
+				dir = 1;
+			}
+
+			let newPlayer = player;
+			if (player) {
+				newPlayer = player.assoc("x", player.x + dir * playerVel);
+			}
+			// get new GameState 
+			let newGameState = assoc("player", newPlayer);
+
+			let shoot = spacePressedKey === true;
+
+			if (shoot) {
+				return newGameState.playerShoots();
+			} else {
+				return newGameState;
+			}
 		} else {
-			return newGameState;
+			return that;
 		}
 	}
-
 	function update() {
 		if (gameRunning) {
 			return interrogateKeyStates().updateBodies().enemyCollisionWithBorder().enemyShootsAI().bulletCollision();
@@ -146,14 +154,18 @@ export default function GameState(args) {
 		let newEnemies = enemies;
 		// ensure that enemies don't pass the borders of the screen
 		if (leftMostEnemPix < 0 || rightMostEnemPix > inputs.canvas.width) {
+			let killZoneReached = false; 
 			newVelX = newVelX * -1;
 			newEnemies = enemies.map(enemy => {
 				let newY = enemy.y + velY;	
 				if (newY > killZone) {
-					return playerDies();
+					killZoneReached = true;
 				}
 				return enemy.assoc('y', newY);
 			});
+			if (killZoneReached === true) {
+				return playerDies();
+			}
 		}
 		let newGameState = merge({velX: newVelX, enemies: newEnemies});
 		return newGameState;
