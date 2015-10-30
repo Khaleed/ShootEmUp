@@ -1,8 +1,7 @@
 import inputs from './inputs'
 const canvas = inputs.canvas;
 let status = inputs.status;
-// this allows us to temporarily clone an object
-// and make changes on that new obj
+
 export function AssocMixin (constr, args) {
 	return (prop, val) => {
 		let newArgs = Object.assign({}, args);
@@ -12,10 +11,8 @@ export function AssocMixin (constr, args) {
 }
 
 export function MergeMixin (constr, args) {
-	return function (obj) {
-		// clone args to mutate it
+	return obj => {
 		let copy = Object.assign({}, args);
-		// newArgs over-rides everything in obj
 		let newArgs = Object.assign(copy, obj);
 		return constr(newArgs);
 	}
@@ -34,7 +31,7 @@ export function Player(args) {
 		assoc,
 		merge,
 		update: () => {
-		    return that; 
+			return that; 
 		}
 	});
 	return that;

@@ -36,20 +36,10 @@ function createEnemyBodies() {
 	}).reduce((result, next) => result.concat(next));
 }
 
-function GameState(args) {
+export default function GameState(args) {
 	
-	let {
-	keys,
-	inputs,
-	x = 0,
-	y = 0,
-	gameRunning = true,
-	bullets = [],
-	enemies = createEnemyBodies(),
-	player = Player({}),
-	playerBulletNframeCounter = 0,
-	playerFinalBulletNframeCount = 40,
-	velX = 2
+	let { keys, inputs, x = 0, y = 0, gameRunning = true, bullets = [], enemies = createEnemyBodies(),
+	player = Player({}), playerBulletNframeCounter = 0, playerFinalBulletNframeCount = 0, velX = 2
 	} = args;
 	let assoc = AssocMixin(GameState, args);
 	let merge = MergeMixin(GameState, args);
@@ -76,7 +66,7 @@ function GameState(args) {
 		}
 
 		let newPlayer = player;
-		if(player){
+		if (player){
 			newPlayer = player.assoc("x", player.x + dir * playerVel);
 		}
 		// get new GameState 
@@ -138,28 +128,29 @@ function GameState(args) {
 		}
 	}
 
-	function die() {
+	function playerDies() {
 		inputs.playerDiesSound.play();
 		inputs.status.innerHTML = 'You lose';
 		return merge({gameRunning: false, bullets: [], enemies: [], player: false});
 	}
 
+	function playerWins() {
+		inputs.status.innerHTML = 'You win';
+	   	return merge({gameRunning: false, bullets: [], enemies: []});
+	}
+
 	function enemyCollisionWithBorder() {
-		// set the left and right most enemy positions - collision with boundary
 		let leftMostEnemPix = enemies[0].x;
 		let rightMostEnemPix = enemies[enemies.length - 1].x + enemies[0].w;
 		let newVelX = velX;
 		let newEnemies = enemies;
-		// ensure that enemies doesn't pass the borders of the screen
+		// ensure that enemies don't pass the borders of the screen
 		if (leftMostEnemPix < 0 || rightMostEnemPix > inputs.canvas.width) {
-			// if they do, move them in the opposite direction
 			newVelX = newVelX * -1;
-			// make enemies go down
 			newEnemies = enemies.map(enemy => {
-				// enemy keeps going down
-				let newY = enemy.y + velY;
+				let newY = enemy.y + velY;	
 				if (newY > killZone) {
-					return die();
+					return playerDies();
 				}
 				return enemy.assoc('y', newY);
 			});
@@ -197,16 +188,17 @@ function GameState(args) {
 						newEnemies.splice(j, 1);
 						newBullets.splice(i, 1);
 						if (newEnemies.length === 0) {
-							newGameRunning = false;
-							inputs.status.innerHTML = 'You win';
+							return playerWins();
 						}
 						break;
 					}
 				}
 			}
-			// else it is the enemies' bullets
+			// else it is the enemies' newBullets
 			else if (sqCollide(newBullets[i], player)) {
-					return die();
+				inputs.playerDiesSound.play();
+				inputs.status.innerHTML = 'You lose';
+				return playerDies();
 			}
 		}
 		let newGameState = merge({gameRunning: newGameRunning, bullets: newBullets, enemies: newEnemies});
@@ -231,7 +223,5 @@ function GameState(args) {
 		assoc,
 		merge,
 	});
-	return that;
+	return that; 
 }
-
-module.exports = GameState;

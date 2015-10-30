@@ -1,8 +1,11 @@
+
+
 export default {
 	rightPressedKey: false,
 	leftPressedKey: false,
 	spacePressedKey: false,
 	rPressedKey: false,
+
 	addListeners: function () {
 	// add listeners for when they let the key go
 	document.addEventListener('keyup', e => {
@@ -32,3 +35,4 @@ export default {
 	});
 	}
 };
+
