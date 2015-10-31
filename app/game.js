@@ -21,7 +21,7 @@ import keys from './keystates';
 		canvas.height = 600;
 		// game loop
 		function update(gameState) {
-			let newGameState = gameState.update();
+			let newGameState = gameState.update(keys);
 			draw(newGameState);
 		};
 		function draw(gameState) {
@@ -42,7 +42,7 @@ import keys from './keystates';
 			ctx.fillStyle = rect.color;
 			ctx.fillRect(rect.x, rect.y, rect.w, rect.h);
 		}
-		draw(GameState({keys: keys, inputs}));
+		draw(GameState({inputs}));
 	});
 
 }());

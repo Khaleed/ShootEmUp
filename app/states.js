@@ -16,9 +16,9 @@ function sqCollide(s1, s2) {
 	return (c1 && c2 && c3 && c4);
 }
 
-function range (start, end) {
+function range(start, end) {
 	let result = [];
-	for (let i = start; i < end; i +=1) {
+	for (let i = start; i < end; i += 1) {
 		result.push(i);
 	}
 	return Object.freeze(result);
@@ -37,9 +37,10 @@ function createEnemyBodies() {
 }
 
 export default function GameState(args) {
-	
-	let { keys, inputs, x = 0, y = 0, gameRunning = true, bullets = [], enemies = createEnemyBodies(),
-	player = Player({}), playerBulletNframeCounter = 0, playerFinalBulletNframeCount = 0, velX = 2
+
+	let {
+		inputs, x = 0, y = 0, gameRunning = true, bullets = [], enemies = createEnemyBodies(),
+		player = Player({}), playerBulletNframeCounter = 0, playerFinalBulletNframeCount = 0, velX = 2
 	} = args;
 	let assoc = AssocMixin(GameState, args);
 	let merge = MergeMixin(GameState, args);
@@ -49,17 +50,48 @@ export default function GameState(args) {
 	let playerVel = 5;
 	let killZone = 500;
 
-	function interrogateKeyStates() {
+	function moveScreen(direction) {
+		let moveLeft = leftPressedKey === true && player.x > 0;
+		let moveRight = rightPressedKey === true && player.x < inputs.canvas.width - 32;
+		let dir = 0;
+
+		if (moveLeft) {
+			dir = -1;
+		} else if (moveRight) {
+			dir = 1;
+		}
+
+		let newPlayer = player;
+		if (player) {
+			newPlayer = player.assoc("x", player.x + dir * playerVel);
+		}
+	}
+
+	function interrogateKeyStates(event, keys) {
 		let leftPressedKey = keys.leftPressedKey;
 		let rightPressedKey = keys.rightPressedKey;
 		let spacePressedKey = keys.spacePressedKey;
 		let rPressedKey = keys.rPressedKey;
-		if (rPressedKey === true) {
-			return GameState({
-				keys, inputs
-			});
+
+		let keyBehaviours = {
+			39: function () {
+
+			},
+			40: function () {
+
+			},
+
 		}
 
+		keyBehaviours[event.keyCode]()
+
+		// handle movement `left right` shooting (space) and resetting (r) separately`
+
+		if (rPressedKey === true) {
+			return GameState({
+				inputs
+			});
+		}
 		if (gameRunning) {
 
 			let moveLeft = leftPressedKey === true && player.x > 0;
@@ -90,12 +122,17 @@ export default function GameState(args) {
 			return that;
 		}
 	}
-	function update() {
+
+	function playerMoves(right, left) {
+
+	}
+
+	function update(keys) {
 		if (gameRunning) {
-			return interrogateKeyStates().updateBodies().enemyCollisionWithBorder().enemyShootsAI().bulletCollision();
+			return interrogateKeyStates(keys).updateBodies().enemyCollisionWithBorder().enemyShootsAI().bulletCollision();
 		} else {
 			// return old obj since there is no change
-			return interrogateKeyStates(); 
+			return interrogateKeyStates(keys);
 		}
 	}
 
@@ -110,7 +147,7 @@ export default function GameState(args) {
 	function playerShoots() {
 		let newCounter = playerBulletNframeCounter;
 		let newBullets = Object.assign([], bullets);
-		
+
 		if (playerBulletNframeCounter > 0) {
 			newCounter = playerBulletNframeCounter - 1;
 		}
@@ -123,7 +160,10 @@ export default function GameState(args) {
 			inputs.playerShootSound.play();
 			newCounter = playerFinalBulletNframeCount;
 		}
-		let newGameState = merge({playerBulletNframeCounter: newCounter, bullets: newBullets});
+		let newGameState = merge({
+			playerBulletNframeCounter: newCounter,
+			bullets: newBullets
+		});
 		console.log(newBullets.map(b => b.d))
 		return newGameState;
 	};
@@ -139,12 +179,21 @@ export default function GameState(args) {
 	function playerDies() {
 		inputs.playerDiesSound.play();
 		inputs.status.innerHTML = 'You lose';
-		return merge({gameRunning: false, bullets: [], enemies: [], player: false});
+		return merge({
+			gameRunning: false,
+			bullets: [],
+			enemies: [],
+			player: false
+		});
 	}
 
 	function playerWins() {
 		inputs.status.innerHTML = 'You win';
-	   	return merge({gameRunning: false, bullets: [], enemies: []});
+		return merge({
+			gameRunning: false,
+			bullets: [],
+			enemies: []
+		});
 	}
 
 	function enemyCollisionWithBorder() {
@@ -154,10 +203,10 @@ export default function GameState(args) {
 		let newEnemies = enemies;
 		// ensure that enemies don't pass the borders of the screen
 		if (leftMostEnemPix < 0 || rightMostEnemPix > inputs.canvas.width) {
-			let killZoneReached = false; 
+			let killZoneReached = false;
 			newVelX = newVelX * -1;
 			newEnemies = enemies.map(enemy => {
-				let newY = enemy.y + velY;	
+				let newY = enemy.y + velY;
 				if (newY > killZone) {
 					killZoneReached = true;
 				}
@@ -167,7 +216,10 @@ export default function GameState(args) {
 				return playerDies();
 			}
 		}
-		let newGameState = merge({velX: newVelX, enemies: newEnemies});
+		let newGameState = merge({
+			velX: newVelX,
+			enemies: newEnemies
+		});
 		return newGameState;
 	};
 
@@ -186,10 +238,10 @@ export default function GameState(args) {
 	}
 
 	function bulletCollision() {
-	    let newGameRunning = gameRunning;
-	    let newBullets = Object.assign([], bullets);
-	    let newEnemies = Object.assign([], enemies);
-	    let newPlayer = player;
+		let newGameRunning = gameRunning;
+		let newBullets = Object.assign([], bullets);
+		let newEnemies = Object.assign([], enemies);
+		let newPlayer = player;
 
 		for (let i = 0; i < newBullets.length; i += 1) {
 			// if it is the player's newBullets 
@@ -213,7 +265,11 @@ export default function GameState(args) {
 				return playerDies();
 			}
 		}
-		let newGameState = merge({gameRunning: newGameRunning, bullets: newBullets, enemies: newEnemies});
+		let newGameState = merge({
+			gameRunning: newGameRunning,
+			bullets: newBullets,
+			enemies: newEnemies
+		});
 		return newGameState;
 	}
 
@@ -235,5 +291,5 @@ export default function GameState(args) {
 		assoc,
 		merge,
 	});
-	return that; 
+	return that;
 }
