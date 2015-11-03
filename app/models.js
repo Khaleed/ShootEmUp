@@ -18,6 +18,18 @@ export function MergeMixin (constr, args) {
 	}
 }
 
+export function cond(test, result, ...args) {
+	if (test()) {
+		return result();
+	} else if (args.length > 1) {
+		return cond(args);
+	} else if(args.list === 1) {
+		return args[0]()
+	} else {
+		console.error('no matching values');
+	}
+}
+
 export function Player(args) {
 	let { x = canvas.width / 2 } = args;
 	let assoc = AssocMixin(Player, args);

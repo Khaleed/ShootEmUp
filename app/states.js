@@ -6,6 +6,7 @@ let EnemyBullet = require('./models.js').EnemyBullet;
 let PlayerBullet = require('./models.js').PlayerBullet;
 let AssocMixin = require('./models.js').AssocMixin;
 let MergeMixin = require('./models.js').MergeMixin;
+let cond = require('./models.js').cond;
 
 function sqCollide(s1, s2) {
 	const c1 = s1.x < s2.x + s2.w; // right edge of square 1 is to the right of left edge of square 2
@@ -51,40 +52,26 @@ export default function GameState(args) {
 	let killZone = 500;
 
 	function moveScreen(direction) {
-		let moveLeft = leftPressedKey === true && player.x > 0;
-		let moveRight = rightPressedKey === true && player.x < inputs.canvas.width - 32;
-		let dir = 0;
+		let dir = cond(
+			() => leftPressedKey === true && player.x > 0,          			   () => -1,
+			() => rightPressedKey === true && player.x < inputs.canvas.width - 32, () => 1,
+			() => 0);
 
-		if (moveLeft) {
-			dir = -1;
-		} else if (moveRight) {
-			dir = 1;
-		}
+		// let newPlayer = player;
+		// if (player) {
+		// 	newPlayer = player.assoc("x", player.x + dir * playerVel);
+		// }
 
-		let newPlayer = player;
-		if (player) {
-			newPlayer = player.assoc("x", player.x + dir * playerVel);
-		}
+		let newPlayer = cond(
+			() => player, () => player.assoc("x", player.x + dir * playerVel),
+			() => false);
 	}
 
-	function interrogateKeyStates(event, keys) {
+	function interrogateKeyStates(keys) {
 		let leftPressedKey = keys.leftPressedKey;
 		let rightPressedKey = keys.rightPressedKey;
 		let spacePressedKey = keys.spacePressedKey;
 		let rPressedKey = keys.rPressedKey;
-
-		let keyBehaviours = {
-			39: function () {
-
-			},
-			40: function () {
-
-			},
-
-		}
-
-		keyBehaviours[event.keyCode]()
-
 		// handle movement `left right` shooting (space) and resetting (r) separately`
 
 		if (rPressedKey === true) {
@@ -121,10 +108,6 @@ export default function GameState(args) {
 		} else {
 			return that;
 		}
-	}
-
-	function playerMoves(right, left) {
-
 	}
 
 	function update(keys) {
