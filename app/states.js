@@ -51,72 +51,37 @@ export default function GameState(args) {
 	let playerVel = 5;
 	let killZone = 500;
 
-	function moveScreen(direction) {
-		let dir = cond(
-			() => leftPressedKey === true && player.x > 0,          			   () => -1,
-			() => rightPressedKey === true && player.x < inputs.canvas.width - 32, () => 1,
+	function newDir(keys){
+		return cond(
+			() => keys.leftPressedKey === true && player.x > 0,          			    () => -1,
+			() => keys.rightPressedKey === true && player.x < inputs.canvas.width - 32, () => 1,
 			() => 0);
+	}
 
-		// let newPlayer = player;
-		// if (player) {
-		// 	newPlayer = player.assoc("x", player.x + dir * playerVel);
-		// }
+	function updatePlayerMovement(keys){
+		return assoc("player", cond(
+			() => player, () => player.assoc("x", player.x + newDir(keys) * playerVel),
+			() => false));
+	}
 
-		let newPlayer = cond(
-			() => player, () => player.assoc("x", player.x + dir * playerVel),
-			() => false);
+	function updatePlayer(keys){
+		return cond(
+			() => keys.spacePressedKey === true, () => updatePlayer().playerShoots(), 
+			updatePlayer)
 	}
 
 	function interrogateKeyStates(keys) {
-		let leftPressedKey = keys.leftPressedKey;
-		let rightPressedKey = keys.rightPressedKey;
-		let spacePressedKey = keys.spacePressedKey;
-		let rPressedKey = keys.rPressedKey;
-		// handle movement `left right` shooting (space) and resetting (r) separately`
-
-		if (rPressedKey === true) {
-			return GameState({
-				inputs
-			});
-		}
-		if (gameRunning) {
-
-			let moveLeft = leftPressedKey === true && player.x > 0;
-			let moveRight = rightPressedKey === true && player.x < inputs.canvas.width - 32;
-			let dir = 0;
-
-			if (moveLeft) {
-				dir = -1;
-			} else if (moveRight) {
-				dir = 1;
-			}
-
-			let newPlayer = player;
-			if (player) {
-				newPlayer = player.assoc("x", player.x + dir * playerVel);
-			}
-			// get new GameState 
-			let newGameState = assoc("player", newPlayer);
-
-			let shoot = spacePressedKey === true;
-
-			if (shoot) {
-				return newGameState.playerShoots();
-			} else {
-				return newGameState;
-			}
-		} else {
-			return that;
-		}
+		return cond(
+			() => keys.rPressedKey, () => GameState({inputs}),
+			() => cond(
+				() => gameRunning, updatePlayer
+				() => that))
 	}
 
 	function update(keys) {
-		if (gameRunning) {
-			return interrogateKeyStates(keys).updateBodies().enemyCollisionWithBorder().enemyShootsAI().bulletCollision();
-		} else {
-			// return old obj since there is no change
-			return interrogateKeyStates(keys);
-		}
+		return cond(
+			() => gameRunning, () => interrogateKeyStates(keys).updateBodies().enemyCollisionWithBorder().enemyShootsAI().bulletCollision(),
+			() => interrogateKeyStates(keys));
 	}
 
 	function updateBodies() {
@@ -127,28 +92,41 @@ export default function GameState(args) {
 		})
 	}
 
+	function makeNewBullet() {
+		inputs.playerShootSound.play();
+		return conjoin(bullets, PlayerBullet({ // conjoin => using push functionally
+			x: player.x + player.w / 2,
+			y: player.y
+		}));
+	}
+
 	function playerShoots() {
-		let newCounter = playerBulletNframeCounter;
-		let newBullets = Object.assign([], bullets);
+	
+		let newBullets = cond(
+		    () => playerFinalBulletNframeCounter === 0, makeNewBullet, 
+		    // else
+		    () => bullets);
 
-		if (playerBulletNframeCounter > 0) {
-			newCounter = playerBulletNframeCounter - 1;
-		}
+		let newCounter = cond(
+			() => playerBulletNframeCounter > 0, () => playerBulletNframeCounter - 1, 
+			() => playerFinalBulletNframeCounter);
 
-		if (playerBulletNframeCounter === 0) {
-			newBullets.push(PlayerBullet({
-				x: player.x + player.w / 2,
-				y: player.y
-			}));
-			inputs.playerShootSound.play();
-			newCounter = playerFinalBulletNframeCount;
-		}
 		let newGameState = merge({
 			playerBulletNframeCounter: newCounter,
 			bullets: newBullets
 		});
-		console.log(newBullets.map(b => b.d))
 		return newGameState;
+
+		/* Sal's suggestion 
+		return merge({
+			playerBulletNframeCounter: cond(
+			    () => playerBulletNframeCounter > 0, () => playerBulletNframeCounter - 1, 
+			    () => playerFinalBulletNframeCounter),
+			bullets: cond(
+		        () => playerFinalBulletNframeCounter === 0, makeNewBullet, 
+		    	() => bullets)
+		});
+		*/
 	};
 
 	function enemyShootsAI() {

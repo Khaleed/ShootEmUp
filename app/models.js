@@ -24,10 +24,17 @@ export function cond(test, result, ...args) {
 	} else if (args.length > 1) {
 		return cond(args);
 	} else if(args.list === 1) {
-		return args[0]()
+		return args[0]();
 	} else {
 		console.error('no matching values');
 	}
+}
+
+export function conjoin(list, val) {
+	let newList = Object.assign([], list);
+	newList.push(val);
+	Object.freeze(newList);
+	return newList;
 }
 
 export function Player(args) {
