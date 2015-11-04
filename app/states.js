@@ -1,12 +1,6 @@
 'use strict';
 
-let Player = require('./models.js').Player;
-let Enemy = require('./models.js').Enemy;
-let EnemyBullet = require('./models.js').EnemyBullet;
-let PlayerBullet = require('./models.js').PlayerBullet;
-let AssocMixin = require('./models.js').AssocMixin;
-let MergeMixin = require('./models.js').MergeMixin;
-let cond = require('./models.js').cond;
+import { AssocMixin, MergeMixin, Player, Enemy, EnemyBullet, PlayerBullet, cond, conjoin } from './models.js';
 
 function sqCollide(s1, s2) {
 	const c1 = s1.x < s2.x + s2.w; // right edge of square 1 is to the right of left edge of square 2
@@ -39,10 +33,8 @@ function createEnemyBodies() {
 
 export default function GameState(args) {
 
-	let {
-		inputs, x = 0, y = 0, gameRunning = true, bullets = [], enemies = createEnemyBodies(),
-		player = Player({}), playerBulletNframeCounter = 0, playerFinalBulletNframeCount = 0, velX = 2
-	} = args;
+	let { inputs, x = 0, y = 0, gameRunning = true, bullets = [], enemies = createEnemyBodies(),
+		player = Player({}), playerBulletNframeCounter = 0, playerFinalBulletNframeCount = 40, velX = 2 } = args;
 	let assoc = AssocMixin(GameState, args);
 	let merge = MergeMixin(GameState, args);
 	Object.freeze(enemies);
@@ -51,36 +43,40 @@ export default function GameState(args) {
 	let playerVel = 5;
 	let killZone = 500;
 
-	function newDir(keys){
+	function newDir(keys) {
 		return cond(
-			() => keys.leftPressedKey === true && player.x > 0,          			    () => -1,
+			() => keys.leftPressedKey === true && player.x > 0, () => -1,
 			() => keys.rightPressedKey === true && player.x < inputs.canvas.width - 32, () => 1,
 			() => 0);
 	}
 
-	function updatePlayerMovement(keys){
+	function updatePlayerMovement(keys) {
 		return assoc("player", cond(
 			() => player, () => player.assoc("x", player.x + newDir(keys) * playerVel),
 			() => false));
 	}
 
-	function updatePlayer(keys){
+	function updatePlayer(keys) {
 		return cond(
-			() => keys.spacePressedKey === true, () => updatePlayer().playerShoots(), 
-			updatePlayer)
+			() => keys.spacePressedKey === true, () => updatePlayerMovement(keys).playerShoots(), 
+			() => updatePlayerMovement(keys));
 	}
 
 	function interrogateKeyStates(keys) {
 		return cond(
 			() => keys.rPressedKey, () => GameState({inputs}),
 			() => cond(
-				() => gameRunning, updatePlayer
-				() => that))
+				() => gameRunning, () => updatePlayer(keys),
+				() => that));
 	}
 
-	function update(keys) {
+	function updateGameLoop (keys) {
+		return interrogateKeyStates(keys).updateBodies().enemyCollisionWithBorder().enemyShootsAI().bulletCollision();
+	}
+
+	function updateIfGameIsRunning(keys) {
 		return cond(
-			() => gameRunning, () => interrogateKeyStates(keys).updateBodies().enemyCollisionWithBorder().enemyShootsAI().bulletCollision(),
+			() => gameRunning, () => updateGameLoop(keys), 
 			() => interrogateKeyStates(keys));
 	}
 
@@ -103,13 +99,13 @@ export default function GameState(args) {
 	function playerShoots() {
 	
 		let newBullets = cond(
-		    () => playerFinalBulletNframeCounter === 0, makeNewBullet, 
+		    () => playerBulletNframeCounter === 0, makeNewBullet, 
 		    // else
 		    () => bullets);
 
 		let newCounter = cond(
 			() => playerBulletNframeCounter > 0, () => playerBulletNframeCounter - 1, 
-			() => playerFinalBulletNframeCounter);
+			() => playerFinalBulletNframeCount);
 
 		let newGameState = merge({
 			playerBulletNframeCounter: newCounter,
@@ -243,7 +239,7 @@ export default function GameState(args) {
 		playerFinalBulletNframeCount,
 		playerBulletNframeCounter,
 		player,
-		update,
+		updateIfGameIsRunning,
 		bulletCollision,
 		enemyCollisionWithBorder,
 		enemyShootsAI,

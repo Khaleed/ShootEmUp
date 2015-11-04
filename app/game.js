@@ -1,6 +1,5 @@
 
-import { Enemy, Player, EnemyBullet, PlayerBullet}
-from './models';
+import { Enemy, Player, EnemyBullet, PlayerBullet } from './models';
 import inputs from './inputs';
 import keys from './keystates';
 import GameState from './states';
@@ -24,7 +23,7 @@ import GameState from './states';
 		function update(gameState) {
 			let frozenKeys = Object.assign({}, keys);
 			Object.freeze(frozenKeys);
-			let newGameState = gameState.update(frozenKeys);
+			let newGameState = gameState.updateIfGameIsRunning(frozenKeys);
 			draw(newGameState);
 		};
 		function draw(gameState) {

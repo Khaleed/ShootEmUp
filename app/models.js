@@ -17,19 +17,19 @@ export function MergeMixin (constr, args) {
 		return constr(newArgs);
 	}
 }
-
+// helper 1
 export function cond(test, result, ...args) {
 	if (test()) {
 		return result();
 	} else if (args.length > 1) {
-		return cond(args);
-	} else if(args.list === 1) {
+		return cond(...args);
+	} else if(args.length === 1) {
 		return args[0]();
 	} else {
-		console.error('no matching values');
+		throw('no matching values');
 	}
 }
-
+// helper 2
 export function conjoin(list, val) {
 	let newList = Object.assign([], list);
 	newList.push(val);
