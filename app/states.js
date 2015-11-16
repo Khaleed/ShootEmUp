@@ -33,12 +33,13 @@ function createEnemyBodies() {
 
 export default function GameState(args) {
 
-	let { inputs, x = 0, y = 0, gameRunning = true, bullets = [], enemies = createEnemyBodies(),
+	let { inputs, x = 0, y = 0, gameRunning = true, playerBullets = [], enemyBullets = [], enemies = createEnemyBodies(),
 		player = Player({}), playerBulletNframeCounter = 0, playerFinalBulletNframeCount = 40, velX = 2 } = args;
 	let assoc = AssocMixin(GameState, args);
 	let merge = MergeMixin(GameState, args);
 	Object.freeze(enemies);
-	Object.freeze(bullets);
+	Object.freeze(playerBullets);
+	Object.freeze(enemyBullets);
 	let velY = 10;
 	let playerVel = 5;
 	let killZone = 500;
@@ -62,27 +63,23 @@ export default function GameState(args) {
 			() => updatePlayerMovement(keys));
 	}
 
-	function interrogateKeyStates(keys) {
-		return cond(
-			() => keys.rPressedKey, () => GameState({inputs}),
-			() => cond(
-				() => gameRunning, () => updatePlayer(keys),
-				() => that));
+	function maybeRestart(keys) {
+		return keys.rPressedKey ? GameState({inputs}) : that
 	}
 
 	function updateGameLoop (keys) {
-		return interrogateKeyStates(keys).updateBodies().enemyCollisionWithBorder().enemyShootsAI().bulletCollision();
+		return updatePlayer(keys).updateBodies().enemyCollisionWithBorder().enemyShootsAI().bulletCollision();
 	}
 
 	function updateIfGameIsRunning(keys) {
-		return cond(
-			() => gameRunning, () => updateGameLoop(keys), 
-			() => interrogateKeyStates(keys));
+		let state = maybeRestart(keys)
+		return gameRunning ? state.updateGameLoop(keys) : state
 	}
 
 	function updateBodies() {
 		return merge({
-			bullets: bullets.map(bullet => bullet.update()),
+			playerBullets: playerBullets.map(bullet => bullet.update()),
+			enemyBullets: enemyBullets.map(bullet => bullet.update()),
 			player: player.update(),
 			enemies: enemies.map(enemy => enemy.update(velX))
 		})
@@ -90,7 +87,7 @@ export default function GameState(args) {
 
 	function makeNewBullet() {
 		inputs.playerShootSound.play();
-		return conjoin(bullets, PlayerBullet({ // conjoin => using push functionally
+		return conjoin(playerBullets, PlayerBullet({ // conjoin => using push functionally
 			x: player.x + player.w / 2,
 			y: player.y
 		}));
@@ -101,7 +98,7 @@ export default function GameState(args) {
 		let newBullets = cond(
 		    () => playerBulletNframeCounter === 0, makeNewBullet, 
 		    // else
-		    () => bullets);
+		    () => playerBullets);
 
 		let newCounter = cond(
 			() => playerBulletNframeCounter > 0, () => playerBulletNframeCounter - 1, 
@@ -109,7 +106,7 @@ export default function GameState(args) {
 
 		let newGameState = merge({
 			playerBulletNframeCounter: newCounter,
-			bullets: newBullets
+			playerBullets: newBullets
 		});
 		return newGameState;
 
@@ -138,7 +135,6 @@ export default function GameState(args) {
 		inputs.status.innerHTML = 'You lose';
 		return merge({
 			gameRunning: false,
-			bullets: [],
 			enemies: [],
 			player: false
 		});
@@ -148,7 +144,6 @@ export default function GameState(args) {
 		inputs.status.innerHTML = 'You win';
 		return merge({
 			gameRunning: false,
-			bullets: [],
 			enemies: []
 		});
 	}
@@ -183,58 +178,54 @@ export default function GameState(args) {
 	function enemyShoots() {
 		let randIndx = Math.floor(Math.random() * (enemies.length - 1));
 		let enemy = enemies[randIndx];
-		let newBullets = Object.assign([], bullets);
+		let newBullets = Object.assign([], enemyBullets);
 		let b = EnemyBullet({
 			x: enemy.x,
 			y: enemy.y
 		});
 		newBullets.push(b);
 		inputs.invaderShootSound.play();
-		let newGameState = assoc('bullets', newBullets);
+		let newGameState = assoc('enemyBullets', newBullets);
 		return newGameState;
 	}
 
+	function enemyHitBy(bullet) {
+		return enemies.reduce((found, enemy) => {
+			return found || (sqCollide(enemy, bullet) ? enemy : null)
+		}, null)
+	}
+
 	function bulletCollision() {
+		if (enemyBullets.some(bullet => sqCollide(bullet, player)))
+			return playerDies()
+
 		let newGameRunning = gameRunning;
-		let newBullets = Object.assign([], bullets);
-		let newEnemies = Object.assign([], enemies);
 		let newPlayer = player;
 
-		for (let i = 0; i < newBullets.length; i += 1) {
-			// if it is the player's newBullets 
-			if (newBullets[i].d === -1) {
-				for (let j = 0; j < newEnemies.length; j += 1) {
-					if (sqCollide(newEnemies[j], newBullets[i]) === true) {
-						inputs.invaderDiesSound.play();
-						newEnemies.splice(j, 1);
-						newBullets.splice(i, 1);
-						if (newEnemies.length === 0) {
-							return playerWins();
-						}
-						break;
-					}
-				}
+		let deadEnemies = [], usedBullets = []
+		playerBullets.forEach(bullet => {
+			let hit = enemyHitBy(bullet)
+			if (hit) {
+				deadEnemies.push(hit)
+				usedBullets.push(bullet)
 			}
-			// else it is the enemies' newBullets
-			else if (sqCollide(newBullets[i], player)) {
-				inputs.playerDiesSound.play();
-				inputs.status.innerHTML = 'You lose';
-				return playerDies();
-			}
-		}
-		let newGameState = merge({
+		})
+		let newPlayerBullets = playerBullets.filter(b => usedBullets.indexOf(b) == -1)
+		let newEnemies = enemies.filter(e => deadEnemies.indexOf(e) == -1)
+
+		return merge({
 			gameRunning: newGameRunning,
-			bullets: newBullets,
+			playerBullets: newPlayerBullets,
 			enemies: newEnemies
 		});
-		return newGameState;
 	}
 
 	let that = Object.freeze({
 		x,
 		y,
 		gameRunning,
-		bullets,
+		enemyBullets,
+		playerBullets,
 		enemies,
 		playerFinalBulletNframeCount,
 		playerBulletNframeCounter,
@@ -245,6 +236,7 @@ export default function GameState(args) {
 		enemyShootsAI,
 		updateBodies,
 		playerShoots,
+		updateGameLoop,
 		assoc,
 		merge,
 	});

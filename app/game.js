@@ -31,7 +31,7 @@ import GameState from './states';
 			gameState.enemies.forEach(function(item, indx, array) {
 				drawRect(item);
 			});
-			gameState.bullets.forEach(function(item, indx, array) {
+			gameState.enemyBullets.concat(gameState.playerBullets).forEach(function(item, indx, array) {
 				drawRect(item);
 			});
 			if (gameState.player) {
