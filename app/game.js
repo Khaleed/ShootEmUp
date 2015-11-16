@@ -10,6 +10,12 @@ import GameState from './states';
 	let status = inputs.status;
 	keys.addListeners();
 
+	function playSounds(oldState, newState) {
+		if (oldState.enemies.length > newState.enemies.length) {
+			inputs.invaderDiesSound.play();
+		}
+	}
+
 	window.addEventListener('load', () => {
 		let ctx;
 		if (canvas.getContext === undefined) {
@@ -24,6 +30,7 @@ import GameState from './states';
 			let frozenKeys = Object.assign({}, keys);
 			Object.freeze(frozenKeys);
 			let newGameState = gameState.updateIfGameIsRunning(frozenKeys);
+			playSounds(gameState, newGameState);
 			draw(newGameState);
 		};
 		function draw(gameState) {

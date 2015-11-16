@@ -135,6 +135,8 @@ export default function GameState(args) {
 		inputs.status.innerHTML = 'You lose';
 		return merge({
 			gameRunning: false,
+			enemyBullets: [],
+			playerBullets: [],
 			enemies: [],
 			player: false
 		});
