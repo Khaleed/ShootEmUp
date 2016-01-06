@@ -1,4 +1,4 @@
-## Why this Project?
+## Why?
 
 Pick up higher-level problem solving skills and dive deeper into writing functional Javascript using the better parts of ES6/ES7 by making a real-time action game. 
 
