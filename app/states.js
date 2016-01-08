@@ -7,7 +7,7 @@ function sqCollide(s1, s2) {
 	const c2 = s2.x < s1.x + s1.w; // left edge of square 1 is to the left of right edge of square 2
 	const c3 = s1.y + s1.h > s2.y; // top edge of square 1 is above bottom edge of square 2
 	const c4 = s2.y + s2.h > s1.y //  bottom edge of the square 1 is below the top edge of the square 2
-		// collision has happened
+	// collision has happened
 	return (c1 && c2 && c3 && c4);
 }
 
@@ -35,7 +35,7 @@ export default function GameState(args) {
 	// extract multiple properties at the same time
 	let { inputs, x = 0, y = 0, gameRunning = true, playerBullets = [], enemyBullets = [], enemies = createEnemyBodies(),
 		player = Player({}), playerBulletNframeCounter = 0, playerFinalBulletNframeCount = 40, velX = 2 } = args;
-	let assoc = AssocMixin(GameState, args);
+	let assoc = AssocMixin(GameState, args); 
 	let merge = MergeMixin(GameState, args);
 	Object.freeze(enemies);
 	Object.freeze(playerBullets);
@@ -194,16 +194,15 @@ export default function GameState(args) {
 	function enemyHitBy(bullet) {
 		return enemies.reduce((found, enemy) => {
 			return found || (sqCollide(enemy, bullet) ? enemy : null)
-		}, null)
+		}, null);
 	}
 
 	function bulletCollision() {
-		if (enemyBullets.some(bullet => sqCollide(bullet, player)))
-			return playerDies()
-
+		if (enemyBullets.some(bullet => sqCollide(bullet, player))) {
+			return playerDies();
+		}
 		let newGameRunning = gameRunning;
 		let newPlayer = player;
-
 		let deadEnemies = [], usedBullets = []
 		playerBullets.forEach(bullet => {
 			let hit = enemyHitBy(bullet)
@@ -214,7 +213,6 @@ export default function GameState(args) {
 		})
 		let newPlayerBullets = playerBullets.filter(b => usedBullets.indexOf(b) == -1)
 		let newEnemies = enemies.filter(e => deadEnemies.indexOf(e) == -1)
-
 		return merge({
 			gameRunning: newGameRunning,
 			playerBullets: newPlayerBullets,
