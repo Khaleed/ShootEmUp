@@ -149,6 +149,7 @@ export default function GameState(args) {
 	}
 	
 	function enemyCollisionWithBorder() {
+		console.log("enemies", enemies[0])
 		let leftMostEnemPix = enemies[0].x;
 		let rightMostEnemPix = enemies[enemies.length - 1].x + enemies[0].w;
 		let newVelX = velX;
