@@ -32,7 +32,16 @@ function createEnemyBodies() {
 }
 
 export default function GameState(args) {
-	// extract multiple properties at the same time
+	// I know that destructuring lets you extract multiple properties at the same time
+	// right? 
+	// answ
+
+// yeah it's just syntactic sugar
+// got it 
+// so basically when i run it on the repl
+// the es5 version of it looks weird for something like gameRunning = true
+// what does this $ sign mean? on babel 
+
 	let { inputs, x = 0, y = 0, gameRunning = true, playerBullets = [], enemyBullets = [], enemies = createEnemyBodies(),
 		player = Player({}), playerBulletNframeCounter = 0, playerFinalBulletNframeCount = 40, velX = 2 } = args;
 	let assoc = AssocMixin(GameState, args); 
@@ -94,12 +103,9 @@ export default function GameState(args) {
 	}
 
 	function playerShoots() {
-	
 		let newBullets = cond(
-		    () => playerBulletNframeCounter === 0, makeNewBullet, 
-		    // else
+		    () => playerBulletNframeCounter === 0, makeNewBullet,
 		    () => playerBullets);
-
 		let newCounter = cond(
 			() => playerBulletNframeCounter > 0, () => playerBulletNframeCounter - 1, 
 			() => playerFinalBulletNframeCount);
@@ -109,17 +115,6 @@ export default function GameState(args) {
 			playerBullets: newBullets
 		});
 		return newGameState;
-
-		/* Sal's suggestion 
-		return merge({
-			playerBulletNframeCounter: cond(
-			    () => playerBulletNframeCounter > 0, () => playerBulletNframeCounter - 1, 
-			    () => playerFinalBulletNframeCounter),
-			bullets: cond(
-		        () => playerFinalBulletNframeCounter === 0, makeNewBullet, 
-		    	() => bullets)
-		});
-		*/
 	};
 
 	function enemyShootsAI() {
@@ -146,10 +141,13 @@ export default function GameState(args) {
 		inputs.status.innerHTML = 'You win';
 		return merge({
 			gameRunning: false,
-			enemies: []
+			enemyBullets: [],
+			playerBullets: [],
+			enemies: [],
+			player: true
 		});
 	}
-
+	
 	function enemyCollisionWithBorder() {
 		let leftMostEnemPix = enemies[0].x;
 		let rightMostEnemPix = enemies[enemies.length - 1].x + enemies[0].w;
