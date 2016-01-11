@@ -96,7 +96,7 @@ export default function GameState(args) {
 
 	function makeNewBullet() {
 		inputs.playerShootSound.play();
-		return conjoin(playerBullets, PlayerBullet({ // conjoin => using push functionally
+		return conjoin(playerBullets, PlayerBullet({ // conjoin => like using push functionally
 			x: player.x + player.w / 2,
 			y: player.y
 		}));
