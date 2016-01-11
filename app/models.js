@@ -17,6 +17,7 @@ export function MergeMixin (constr, args) {
 		return constr(newArgs);
 	}
 }
+
 // helper 1
 export function cond(test, result, ...args) {
 	if (test()) {
@@ -29,6 +30,7 @@ export function cond(test, result, ...args) {
 		throw('no matching values');
 	}
 }
+
 // helper 2
 export function conjoin(list, val) {
 	let newList = Object.assign([], list);
@@ -75,7 +77,7 @@ export function Enemy(args) {
 
 export function Bullet(args) {
 	let { x, y, d, color } = args;
-	let assoc = AssocMixin(Bullet, args); // interface-style inheritance
+	let assoc = AssocMixin(Bullet, args); 
 	let merge = MergeMixin(Bullet, args);
 	let that = Object.freeze({
 		x,
@@ -90,8 +92,7 @@ export function Bullet(args) {
 	});
 	return that;
 }
-// if base class has assoc/merge, then sub-classes have that too
-// as long as you are returning a call to the base-class
+
 export function PlayerBullet(args) {
 	let { x, y } = args;
 	return Bullet({

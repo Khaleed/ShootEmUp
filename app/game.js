@@ -1,3 +1,4 @@
+'use strict';
 
 import { Enemy, Player, EnemyBullet, PlayerBullet } from './models';
 import inputs from './inputs';

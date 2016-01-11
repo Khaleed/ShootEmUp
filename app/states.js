@@ -32,16 +32,6 @@ function createEnemyBodies() {
 }
 
 export default function GameState(args) {
-	// I know that destructuring lets you extract multiple properties at the same time
-	// right? 
-	// answ
-
-// yeah it's just syntactic sugar
-// got it 
-// so basically when i run it on the repl
-// the es5 version of it looks weird for something like gameRunning = true
-// what does this $ sign mean? on babel 
-
 	let { inputs, x = 0, y = 0, gameRunning = true, playerBullets = [], enemyBullets = [], enemies = createEnemyBodies(),
 		player = Player({}), playerBulletNframeCounter = 0, playerFinalBulletNframeCount = 40, velX = 2 } = args;
 	let assoc = AssocMixin(GameState, args); 
