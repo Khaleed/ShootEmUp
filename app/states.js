@@ -139,7 +139,7 @@ export default function GameState(args) {
 	}
 	
 	function enemyCollisionWithBorder() {
-		console.log("enemies", enemies[0])
+		if (enemies.length > 0) {
 		let leftMostEnemPix = enemies[0].x;
 		let rightMostEnemPix = enemies[enemies.length - 1].x + enemies[0].w;
 		let newVelX = velX;
@@ -158,6 +158,7 @@ export default function GameState(args) {
 			if (killZoneReached === true) {
 				return playerDies();
 			}
+		}
 		}
 		let newGameState = merge({
 			velX: newVelX,
