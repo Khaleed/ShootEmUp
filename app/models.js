@@ -3,9 +3,9 @@ const canvas = inputs.canvas;
 let status = inputs.status;
 
 export function AssocMixin (constr, args) {
-	return (prop, val) => {
+	return (key, val) => {
 		let newArgs = Object.assign({}, args);
-		newArgs[prop] = val;
+		newArgs[key] = val;
 		return constr(newArgs);	
 	}
 }

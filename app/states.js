@@ -34,6 +34,7 @@ function createEnemyBodies() {
 export default function GameState(args) {
 	let { inputs, x = 0, y = 0, gameRunning = true, playerBullets = [], enemyBullets = [], enemies = createEnemyBodies(),
 		player = Player({}), playerBulletNframeCounter = 0, playerFinalBulletNframeCount = 40, velX = 2 } = args;
+	console.log("arguments", args);	
 	let assoc = AssocMixin(GameState, args); 
 	let merge = MergeMixin(GameState, args);
 	Object.freeze(enemies);
@@ -139,11 +140,11 @@ export default function GameState(args) {
 	}
 	
 	function enemyCollisionWithBorder() {
+		let newVelX = velX;
+		let newEnemies = enemies;
 		if (enemies.length > 0) {
 		let leftMostEnemPix = enemies[0].x;
 		let rightMostEnemPix = enemies[enemies.length - 1].x + enemies[0].w;
-		let newVelX = velX;
-		let newEnemies = enemies;
 		// ensure that enemies don't pass the borders of the screen
 		if (leftMostEnemPix < 0 || rightMostEnemPix > inputs.canvas.width) {
 			let killZoneReached = false;
