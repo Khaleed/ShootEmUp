@@ -199,8 +199,8 @@ export default function GameState(args) {
 				usedBullets.push(bullet)
 			}
 		})
-		let newPlayerBullets = playerBullets.filter(b => usedBullets.indexOf(b) == -1)
-		let newEnemies = enemies.filter(e => deadEnemies.indexOf(e) == -1)
+		let newPlayerBullets = playerBullets.filter(b => usedBullets.indexOf(b) == -1);
+		let newEnemies = enemies.filter(e => deadEnemies.indexOf(e) == -1);
 		return merge({
 			gameRunning: newGameRunning,
 			playerBullets: newPlayerBullets,
