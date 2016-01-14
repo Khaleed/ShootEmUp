@@ -14,7 +14,7 @@ export function MergeMixin (constr, args) {
 	return obj => {
 		let copy = Object.assign({}, args);
 		let newArgs = Object.assign(copy, obj);
-		return constr(newArgs);
+		return constr(newArgs);	
 	}
 }
 

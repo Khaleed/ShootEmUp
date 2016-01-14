@@ -108,6 +108,20 @@ export default function GameState(args) {
 		return newGameState;
 	};
 
+	function enemyShoots() {
+		let randIndx = Math.floor(Math.random() * (enemies.length - 1));
+		let enemy = enemies[randIndx];
+		let newBullets = Object.assign([], enemyBullets);
+		let b = EnemyBullet({
+			x: enemy.x,
+			y: enemy.y
+		});
+		newBullets.push(b);
+		inputs.invaderShootSound.play();
+		let newGameState = assoc('enemyBullets', newBullets);
+		return newGameState;
+	}
+
 	function enemyShootsAI() {
 		if ((Math.random() * 100) <= 1) {
 			return enemyShoots();
@@ -132,10 +146,7 @@ export default function GameState(args) {
 		inputs.status.innerHTML = 'You win';
 		return merge({
 			gameRunning: false,
-			enemyBullets: [],
-			playerBullets: [],
-			enemies: [],
-			player: true
+			enemies: []
 		});
 	}
 	
@@ -167,20 +178,6 @@ export default function GameState(args) {
 		});
 		return newGameState;
 	};
-
-	function enemyShoots() {
-		let randIndx = Math.floor(Math.random() * (enemies.length - 1));
-		let enemy = enemies[randIndx];
-		let newBullets = Object.assign([], enemyBullets);
-		let b = EnemyBullet({
-			x: enemy.x,
-			y: enemy.y
-		});
-		newBullets.push(b);
-		inputs.invaderShootSound.play();
-		let newGameState = assoc('enemyBullets', newBullets);
-		return newGameState;
-	}
 
 	function enemyHitBy(bullet) {
 		return enemies.reduce((found, enemy) => {
