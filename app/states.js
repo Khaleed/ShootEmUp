@@ -34,7 +34,6 @@ function createEnemyBodies() {
 export default function GameState(args) {
 	let { inputs, x = 0, y = 0, gameRunning = true, playerBullets = [], enemyBullets = [], enemies = createEnemyBodies(),
 		player = Player({}), playerBulletNframeCounter = 0, playerFinalBulletNframeCount = 40, velX = 2 } = args;
-	console.log("arguments", args);	
 	let assoc = AssocMixin(GameState, args); 
 	let merge = MergeMixin(GameState, args);
 	Object.freeze(enemies);
@@ -146,7 +145,9 @@ export default function GameState(args) {
 		inputs.status.innerHTML = 'You win';
 		return merge({
 			gameRunning: false,
-			enemies: []
+			enemies: [],
+			playerBullets: [],
+			enemyBullets: []
 		});
 	}
 	
@@ -154,30 +155,30 @@ export default function GameState(args) {
 		let newVelX = velX;
 		let newEnemies = enemies;
 		if (enemies.length > 0) {
-		let leftMostEnemPix = enemies[0].x;
-		let rightMostEnemPix = enemies[enemies.length - 1].x + enemies[0].w;
-		// ensure that enemies don't pass the borders of the screen
-		if (leftMostEnemPix < 0 || rightMostEnemPix > inputs.canvas.width) {
-			let killZoneReached = false;
-			newVelX = newVelX * -1;
-			newEnemies = enemies.map(enemy => {
-				let newY = enemy.y + velY;
-				if (newY > killZone) {
-					killZoneReached = true;
+			let leftMostEnemPix = enemies[0].x;
+			let rightMostEnemPix = enemies[enemies.length - 1].x + enemies[0].w;
+			// ensure that enemies don't pass the borders of the screen
+			if (leftMostEnemPix < 0 || rightMostEnemPix > inputs.canvas.width) {
+				let killZoneReached = false;
+				newVelX = newVelX * -1;
+				newEnemies = enemies.map(enemy => {
+					let newY = enemy.y + velY;
+					if (newY > killZone) {
+						killZoneReached = true;
+					}
+					return enemy.assoc('y', newY);
+				});
+				if (killZoneReached === true) {
+					return playerDies();
 				}
-				return enemy.assoc('y', newY);
-			});
-			if (killZoneReached === true) {
-				return playerDies();
 			}
-		}
 		}
 		let newGameState = merge({
 			velX: newVelX,
 			enemies: newEnemies
 		});
 		return newGameState;
-	};
+	}
 
 	function enemyHitBy(bullet) {
 		return enemies.reduce((found, enemy) => {
@@ -191,21 +192,26 @@ export default function GameState(args) {
 		}
 		let newGameRunning = gameRunning;
 		let newPlayer = player;
-		let deadEnemies = [], usedBullets = []
+		let deadEnemies = [];
+		let usedBullets = [];
 		playerBullets.forEach(bullet => {
-			let hit = enemyHitBy(bullet)
+			let hit = enemyHitBy(bullet);
 			if (hit) {
-				deadEnemies.push(hit)
-				usedBullets.push(bullet)
+				deadEnemies.push(hit);
+				usedBullets.push(bullet);
 			}
-		})
+		});
 		let newPlayerBullets = playerBullets.filter(b => usedBullets.indexOf(b) == -1);
 		let newEnemies = enemies.filter(e => deadEnemies.indexOf(e) == -1);
-		return merge({
+		if (newEnemies.length === 0) {
+			return playerWins();
+		}
+		let newGameState = merge({
 			gameRunning: newGameRunning,
 			playerBullets: newPlayerBullets,
 			enemies: newEnemies
 		});
+		return newGameState;
 	}
 
 	let that = Object.freeze({
