@@ -130,7 +130,6 @@ export default function GameState(args) {
 	}
 
 	function playerDies() {
-		inputs.playerDiesSound.play();
 		inputs.status.innerHTML = 'You lose';
 		return merge({
 			gameRunning: false,

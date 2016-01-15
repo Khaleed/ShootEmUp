@@ -3,7 +3,7 @@ var path = require('path');
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
 
 module.exports = {
-    // console erros map to correct file and line number
+    // console errors map to correct file and line number
     devtool: 'eval-source-map',
 
     // app entry point
