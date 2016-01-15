@@ -5,14 +5,14 @@ var path = require('path');
 module.exports = {
     devtool: 'source-map',
     entry: {
-        app: ['./app/game.js'
+        app: ['./app/game.js']
     },
     devServer: {
         contentBase: "public/"
     },
     output: {
-        path: path.resolve(__dirname, 'public'),
-        publicPath: '/'
+        path: __dirname,
+        publicPath: '/',
         filename: 'bundle.js'
     },
     module: {
