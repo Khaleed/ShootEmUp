@@ -4,16 +4,19 @@ var ExtractTextPlugin = require("extract-text-webpack-plugin");
 
 module.exports = {
     // console erros map to correct file and line number
-    devtool: 'source-map',
+    devtool: 'eval-source-map',
 
-    entry: {
+    // app entry point
+    app: [
         // hot style updates
         'webpack/hot/dev-server',
-        // refresh on none hot style updates
+
+        // refresh browser on none hot updates
         'webpack-dev-server/client?http://localhost:8080',
+
         // current app
         path.resolve(__dirname, 'app', 'game.js')
-    },
+    ],
 
     devServer: {
         contentBase: "public/"
@@ -21,7 +24,7 @@ module.exports = {
 
     output: {
         path: path.resolve(__dirname, 'public'),
-        publicPath: '/'
+        publicPath: '/',
         filename: 'bundle.js'
     },
 
@@ -47,7 +50,7 @@ module.exports = {
             },
         ]
     },
-
+    // resolution
     resolve: {
         extensions: ['.js', '.json', '']
     },
