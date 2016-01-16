@@ -7,7 +7,7 @@ module.exports = {
     devtool: 'eval-source-map',
     cache: true,
     // app entry point
-    app: [
+    entry: [
         // hot style updates
         'webpack/hot/dev-server',
 
