@@ -15,9 +15,6 @@ import GameState from './states';
 		if (oldState.enemies.length > newState.enemies.length) {
 			inputs.invaderDiesSound.play();
 		}
-		if (oldState.Object.keys(player).length > newState.Object.keys(player).length) {
-			inputs.playerDiesSound.play();
-		}
 	}
 
 	window.addEventListener('load', () => {
