@@ -1,11 +1,10 @@
 {
   "name": "ShootEmUp",
   "version": "1.0.0",
-  "description": "",
+  "description": "Space Invaders in functional JavaScript",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "watch": "webpack-dev-server --config=webpack.config.js"
-
   },
   "repository": {
     "type": "git",
@@ -23,7 +22,8 @@
     "babel-runtime": "^5.8.25",
     "extract-text-webpack-plugin": "^0.8.2",
     "json-loader": "^0.5.3",
-    "webpack": "^1.12.2"
+    "webpack": "^1.12.11",
+    "webpack-dev-server": "^1.14.1"
   },
   "devDependencies": {
     "webpack-dev-server": "^1.12.1"
