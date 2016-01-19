@@ -9,10 +9,8 @@ module.exports = {
     entry: [
         // hot style updates
         'webpack/hot/dev-server',
-
         // refresh browser on none hot updates
         'webpack-dev-server/client?http://localhost:8080',
-
         // current app
         path.resolve(__dirname, 'app', 'game.js')
     ],
