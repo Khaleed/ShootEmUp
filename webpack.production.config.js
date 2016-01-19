@@ -45,7 +45,7 @@ module.exports = {
             // CSS Loader
             {
                 test: /\.css$/,
-                // load css files
+                // load css file into it's own file
                 loader: ExtractTextPlugin.extract("style-loader", "css-loader")
             },
         ]
@@ -58,7 +58,21 @@ module.exports = {
     plugins: [
         // Extract CSS files
         new ExtractTextPlugin("style.css"),
-        // Hot module replacement
-        new webpack.HotModuleReplacementPlugin()
-    ]
+        // Avoid duplicated stuff
+        new webpack.optimize.DedupePlugin(),
+        // Optimise occurence order
+        new webpack.optimize.OccurenceOrderPlugin(),
+        // only for production  
+        new webpack.DefinePlugin({
+            'process.env': {
+                'NODE_ENV': JSON.stringify('production')
+            }
+        }),
+        // minimise output chunks of scripts/css
+        new webpack.optimize.UglifyJsPlugin({
+            compressor: {
+                warnings: false
+            }
+        })
+    ],
 };
