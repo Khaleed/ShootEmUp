@@ -15,6 +15,7 @@ import GameState from './states';
 		if (oldState.enemies.length > newState.enemies.length) {
 			inputs.invaderDiesSound.play();
 		}
+
 	}
 
 	window.addEventListener('load', () => {
@@ -34,6 +35,10 @@ import GameState from './states';
 			playSounds(gameState, newGameState);
 			draw(newGameState);
 		};
+		function drawRect(rect) {
+			ctx.fillStyle = rect.color;
+			ctx.fillRect(rect.x, rect.y, rect.w, rect.h);
+		}
 		function draw(gameState) {
 			ctx.clearRect(0, 0, canvas.width, canvas.height);
 			gameState.enemies.forEach(function(item, indx, array) {
@@ -48,10 +53,6 @@ import GameState from './states';
 			setTimeout(() => update(gameState), 1);
 		};
 
-		function drawRect(rect) {
-			ctx.fillStyle = rect.color;
-			ctx.fillRect(rect.x, rect.y, rect.w, rect.h);
-		}
 		draw(GameState({inputs}));
 	});
 
