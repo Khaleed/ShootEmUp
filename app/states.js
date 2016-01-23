@@ -63,7 +63,7 @@ export default function GameState(args) {
 	}
 
 	function maybeRestart(keys) {
-		return keys.rPressedKey ? GameState({inputs}) : that
+		return keys.rPressedKey ? GameState({inputs}) : that;
 	}
 
 	function updateGameLoop (keys) {
@@ -72,7 +72,7 @@ export default function GameState(args) {
 
 	function updateIfGameIsRunning(keys) {
 		let state = maybeRestart(keys)
-		return gameRunning ? state.updateGameLoop(keys) : state
+		return gameRunning ? state.updateGameLoop(keys) : state;
 	}
 
 	function updateBodies() {
@@ -81,7 +81,7 @@ export default function GameState(args) {
 			enemyBullets: enemyBullets.map(bullet => bullet.update()),
 			player: player.update(),
 			enemies: enemies.map(enemy => enemy.update(velX))
-		})
+		});
 	}
 
 	function makeNewBullet() {
@@ -159,15 +159,19 @@ export default function GameState(args) {
 			// ensure that enemies don't pass the borders of the screen
 			if (leftMostEnemPix < 0 || rightMostEnemPix > inputs.canvas.width) {
 				let killZoneReached = false;
+				// go left and right
 				newVelX = newVelX * -1;
 				newEnemies = enemies.map(enemy => {
 					let newY = enemy.y + velY;
 					if (newY > killZone) {
 						killZoneReached = true;
 					}
+					// change the y coordinate of the enemy
 					return enemy.assoc('y', newY);
 				});
+				console.log('killZoneReached before condition check', killZoneReached);
 				if (killZoneReached === true) {
+					console.log('killZoneReached after condition check', killZoneReached);
 					return playerDies();
 				}
 			}
@@ -200,10 +204,11 @@ export default function GameState(args) {
 				usedBullets.push(bullet);
 			}
 		});
-		let newPlayerBullets = playerBullets.filter(b => usedBullets.indexOf(b) == -1);
-		let newEnemies = enemies.filter(e => deadEnemies.indexOf(e) == -1);
+		let newPlayerBullets = playerBullets.filter(b => usedBullets.indexOf(b) === -1);
+		let newEnemies = enemies.filter(e => deadEnemies.indexOf(e) === -1);
+		console.log('newEnemies', newEnemies);
 		if (newEnemies.length === 0) {
-			return playerWins();
+			return playerWins(); // error -> this is being called when there ae no new enemies
 		}
 		let newGameState = merge({
 			gameRunning: newGameRunning,
