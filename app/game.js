@@ -52,7 +52,6 @@ import GameState from './states';
 			}
 			setTimeout(() => update(gameState), 1);
 		};
-
 		draw(GameState({inputs}));
 	});
 

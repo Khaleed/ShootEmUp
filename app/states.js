@@ -115,7 +115,7 @@ export default function GameState(args) {
 		let newGameState = assoc('enemyBullets', newBullets);
 		return newGameState;
 	}
-
+	// change all if else to cond
 	function enemyShootsAI() {
 		if ((Math.random() * 100) <= 1) {
 			return enemyShoots();
@@ -148,6 +148,7 @@ export default function GameState(args) {
 	function enemyCollisionWithBorder() {
 		let newVelX = velX;
 		let newEnemies = enemies;
+		let newGameRunning = gameRunning;
 		if (enemies.length > 0) {
 			let leftMostEnemPix = enemies[0].x;
 			let rightMostEnemPix = enemies[enemies.length - 1].x + enemies[0].w;
@@ -160,16 +161,15 @@ export default function GameState(args) {
 					if (newY > killZone) {
 						killZoneReached = true;
 					}
-					return enemy.assoc('y', newY);
+					return enemy.assoc('y', newY); 
 				});
-				console.log('killZoneReached after condition check', killZoneReached);
 				if (killZoneReached === true) {
-					console.log('killZoneReached after condition check', killZoneReached);
-					return playerDies();
+					return playerDies(); 
 				}
 			}
 		}
 		let newGameState = merge({
+			gameRunning: newGameRunning,
 			velX: newVelX,
 			enemies: newEnemies
 		});
@@ -199,9 +199,8 @@ export default function GameState(args) {
 		});
 		let newPlayerBullets = playerBullets.filter(b => usedBullets.indexOf(b) === -1);
 		let newEnemies = enemies.filter(e => deadEnemies.indexOf(e) === -1);
-		console.log('newEnemies', newEnemies);
 		if (newEnemies.length === 0) {
-			return playerWins(); // error -> this is being called when there are no new enemies
+			return playerWins();
 		}
 		let newGameState = merge({
 			gameRunning: newGameRunning,
