@@ -44,6 +44,7 @@ export default function GameState(args) {
 	let killZone = 500;
 
 	function newDir(keys) {
+		// cond replaces if else-if ... else 
 		return cond(
 			() => keys.leftPressedKey === true && player.x > 0, () => -1,
 			() => keys.rightPressedKey === true && player.x < inputs.canvas.width - 32, () => 1,
