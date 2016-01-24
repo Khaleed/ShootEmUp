@@ -52,7 +52,6 @@ export default function GameState(args) {
 	}
 
 	function updatePlayerMovement(keys) {
-		// if the player still in the game, move player right or left
 		return assoc("player", cond(
 			() => player, () => player.assoc("x", player.x + newDir(keys) * playerVel),
 			() => false));
