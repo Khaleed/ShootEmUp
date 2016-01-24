@@ -1,13 +1,13 @@
 'use strict';
 
-import { AssocMixin, MergeMixin, Player, Enemy, EnemyBullet, PlayerBullet, cond, conjoin } from './models.js';
+import {AssocMixin, MergeMixin, Player, Enemy, EnemyBullet, PlayerBullet, cond, conjoin} from './models';
 
 function sqCollide(s1, s2) {
 	const c1 = s1.x < s2.x + s2.w; // right edge of square 1 is to the right of left edge of square 2
 	const c2 = s2.x < s1.x + s1.w; // left edge of square 1 is to the left of right edge of square 2
 	const c3 = s1.y + s1.h > s2.y; // top edge of square 1 is above bottom edge of square 2
 	const c4 = s2.y + s2.h > s1.y //  bottom edge of the square 1 is below the top edge of the square 2
-	// collision has happened
+		// collision has happened
 	return (c1 && c2 && c3 && c4);
 }
 
@@ -32,9 +32,11 @@ function createEnemyBodies() {
 }
 
 export default function GameState(args) {
-	let { inputs, x = 0, y = 0, gameRunning = true, playerBullets = [], enemyBullets = [], enemies = createEnemyBodies(),
-		player = Player({}), playerBulletNframeCounter = 0, playerFinalBulletNframeCount = 40, velX = 2 } = args;
-	let assoc = AssocMixin(GameState, args); 
+	let {
+		inputs, x = 0, y = 0, gameRunning = true, playerBullets = [], enemyBullets = [], enemies = createEnemyBodies(),
+			player = Player({}), playerBulletNframeCounter = 0, playerFinalBulletNframeCount = 40, velX = 2
+	} = args;
+	let assoc = AssocMixin(GameState, args);
 	let merge = MergeMixin(GameState, args);
 	Object.freeze(enemies);
 	Object.freeze(playerBullets);
@@ -44,31 +46,24 @@ export default function GameState(args) {
 	let killZone = 500;
 
 	function newDir(keys) {
-		// cond replaces if else-if ... else 
 		return cond(
-			() => keys.leftPressedKey === true && player.x > 0, () => -1,
-			() => keys.rightPressedKey === true && player.x < inputs.canvas.width - 32, () => 1,
-			() => 0);
+			() => keys.leftPressedKey === true && player.x > 0, () => -1, () => keys.rightPressedKey === true && player.x < inputs.canvas.width - 32, () => 1, () => 0);
 	}
 
 	function updatePlayerMovement(keys) {
 		return assoc("player", cond(
-			() => player, () => player.assoc("x", player.x + newDir(keys) * playerVel),
-			() => false));
+			() => player, () => player.assoc("x", player.x + newDir(keys) * playerVel), () => false));
 	}
 
-	function updatePlayerAction(keys) { 
+	function updatePlayer(keys) {
 		return cond(
-			() => keys.spacePressedKey === true, () => updatePlayerMovement(keys).playerShoots(), 
-			() => updatePlayerMovement(keys));
+			() => keys.spacePressedKey === true, () => updatePlayerMovement(keys).playerShoots(), () => updatePlayerMovement(keys));
 	}
 
 	function maybeRestart(keys) {
-		return keys.rPressedKey ? GameState({inputs}) : that;
-	}
-
-	function updateGameLoop (keys) {
-		return updatePlayerAction(keys).updateBodies().enemyCollisionWithBorder().enemyShootsAI().bulletCollision();
+		return keys.rPressedKey ? GameState({
+			inputs
+		}) : that;
 	}
 
 	function updateIfGameIsRunning(keys) {
@@ -95,11 +90,9 @@ export default function GameState(args) {
 
 	function playerShoots() {
 		let newBullets = cond(
-		    () => playerBulletNframeCounter === 0, makeNewBullet,
-		    () => playerBullets);
+			() => playerBulletNframeCounter === 0, makeNewBullet, () => playerBullets);
 		let newCounter = cond(
-			() => playerBulletNframeCounter > 0, () => playerBulletNframeCounter - 1, 
-			() => playerFinalBulletNframeCount);
+			() => playerBulletNframeCounter > 0, () => playerBulletNframeCounter - 1, () => playerFinalBulletNframeCount);
 
 		let newGameState = merge({
 			playerBulletNframeCounter: newCounter,
@@ -150,7 +143,7 @@ export default function GameState(args) {
 			enemyBullets: []
 		});
 	}
-	
+
 	function enemyCollisionWithBorder() {
 		let newVelX = velX;
 		let newEnemies = enemies;
@@ -170,7 +163,7 @@ export default function GameState(args) {
 					// change the y coordinate of the enemy
 					return enemy.assoc('y', newY);
 				});
-				console.log('killZoneReached before condition check', killZoneReached);
+				console.log('killZoneReached after condition check', killZoneReached);
 				if (killZoneReached === true) {
 					console.log('killZoneReached after condition check', killZoneReached);
 					return playerDies();
@@ -217,6 +210,10 @@ export default function GameState(args) {
 			enemies: newEnemies
 		});
 		return newGameState;
+	}
+
+	function updateGameLoop(keys) {
+		return updatePlayer(keys).updateBodies().enemyCollisionWithBorder().enemyShootsAI().bulletCollision();
 	}
 
 	let that = Object.freeze({

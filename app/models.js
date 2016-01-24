@@ -72,7 +72,7 @@ export function Enemy(args) {
 			assoc,
 			merge,
 			update: velX => {
-				assoc("x", x + velX)
+				return assoc("x", x + velX)
 			}
 	});
 	return that;
@@ -94,7 +94,7 @@ export function Bullet(args) {
 			assoc,
 			merge,
 			update: () => {
-				assoc("y", y + d)
+				return assoc("y", y + d)
 			}
 	});
 	return that;
