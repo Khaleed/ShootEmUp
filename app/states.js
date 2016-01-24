@@ -32,10 +32,8 @@ function createEnemyBodies() {
 }
 
 export default function GameState(args) {
-	let {
-		inputs, x = 0, y = 0, gameRunning = true, playerBullets = [], enemyBullets = [], enemies = createEnemyBodies(),
-			player = Player({}), playerBulletNframeCounter = 0, playerFinalBulletNframeCount = 40, velX = 2
-	} = args;
+	let {inputs, x = 0, y = 0, gameRunning = true, playerBullets = [], enemyBullets = [], enemies = createEnemyBodies(), 
+		player = Player({}), playerBulletNframeCounter = 0, playerFinalBulletNframeCount = 40, velX = 2} = args;
 	let assoc = AssocMixin(GameState, args);
 	let merge = MergeMixin(GameState, args);
 	Object.freeze(enemies);
@@ -47,23 +45,25 @@ export default function GameState(args) {
 
 	function newDir(keys) {
 		return cond(
-			() => keys.leftPressedKey === true && player.x > 0, () => -1, () => keys.rightPressedKey === true && player.x < inputs.canvas.width - 32, () => 1, () => 0);
+			() => keys.leftPressedKey === true && player.x > 0, () => -1, 
+			() => keys.rightPressedKey === true && player.x < inputs.canvas.width - 32, () => 1, 
+			() => 0);
 	}
 
 	function updatePlayerMovement(keys) {
 		return assoc("player", cond(
-			() => player, () => player.assoc("x", player.x + newDir(keys) * playerVel), () => false));
+			() => player, () => player.assoc("x", player.x + newDir(keys) * playerVel), 
+			() => false));
 	}
 
 	function updatePlayer(keys) {
 		return cond(
-			() => keys.spacePressedKey === true, () => updatePlayerMovement(keys).playerShoots(), () => updatePlayerMovement(keys));
+			() => keys.spacePressedKey === true, () => updatePlayerMovement(keys).playerShoots(), 
+			() => updatePlayerMovement(keys));
 	}
 
 	function maybeRestart(keys) {
-		return keys.rPressedKey ? GameState({
-			inputs
-		}) : that;
+		return keys.rPressedKey ? GameState({inputs}) : that;
 	}
 
 	function updateIfGameIsRunning(keys) {
@@ -90,10 +90,11 @@ export default function GameState(args) {
 
 	function playerShoots() {
 		let newBullets = cond(
-			() => playerBulletNframeCounter === 0, makeNewBullet, () => playerBullets);
+			() => playerBulletNframeCounter === 0, makeNewBullet, 
+			() => playerBullets);
 		let newCounter = cond(
-			() => playerBulletNframeCounter > 0, () => playerBulletNframeCounter - 1, () => playerFinalBulletNframeCount);
-
+			() => playerBulletNframeCounter > 0, () => playerBulletNframeCounter - 1, 
+			() => playerFinalBulletNframeCount);
 		let newGameState = merge({
 			playerBulletNframeCounter: newCounter,
 			playerBullets: newBullets
@@ -153,14 +154,12 @@ export default function GameState(args) {
 			// ensure that enemies don't pass the borders of the screen
 			if (leftMostEnemPix < 0 || rightMostEnemPix > inputs.canvas.width) {
 				let killZoneReached = false;
-				// go left and right
 				newVelX = newVelX * -1;
 				newEnemies = enemies.map(enemy => {
 					let newY = enemy.y + velY;
 					if (newY > killZone) {
 						killZoneReached = true;
 					}
-					// change the y coordinate of the enemy
 					return enemy.assoc('y', newY);
 				});
 				console.log('killZoneReached after condition check', killZoneReached);
@@ -202,7 +201,7 @@ export default function GameState(args) {
 		let newEnemies = enemies.filter(e => deadEnemies.indexOf(e) === -1);
 		console.log('newEnemies', newEnemies);
 		if (newEnemies.length === 0) {
-			return playerWins(); // error -> this is being called when there ae no new enemies
+			return playerWins(); // error -> this is being called when there are no new enemies
 		}
 		let newGameState = merge({
 			gameRunning: newGameRunning,
