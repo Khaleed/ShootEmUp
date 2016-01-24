@@ -52,12 +52,13 @@ export default function GameState(args) {
 	}
 
 	function updatePlayerMovement(keys) {
+		// if the player still in the game, move player right or left
 		return assoc("player", cond(
 			() => player, () => player.assoc("x", player.x + newDir(keys) * playerVel),
 			() => false));
 	}
 
-	function updatePlayer(keys) {
+	function updatePlayerAction(keys) { 
 		return cond(
 			() => keys.spacePressedKey === true, () => updatePlayerMovement(keys).playerShoots(), 
 			() => updatePlayerMovement(keys));
@@ -68,7 +69,7 @@ export default function GameState(args) {
 	}
 
 	function updateGameLoop (keys) {
-		return updatePlayer(keys).updateBodies().enemyCollisionWithBorder().enemyShootsAI().bulletCollision();
+		return updatePlayerAction(keys).updateBodies().enemyCollisionWithBorder().enemyShootsAI().bulletCollision();
 	}
 
 	function updateIfGameIsRunning(keys) {
