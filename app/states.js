@@ -7,7 +7,7 @@ function sqCollide(s1, s2) {
 	const c2 = s2.x < s1.x + s1.w; // left edge of square 1 is to the left of right edge of square 2
 	const c3 = s1.y + s1.h > s2.y; // top edge of square 1 is above bottom edge of square 2
 	const c4 = s2.y + s2.h > s1.y //  bottom edge of the square 1 is below the top edge of the square 2
-		// collision has happened
+	// collision has happened
 	return (c1 && c2 && c3 && c4);
 }
 
@@ -41,7 +41,7 @@ export default function GameState(args) {
 	Object.freeze(enemyBullets);
 	let velY = 10;
 	let playerVel = 5;
-	let killZone = 500;
+	let killPlayerZone = 500;
 
 	function newDir(keys) {
 		return cond(
@@ -56,7 +56,7 @@ export default function GameState(args) {
 			() => false));
 	}
 
-	function updatePlayer(keys) {
+	function updatePlayerAction(keys) {
 		return cond(
 			() => keys.spacePressedKey === true, () => updatePlayerMovement(keys).playerShoots(), 
 			() => updatePlayerMovement(keys));
@@ -145,32 +145,32 @@ export default function GameState(args) {
 		});
 	}
 
-	function enemyCollisionWithBorder() {
+	function keepEnemyWithinHorizontalBorders() {
 		let newVelX = velX;
-		let newEnemies = enemies;
-		let newGameRunning = gameRunning;
 		if (enemies.length > 0) {
 			let leftMostEnemPix = enemies[0].x;
 			let rightMostEnemPix = enemies[enemies.length - 1].x + enemies[0].w;
-			// ensure that enemies don't pass the borders of the screen
 			if (leftMostEnemPix < 0 || rightMostEnemPix > inputs.canvas.width) {
-				let killZoneReached = false;
 				newVelX = newVelX * -1;
-				newEnemies = enemies.map(enemy => {
-					let newY = enemy.y + velY;
-					if (newY > killZone) {
-						killZoneReached = true;
-					}
-					return enemy.assoc('y', newY); 
-				});
-				if (killZoneReached === true) {
-					return playerDies(); 
-				}
 			}
+		}
+		let newGameState = assoc("velX", newVelX);
+		return newGameState;
+	}
+
+	function enemyCollisionWithVerticalBorder() {
+		let newEnemies = enemies;
+		let newGameRunning = gameRunning;
+		if (enemies.length > 0) {
+			newEnemies = enemies.map(enemy => {
+				let newY = enemy.y + velY;
+				if (newY > killPlayerZone) {
+
+				}
+			});
 		}
 		let newGameState = merge({
 			gameRunning: newGameRunning,
-			velX: newVelX,
 			enemies: newEnemies
 		});
 		return newGameState;
@@ -211,7 +211,7 @@ export default function GameState(args) {
 	}
 
 	function updateGameLoop(keys) {
-		return updatePlayer(keys).updateBodies().enemyCollisionWithBorder().enemyShootsAI().bulletCollision();
+		return updatePlayerAction(keys).updateBodies().keepEnemyWithinHorizontalBorders().enemyCollisionWithBorders().enemyShootsAI().bulletCollision();
 	}
 
 	let that = Object.freeze({
@@ -226,7 +226,8 @@ export default function GameState(args) {
 		player,
 		updateIfGameIsRunning,
 		bulletCollision,
-		enemyCollisionWithBorder,
+		keepEnemyWithinHorizontalBorders,
+		enemyCollisionWithBorders,
 		enemyShootsAI,
 		updateBodies,
 		playerShoots,

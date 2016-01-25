@@ -6,7 +6,6 @@ import keys from './keystates';
 import GameState from './states';
 
 (function() {
-
 	let canvas = inputs.canvas;
 	let status = inputs.status;
 	keys.addListeners();
