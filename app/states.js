@@ -143,41 +143,34 @@ export default function GameState(args) {
 			playerBullets: [],
 			enemyBullets: []
 		});
-	}
-
-	function enemyCollisionWithHorizontalBorders() {
+}
+	function enemyCollisionWithBorder() {
+		let newVelX = velX;
+		let newEnemies = enemies;
 		if (enemies.length > 0) {
 			let leftMostEnemPix = enemies[0].x;
 			let rightMostEnemPix = enemies[enemies.length - 1].x + enemies[0].w;
+			// ensure that enemies don't pass the borders of the screen
 			if (leftMostEnemPix < 0 || rightMostEnemPix > inputs.canvas.width) {
-				return true;
+				newVelX = newVelX * -1;
+				newEnemies = enemies.map(enemy => {
+					let newY = enemy.y + velY;
+					// add newY to enemy 
+					return enemy.assoc('y', newY);
+				}); 
+				let killPlayerZoneReached = newEnemies.some(enemy => enemy.y > killPlayerZone);
+				if(killPlayerZoneReached) {
+					return playerDies();  
+				}
 			}
 		}
+		let newGameState = merge({
+			velX: newVelX,
+			enemies: newEnemies
+		});
+		return newGameState;
 	}
 
-	function enemyCollisionWithVerticalBorder() {
-		let newEnemies = enemies;
-		let newVelX = velX;
-		let newGameRunning = gameRunning;
-		if (enemyCollisionWithHorizontalBorders) {
-			let killPlayerZoneReached;
-			newVelX = velX* -1;
-			newEnemies = enemies.map(enemy => {
-				let newY = enemy.y + velY;
-				newY > killPlayerZone ? killPlayerZoneReached = true : killPlayerZoneReached = false;
-				return enemy.assoc("y", newY);
-			});
-			if (killPlayerZoneReached) {
-				return playerDies();
-			}
-			let newGameState = merge({
-				gameRunning: newGameRunning,
-				enemies: newEnemies,
-				velX: newVelX
-			});
-			return newGameState;
-		}
-	}
 	function enemyHitBy(bullet) {
 		return enemies.reduce((found, enemy) => {
 			return found || (sqCollide(enemy, bullet) ? enemy : null)
@@ -203,8 +196,6 @@ export default function GameState(args) {
 		let newEnemies = enemies.filter(e => deadEnemies.indexOf(e) === -1);
 		if (newEnemies.length === 0) {
 			return playerWins();
-		} else {
-
 		}
 		let newGameState = merge({
 			gameRunning: newGameRunning,
@@ -215,7 +206,7 @@ export default function GameState(args) {
 	}
 
 	function updateGameLoop(keys) {
-		return updatePlayerAction(keys).updateBodies().enemyCollisionWithVerticalBorder().enemyShootsAI().bulletCollision();
+		return updatePlayerAction(keys).updateBodies().enemyCollisionWithBorder().enemyShootsAI().bulletCollision();
 	}
 
 	let that = Object.freeze({
@@ -230,7 +221,7 @@ export default function GameState(args) {
 		player,
 		updateIfGameIsRunning,
 		bulletCollision,
-		enemyCollisionWithVerticalBorder,
+		enemyCollisionWithBorder,
 		enemyShootsAI,
 		updateBodies,
 		playerShoots,
