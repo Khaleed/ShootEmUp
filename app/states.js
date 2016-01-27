@@ -204,8 +204,8 @@ export default function GameState(args) {
 		playerBullets.forEach(bullet => {
 			let hit = enemyHitBy(bullet);
 			if (hit) {
-				conjoin(deadEnemies, hit);
-				conjoin(usedBullets, bullet);
+				deadEnemies.push(hit);
+				usedBullets.push(bullet);
 			}
 		});
 		let newPlayerBullets = playerBullets.filter(b => usedBullets.indexOf(b) === -1);
