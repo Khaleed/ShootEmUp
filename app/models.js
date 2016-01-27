@@ -47,14 +47,14 @@ export function Player(args) {
 	let that = Object.freeze({
 		x,
 		y: canvas.height - 50,
-			w: 25,
-			h: 25,
-			color: 'blue',
-			assoc,
-			merge,
-			update: () => {
-				return that;
-			}
+		w: 25,
+		h: 25,
+		color: 'blue',
+		assoc,
+		merge,
+		update: () => {
+			return that;
+		}
 	});
 	return that;
 }
@@ -67,52 +67,46 @@ export function Enemy(args) {
 		x,
 		y,
 		w: 25,
-			h: 25,
-			color: 'red',
-			assoc,
-			merge,
-			update: velX => {
-				return assoc("x", x + velX)
-			}
+		h: 25,
+		color: 'red',
+		assoc,
+		merge,
+		update: velX => {
+			return assoc("x", x + velX)
+		}
 	});
 	return that;
 }
 
 export function Bullet(args) {
-	let {
-		x, y, d, color
-	} = args;
+	let {x, y, d, color} = args;
 	let assoc = AssocMixin(Bullet, args);
 	let merge = MergeMixin(Bullet, args);
 	let that = Object.freeze({
 		x,
 		y,
 		w: 5,
-			h: 5,
-			d,
-			color,
-			assoc,
-			merge,
-			update: () => {
-				return assoc("y", y + d)
-			}
+		h: 5,
+		d,
+		color,
+		assoc,
+		merge,
+		update: () => {
+			return assoc("y", y + d)
+		}
 	});
 	return that;
 }
 
 export function PlayerBullet(args) {
-	let {
-		x, y
-	} = args;
+	let {x, y} = args;
 	return Bullet({
 		x, y, d: -1, color: 'white'
 	});
 }
 
 export function EnemyBullet(args) {
-	let {
-		x, y
-	} = args;
+	let {x, y} = args;
 	return Bullet({
 		x, y, d: 1, color: '#FF9900'
 	});
