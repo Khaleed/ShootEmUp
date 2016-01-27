@@ -124,14 +124,26 @@ export default function GameState(args) {
 		}
 	}
 
-	function playerDies() {
+	function playerGetsShot() {
 		inputs.status.innerHTML = 'You lose';
 		return merge({
 			gameRunning: false,
 			enemyBullets: [],
 			playerBullets: [],
-			enemies: [],
-			player: false
+			enemies: [],			 
+			player: false			
+		});
+	}
+
+
+	function playerPerimeterBreached() {
+		inputs.status.innerHTML = 'You lose';
+		return merge({
+			gameRunning: false,
+			enemyBullets: [],
+			playerBullets: [],
+			enemies: [],			 
+			player: false			
 		});
 	}
 
@@ -143,10 +155,12 @@ export default function GameState(args) {
 			playerBullets: [],
 			enemyBullets: []
 		});
-}
+	}
+
 	function enemyCollisionWithBorder() {
 		let newVelX = velX;
 		let newEnemies = enemies;
+		let newGameRunning = gameRunning;
 		if (enemies.length > 0) {
 			let leftMostEnemPix = enemies[0].x;
 			let rightMostEnemPix = enemies[enemies.length - 1].x + enemies[0].w;
@@ -155,31 +169,33 @@ export default function GameState(args) {
 				newVelX = newVelX * -1;
 				newEnemies = enemies.map(enemy => {
 					let newY = enemy.y + velY;
-					// add newY to enemy 
-					return enemy.assoc('y', newY);
-				}); 
-				let killPlayerZoneReached = newEnemies.some(enemy => enemy.y > killPlayerZone);
-				if(killPlayerZoneReached) {
-					return playerDies();  
-				}
+					return enemy.assoc('y', newY); // move enemies down
+				});
+			}
+			let killPlayerZoneReached = newEnemies.some(enemy => enemy.y > killPlayerZone);
+			if (killPlayerZoneReached) {
+				return playerPerimeterBreached();
+			} else {
+				let newGameState = merge({
+					velX: newVelX,
+					enemies: newEnemies,
+					gameRunning: newGameRunning
+				});
+				console.log('hi i am one line above returning gameState'); // this is the problem
+				// playerDies() is returned and we never get here! 
+				return newGameState;
 			}
 		}
-		let newGameState = merge({
-			velX: newVelX,
-			enemies: newEnemies
-		});
-		return newGameState;
 	}
 
 	function enemyHitBy(bullet) {
-		return enemies.reduce((found, enemy) => {
-			return found || (sqCollide(enemy, bullet) ? enemy : null)
-		}, null);
+		return enemies.reduce((found, enemy) =>
+			found || (sqCollide(enemy, bullet) ? enemy : null), null);
 	}
 
 	function bulletCollision() {
 		if (enemyBullets.some(bullet => sqCollide(bullet, player))) { // some checks if elems pass function test
-			return playerDies();
+			return playerGetsShot();
 		}
 		let newGameRunning = gameRunning;
 		let newPlayer = player;
@@ -194,15 +210,17 @@ export default function GameState(args) {
 		});
 		let newPlayerBullets = playerBullets.filter(b => usedBullets.indexOf(b) === -1);
 		let newEnemies = enemies.filter(e => deadEnemies.indexOf(e) === -1);
+
 		if (newEnemies.length === 0) {
 			return playerWins();
+		} else { ///is this because of this? // let me check this shitty JS curlys
+			let newGameState = merge({
+				gameRunning: newGameRunning,
+				playerBullets: newPlayerBullets,
+				enemies: newEnemies
+			});
+			return newGameState;
 		}
-		let newGameState = merge({
-			gameRunning: newGameRunning,
-			playerBullets: newPlayerBullets,
-			enemies: newEnemies
-		});
-		return newGameState;
 	}
 
 	function updateGameLoop(keys) {
