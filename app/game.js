@@ -1,6 +1,6 @@
 'use strict';
 
-import { Enemy, Player, EnemyBullet, PlayerBullet } from './models';
+import {Enemy, Player, EnemyBullet, PlayerBullet} from './models';
 import inputs from './inputs';
 import keys from './keystates';
 import GameState from './states';
