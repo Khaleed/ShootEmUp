@@ -40,9 +40,7 @@ import GameState from './states';
 		// draw entities
 		function draw(gameState) {
 			ctx.clearRect(0, 0, canvas.width, canvas.height);
-			gameState.enemies.forEach(function(item, indx, array) {
-				drawRect(item);
-			});
+			gameState.enemies.map(enemy => drawRect(enemy));
 			gameState.enemyBullets.concat(gameState.playerBullets).forEach(function(item, indx, array) {
 				drawRect(item);
 			});
