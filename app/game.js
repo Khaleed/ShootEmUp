@@ -25,13 +25,6 @@ import GameState from './states';
 		}
 		canvas.width = 800;
 		canvas.height = 600;
-		function update(gameState) {
-			let frozenKeys = Object.assign({}, keys);
-			Object.freeze(frozenKeys);
-			let newGameState = gameState.updateIfGameIsRunning(frozenKeys);
-			playSounds(gameState, newGameState);
-			draw(newGameState);
-		};
 		function drawRect(rect) {
 			ctx.fillStyle = rect.color;
 			ctx.fillRect(rect.x, rect.y, rect.w, rect.h);
@@ -44,6 +37,13 @@ import GameState from './states';
 				drawRect(gameState.player);
 			}
 			setTimeout(() => update(gameState), 1);
+		};
+		function update(gameState) {
+			let frozenKeys = Object.assign({}, keys);
+			Object.freeze(frozenKeys);
+			let newGameState = gameState.updateIfGameIsRunning(frozenKeys);
+			playSounds(gameState, newGameState);
+			draw(newGameState);
 		};
 		draw(GameState({inputs}));
 	});

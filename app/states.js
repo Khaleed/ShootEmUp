@@ -20,15 +20,15 @@ function range(start, end) {
 }
 
 function createEnemyBodies() {
-	let iter = range(0, 8);
-	return iter.map(function(i) {
+	let iter = range(0, 8); 
+	return iter.map(function(i) { 
 		return iter.map(function(j) {
 			return Enemy({
-				x: 45 * i,
-				y: 20 + 45 * j
+				x: 45 * i, 
+				y: 20 + 45 * j 
 			});
 		});
-	}).reduce((result, next) => result.concat(next));
+	}).reduce((result, next) => result.concat(next)); 
 }
 
 export default function GameState(args) {
@@ -82,7 +82,7 @@ export default function GameState(args) {
 
 	function makeNewBullet() {
 		inputs.playerShootSound.play();
-		return conjoin(playerBullets, PlayerBullet({ // conjoin => like using push functionally
+		return conjoin(playerBullets, PlayerBullet({
 			x: player.x + player.w / 2,
 			y: player.y
 		}));
@@ -115,12 +115,12 @@ export default function GameState(args) {
 		let newGameState = assoc('enemyBullets', newBullets);
 		return newGameState;
 	}
-	// change all if else to cond
+
 	function enemyShootsAI() {
 		if ((Math.random() * 100) <= 1) {
 			return enemyShoots();
 		} else {
-			return that; // current game state
+			return that;
 		}
 	}
 
