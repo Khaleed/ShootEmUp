@@ -25,7 +25,6 @@ import GameState from './states';
 		}
 		canvas.width = 800;
 		canvas.height = 600;
-		// game loop
 		function update(gameState) {
 			let frozenKeys = Object.assign({}, keys);
 			Object.freeze(frozenKeys);
@@ -37,7 +36,6 @@ import GameState from './states';
 			ctx.fillStyle = rect.color;
 			ctx.fillRect(rect.x, rect.y, rect.w, rect.h);
 		}
-		// draw entities
 		function draw(gameState) {
 			ctx.clearRect(0, 0, canvas.width, canvas.height);
 			gameState.enemies.map(enemy => drawRect(enemy));
@@ -49,7 +47,6 @@ import GameState from './states';
 		};
 		draw(GameState({inputs}));
 	});
-
 }());
 
 
