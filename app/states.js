@@ -180,35 +180,38 @@ export default function GameState(args) {
 	}
 
 	function bulletCollision() {
-		if (enemyBullets.some(bullet => sqCollide(bullet, player))) { // some checks if elems pass function test
-			return playerDies();
-		}
-		let newGameRunning = gameRunning;
-		let newPlayer = player;
-		let deadEnemies = [];
-		let usedBullets = [];
-		playerBullets.forEach(bullet => {
-			let hit = enemyHitBy(bullet);
-			if (hit) {
-				deadEnemies.push(hit);
-				usedBullets.push(bullet);
+		if (gameRunning) {
+			if (enemyBullets.some(bullet => sqCollide(bullet, player))) { // some checks if elems pass function test
+				return playerDies();
 			}
-		});
-		let newPlayerBullets = playerBullets.filter(b => usedBullets.indexOf(b) === -1);
-		let newEnemies = enemies.filter(e => deadEnemies.indexOf(e) === -1);
-
-		if (newEnemies.length === 0) {
-			return playerWins();
-		} else { ///is this because of this? // let me check this shitty JS curlys
-			let newGameState = merge({
-				gameRunning: newGameRunning,
-				playerBullets: newPlayerBullets,
-				enemies: newEnemies
+			let newGameRunning = gameRunning;
+			let newPlayer = player;
+			let deadEnemies = [];
+			let usedBullets = [];
+			playerBullets.forEach(bullet => {
+				let hit = enemyHitBy(bullet);
+				if (hit) {
+					deadEnemies.push(hit);
+					usedBullets.push(bullet);
+				}
 			});
-			return newGameState;
+			let newPlayerBullets = playerBullets.filter(b => usedBullets.indexOf(b) === -1);
+			let newEnemies = enemies.filter(e => deadEnemies.indexOf(e) === -1);
+
+			if (newEnemies.length === 0) {
+				return playerWins();
+			} else { ///is this because of this? // let me check this shitty JS curlys
+				let newGameState = merge({
+					gameRunning: newGameRunning,
+					playerBullets: newPlayerBullets,
+					enemies: newEnemies
+				});
+				return newGameState;
+			}
+		} else{
+			return that;
 		}
 	}
-
 	function updateGameLoop(keys) {
 		return updatePlayerAction(keys).updateBodies().enemyCollisionWithBorder().enemyShootsAI().bulletCollision();
 	}
