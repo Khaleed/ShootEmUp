@@ -31,8 +31,8 @@ module.exports = {
     module: {
         loaders: [
             // ES6 loader
-            {
-                test: /\.jsx?$/,
+            {   
+                test: /\.jsx?$/, // match loader to file
                 exclude: /(node_modules|bower_components)/,
                 loader: 'babel?optional[]=runtime'
             },

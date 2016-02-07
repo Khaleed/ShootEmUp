@@ -4,21 +4,21 @@ var ExtractTextPlugin = require("extract-text-webpack-plugin");
 
 module.exports = {
     // console errors map to correct file and line number
-    devtool: 'eval-source-map',
+    devtool: 'source-map',
     // app entry point
     entry: [
-        // hot style updates
-        'webpack/hot/dev-server',
-
-        // refresh browser on none hot updates
+        // refresh browser on none HMR updates
         'webpack-dev-server/client?http://localhost:8080',
-
+        // save code -> gets injected into page without refresh
+        'webpack/hot/dev-server',
         // current app
         path.resolve(__dirname, 'app', 'game.js')
     ],
 
     devServer: {
-        contentBase: "public/"
+        // where to serve files from
+        contentBase: "public/",
+        hot: true
     },
 
     output: {

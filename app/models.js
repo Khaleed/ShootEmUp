@@ -18,7 +18,7 @@ export function MergeMixin(constr, args) {
 	}
 }
 
-// helper 1
+// helper 1 
 export function cond(test, result, ...args) {
 	if (test()) {
 		return result();

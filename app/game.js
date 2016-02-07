@@ -25,10 +25,12 @@ import GameState from './states';
 		}
 		canvas.width = 800;
 		canvas.height = 600;
+
 		function drawRect(rect) {
 			ctx.fillStyle = rect.color;
 			ctx.fillRect(rect.x, rect.y, rect.w, rect.h);
 		}
+
 		function draw(gameState) {
 			ctx.clearRect(0, 0, canvas.width, canvas.height);
 			gameState.enemies.map(enemy => drawRect(enemy));
@@ -38,6 +40,7 @@ import GameState from './states';
 			}
 			setTimeout(() => update(gameState), 1);
 		};
+
 		function update(gameState) {
 			let frozenKeys = Object.assign({}, keys);
 			Object.freeze(frozenKeys);
@@ -45,7 +48,9 @@ import GameState from './states';
 			playSounds(gameState, newGameState);
 			draw(newGameState);
 		};
-		draw(GameState({inputs}));
+		draw(GameState({
+			inputs
+		}));
 	});
 }());
 

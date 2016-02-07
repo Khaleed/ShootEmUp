@@ -7,7 +7,6 @@ function sqCollide(s1, s2) {
 	const c2 = s2.x < s1.x + s1.w; // left edge of square 1 is to the left of right edge of square 2
 	const c3 = s1.y + s1.h > s2.y; // top edge of square 1 is above bottom edge of square 2
 	const c4 = s2.y + s2.h > s1.y //  bottom edge of the square 1 is below the top edge of the square 2
-	// collision has happened
 	return (c1 && c2 && c3 && c4);
 }
 
@@ -20,15 +19,15 @@ function range(start, end) {
 }
 
 function createEnemyBodies() {
-	let iter = range(0, 8); 
-	return iter.map(function(i) { 
+	let iter = range(0, 8);
+	return iter.map(function(i) {
 		return iter.map(function(j) {
 			return Enemy({
-				x: 45 * i, 
-				y: 20 + 45 * j 
+				x: 45 * i,
+				y: 20 + 45 * j
 			});
 		});
-	}).reduce((result, next) => result.concat(next)); 
+	}).reduce((result, next) => result.concat(next));
 }
 
 export default function GameState(args) {
@@ -130,8 +129,8 @@ export default function GameState(args) {
 			gameRunning: false,
 			enemies: [],
 			enemyBullets: [],
-			playerBullets: [],			 
-			player: false			
+			playerBullets: [],
+			player: false
 		});
 	}
 
@@ -152,17 +151,16 @@ export default function GameState(args) {
 		if (enemies.length > 0) {
 			let leftMostEnemPix = enemies[0].x;
 			let rightMostEnemPix = enemies[enemies.length - 1].x + enemies[0].w;
-			// ensure that enemies don't pass the borders of the screen
 			if (leftMostEnemPix < 0 || rightMostEnemPix > inputs.canvas.width) {
 				newVelX = newVelX * -1;
 				newEnemies = enemies.map(enemy => {
 					let newY = enemy.y + velY;
-					return enemy.assoc('y', newY); // move enemies down
+					return enemy.assoc('y', newY);
 				});
 			}
 			let killPlayerZoneReached = newEnemies.some(enemy => enemy.y > killPlayerZone);
 			if (killPlayerZoneReached) {
-				return playerDies(); // return a newGameState
+				return playerDies();
 			} else {
 				let newGameState = merge({
 					velX: newVelX,
@@ -200,7 +198,7 @@ export default function GameState(args) {
 
 			if (newEnemies.length === 0) {
 				return playerWins();
-			} else { ///is this because of this? // let me check this shitty JS curlys
+			} else {
 				let newGameState = merge({
 					gameRunning: newGameRunning,
 					playerBullets: newPlayerBullets,
@@ -208,10 +206,11 @@ export default function GameState(args) {
 				});
 				return newGameState;
 			}
-		} else{
+		} else {
 			return that;
 		}
 	}
+	
 	function updateGameLoop(keys) {
 		return updatePlayerAction(keys).updateBodies().enemyCollisionWithBorder().enemyShootsAI().bulletCollision();
 	}
