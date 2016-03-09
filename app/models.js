@@ -55,7 +55,7 @@ export function Player(args) {
 		color: 'blue',
 		assoc,
 		merge,
-    update: () => that
+        update: () => that
 	});
 	return that;
 }
@@ -72,7 +72,7 @@ export function Enemy(args) {
 		color: 'red',
 		assoc,
 		merge,
-    update: velX => assoc("x", x + velX)
+        update: velX => assoc("x", x + velX)
 	});
 	return that;
 }
@@ -90,7 +90,7 @@ export function Bullet(args) {
 		color,
 		assoc,
 		merge,
-    update: () => assoc("y", y + d)
+        update: () => assoc("y", y + d)
 	});
 	return that;
 }
