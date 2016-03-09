@@ -1,4 +1,7 @@
-import inputs from './inputs'
+"use strict";
+
+import inputs from './inputs';
+
 const canvas = inputs.canvas;
 let status = inputs.status;
 
@@ -18,7 +21,7 @@ export function MergeMixin(constr, args) {
 	}
 }
 
-// helper 1 
+// helper 1
 export function cond(test, result, ...args) {
 	if (test()) {
 		return result();
@@ -52,9 +55,7 @@ export function Player(args) {
 		color: 'blue',
 		assoc,
 		merge,
-		update: () => {
-			return that;
-		}
+    update: () => that
 	});
 	return that;
 }
@@ -71,9 +72,7 @@ export function Enemy(args) {
 		color: 'red',
 		assoc,
 		merge,
-		update: velX => {
-			return assoc("x", x + velX)
-		}
+    update: velX => assoc("x", x + velX)
 	});
 	return that;
 }
@@ -91,9 +90,7 @@ export function Bullet(args) {
 		color,
 		assoc,
 		merge,
-		update: () => {
-			return assoc("y", y + d)
-		}
+    update: () => assoc("y", y + d)
 	});
 	return that;
 }
