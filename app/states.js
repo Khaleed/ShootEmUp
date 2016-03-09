@@ -6,7 +6,7 @@ function sqCollide(s1, s2) {
 	const c1 = s1.x < s2.x + s2.w; // right edge of square 1 is to the right of left edge of square 2
 	const c2 = s2.x < s1.x + s1.w; // left edge of square 1 is to the left of right edge of square 2
 	const c3 = s1.y + s1.h > s2.y; // top edge of square 1 is above bottom edge of square 2
-	const c4 = s2.y + s2.h > s1.y //  bottom edge of the square 1 is below the top edge of the square 2
+	const c4 = s2.y + s2.h > s1.y; //  bottom edge of the square 1 is below the top edge of the square 2
 	return (c1 && c2 && c3 && c4);
 }
 
