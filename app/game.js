@@ -18,6 +18,8 @@ import GameState from './states';
 
 	window.addEventListener('load', () => {
 		let ctx;
+		let shipImg = document.getElementById("ship");
+
 		if (canvas.getContext === undefined) {
 			console.error('browser does not support canvas');
 		} else {
@@ -31,12 +33,19 @@ import GameState from './states';
 			ctx.fillRect(rect.x, rect.y, rect.w, rect.h);
 		}
 
+		function drawPlayer(player) {
+//			ctx.fillStyle = rect.color;
+//			ctx.putImageData(shipImg, player.x, player.y);
+			ctx.drawImage(shipImg, player.x-50, player.y-50);
+		}
+
 		function draw(gameState) {
 			ctx.clearRect(0, 0, canvas.width, canvas.height);
 			gameState.enemies.map(enemy => drawRect(enemy));
 			gameState.enemyBullets.concat(gameState.playerBullets).map(bullet => drawRect(bullet));
 			if (gameState.player) {
-				drawRect(gameState.player);
+//				drawRect(gameState.player);
+				drawPlayer(gameState.player);
 			}
 			setTimeout(() => update(gameState), 1);
 		};
