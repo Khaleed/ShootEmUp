@@ -18,8 +18,14 @@ import GameState from './states';
 
 	window.addEventListener('load', () => {
 		let ctx;
-		let shipImg = document.getElementById("ship");
+	//	let shipImg = document.getElementById("ship");
 
+		var shipImg = new Image();
+		var invaderImg = new Image();
+
+		shipImg.src = 'smallship.png'; 
+		invaderImg.src = 'smallinvader.png'; 
+		
 		if (canvas.getContext === undefined) {
 			console.error('browser does not support canvas');
 		} else {
@@ -36,12 +42,16 @@ import GameState from './states';
 		function drawPlayer(player) {
 //			ctx.fillStyle = rect.color;
 //			ctx.putImageData(shipImg, player.x, player.y);
-			ctx.drawImage(shipImg, player.x-50, player.y-50);
+			ctx.drawImage(shipImg, player.x, player.y);
+		}
+
+		function drawInvader(pos) {
+			ctx.drawImage(invaderImg, pos.x, pos.y);
 		}
 
 		function draw(gameState) {
 			ctx.clearRect(0, 0, canvas.width, canvas.height);
-			gameState.enemies.map(enemy => drawRect(enemy));
+			gameState.enemies.map(enemy => drawInvader(enemy));
 			gameState.enemyBullets.concat(gameState.playerBullets).map(bullet => drawRect(bullet));
 			if (gameState.player) {
 //				drawRect(gameState.player);
