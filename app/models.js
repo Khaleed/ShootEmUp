@@ -50,8 +50,10 @@ export function Player(args) {
 	let that = Object.freeze({
 		x,
 		y: canvas.height - 50,
-		w: 25,
-		h: 25,
+//		w: 25,
+//		h: 25,
+		w: 55,
+		h: 34,
 		color: 'blue',
 		assoc,
 		merge,
