@@ -108,3 +108,30 @@ export function EnemyBullet(args) {
 		x, y, d: 1, color: '#FF9900'
 	});
 }
+
+
+function range(end, start) {
+	var result = [];
+	for (var i = start; i <= end; i += 1) {
+		result.push(i);
+	}
+}
+
+var numbers = range(1, 100);
+
+numbers.map( c => {
+	if (c % 3 === 0) {
+		console.log("fizz");
+	} else if (c % 5 === 0) {
+		console.log("buzz");
+	} else if (c % 5 === 0 && c % 3 === 0) {
+		console.log("fizzbuzz");
+	} else {
+		console.log(c);
+	}
+});
+
+
+
+
+
