@@ -1,9 +1,9 @@
 'use strict';
 
-import {Enemy, Player, EnemyBullet, PlayerBullet} from './models';
-import inputs from './inputs';
-import keys from './keystates';
-import GameState from './states';
+import {Enemy, Player, EnemyBullet, PlayerBullet} from './model';
+import inputs from './input';
+import keys from './keystate';
+import GameState from './state';
 
 (function() {
 	let canvas = inputs.canvas;

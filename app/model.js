@@ -1,6 +1,6 @@
 "use strict";
 
-import inputs from './inputs';
+import inputs from './input';
 
 const canvas = inputs.canvas;
 let status = inputs.status;
