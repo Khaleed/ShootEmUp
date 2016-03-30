@@ -39,7 +39,7 @@ import GameState from './state';
 				drawRect(gameState.player);
 			}
 			setTimeout(() => update(gameState), 1);
-		};
+		}
 
 		function update(gameState) {
 			let frozenKeys = Object.assign({}, keys);
@@ -47,10 +47,9 @@ import GameState from './state';
 			let newGameState = gameState.updateIfGameIsRunning(frozenKeys);
 			playSounds(gameState, newGameState);
 			draw(newGameState);
-		};
-		draw(GameState({
-			inputs
-		}));
+		}
+		
+		draw(GameState({inputs}));
 	});
 }());
 
