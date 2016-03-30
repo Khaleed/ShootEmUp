@@ -52,7 +52,7 @@ export function Player(args) {
 		y: canvas.height - 50,
 		w: 25,
 		h: 25,
-		color: 'blue',
+		color: 'green',
 		assoc,
 		merge,
 		update: () => that
@@ -69,7 +69,7 @@ export function Enemy(args) {
 		y,
 		w: 25,
 		h: 25,
-		color: 'red',
+		color: 'white',
 		assoc,
 		merge,
 		update: velX => assoc("x", x + velX)
