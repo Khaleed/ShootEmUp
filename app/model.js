@@ -1,16 +1,15 @@
-"use strict";
+'use strict';
 
 import inputs from './input';
 
 const canvas = inputs.canvas;
-let status = inputs.status;
 
 export function AssocMixin(constr, args) {
 	return (key, val) => {
 		let newArgs = Object.assign({}, args);
 		newArgs[key] = val;
 		return constr(newArgs);
-	}
+  };
 }
 
 export function MergeMixin(constr, args) {
@@ -18,10 +17,10 @@ export function MergeMixin(constr, args) {
 		let copy = Object.assign({}, args);
 		let newArgs = Object.assign(copy, obj);
 		return constr(newArgs);
-	}
+  };
 }
 
-// helper 1
+// helper 1 -> Currying function
 export function cond(test, result, ...args) {
 	if (test()) {
 		return result();
