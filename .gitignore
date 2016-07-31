@@ -1,5 +1,6 @@
 envs
 node_modules/
+public/bundle*
 build/Release
 .npm
 .node_repl_history
@@ -24,3 +25,4 @@ tramp
 /eshell/history
 /eshell/lastdir
 .tern-port
+

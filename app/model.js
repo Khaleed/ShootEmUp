@@ -49,9 +49,9 @@ export function Player(args) {
 	let that = Object.freeze({
 		x,
 		y: canvas.height - 50,
-		w: 25,
-		h: 25,
-		color: 'green',
+		w: 55,
+		h: 34,
+		color: 'blue',
 		assoc,
 		merge,
 		update: () => that
@@ -107,6 +107,3 @@ export function EnemyBullet(args) {
 		x, y, d: 1, color: '#FF9900'
 	});
 }
-
-
-

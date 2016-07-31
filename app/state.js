@@ -31,7 +31,7 @@ function createEnemyBodies() {
 }
 
 export default function GameState(args) {
-	let {inputs, x = 0, y = 0, gameRunning = true, playerBullets = [], enemyBullets = [], enemies = createEnemyBodies(), 
+  let {inputs, x = 0, y = 0, gameRunning = true, playerBullets = [], enemyBullets = [], enemies = createEnemyBodies(),
 		player = Player({}), playerBulletNframeCounter = 0, playerFinalBulletNframeCount = 40, velX = 2} = args;
 	let assoc = AssocMixin(GameState, args);
 	let merge = MergeMixin(GameState, args);
@@ -44,20 +44,20 @@ export default function GameState(args) {
 
 	function newDir(keys) {
 		return cond(
-			() => keys.leftPressedKey === true && player.x > 0, () => -1, 
-			() => keys.rightPressedKey === true && player.x < inputs.canvas.width - 32, () => 1, 
+      () => keys.leftPressedKey === true && player.x > 0, () => -1,
+      () => keys.rightPressedKey === true && player.x < inputs.canvas.width - 55, () => 1,
 			() => 0);
 	}
 
 	function updatePlayerMovement(keys) {
 		return assoc("player", cond(
-			() => player, () => player.assoc("x", player.x + newDir(keys) * playerVel), 
+      () => player, () => player.assoc("x", player.x + newDir(keys) * playerVel),
 			() => false));
 	}
 
 	function updatePlayerAction(keys) {
 		return cond(
-			() => keys.spacePressedKey === true, () => updatePlayerMovement(keys).playerShoots(), 
+      () => keys.spacePressedKey === true, () => updatePlayerMovement(keys).playerShoots(),
 			() => updatePlayerMovement(keys));
 	}
 
@@ -66,7 +66,7 @@ export default function GameState(args) {
 	}
 
 	function updateIfGameIsRunning(keys) {
-		let state = maybeRestart(keys)
+      let state = maybeRestart(keys);
 		return gameRunning ? state.updateGameLoop(keys) : state;
 	}
 
@@ -89,10 +89,10 @@ export default function GameState(args) {
 
 	function playerShoots() {
 		let newBullets = cond(
-			() => playerBulletNframeCounter === 0, makeNewBullet, 
+      () => playerBulletNframeCounter === 0, makeNewBullet,
 			() => playerBullets);
 		let newCounter = cond(
-			() => playerBulletNframeCounter > 0, () => playerBulletNframeCounter - 1, 
+      () => playerBulletNframeCounter > 0, () => playerBulletNframeCounter - 1,
 			() => playerFinalBulletNframeCount);
 		let newGameState = merge({
 			playerBulletNframeCounter: newCounter,
@@ -210,7 +210,7 @@ export default function GameState(args) {
 			return that;
 		}
 	}
-	
+
 	function updateGameLoop(keys) {
 		return updatePlayerAction(keys).updateBodies().enemyCollisionWithBorder().enemyShootsAI().bulletCollision();
 	}
