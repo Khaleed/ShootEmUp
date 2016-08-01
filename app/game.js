@@ -6,7 +6,6 @@ import GameState from './state';
 
 (function() {
     let canvas = inputs.canvas;
-    let status = inputs.status;
     keys.addListeners();
 
     function playSounds(oldState, newState) {
@@ -18,11 +17,8 @@ import GameState from './state';
     window.addEventListener('load', () => {
         let ctx;
 
-        var shipImg = new Image();
-        var invaderImg = new Image();
-
-        shipImg.src = 'images/smallship.png';
-        invaderImg.src = 'images/smallinvader.png';
+        const shipImg = document.getElementById('player');
+        const invaderImg = document.getElementById('invader');
 
         if (canvas.getContext === undefined) {
             console.error('browser does not support canvas');
