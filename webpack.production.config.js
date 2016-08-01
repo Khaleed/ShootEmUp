@@ -7,7 +7,7 @@ module.exports = {
     entry: path.resolve(__dirname, 'app', 'game.js'),
 
     output: {
-        path: __dirname,
+        path: path.resolve(__dirname, 'public'),
         publicPath: '/',
         filename: 'bundle.js'
     },
