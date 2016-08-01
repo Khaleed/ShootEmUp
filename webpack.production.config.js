@@ -3,23 +3,8 @@ var path = require('path');
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
 
 module.exports = {
-    // console errors map to correct file and line number
-    devtool: 'source-map',
-    // app entry point
-    entry: [
-        // hot style updates
-        'webpack/hot/dev-server',
-
-        // refresh browser on none hot updates
-        'webpack-dev-server/client?http://localhost:8080',
-
-        // current app
-        path.resolve(__dirname, 'app', 'game.js')
-    ],
-
-    devServer: {
-        contentBase: "public/"
-    },
+    // current app
+    entry: path.resolve(__dirname, 'app', 'game.js'),
 
     output: {
         path: __dirname,
@@ -62,7 +47,7 @@ module.exports = {
         new webpack.optimize.DedupePlugin(),
         // Optimise occurence order
         new webpack.optimize.OccurenceOrderPlugin(),
-        // only for production  
+        // only for production
         new webpack.DefinePlugin({
             'process.env': {
                 'NODE_ENV': JSON.stringify('production')
