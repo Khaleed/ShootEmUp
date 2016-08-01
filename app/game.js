@@ -16,7 +16,6 @@ import GameState from './state';
 
     window.addEventListener('load', () => {
         let ctx;
-
         const shipImg = document.getElementById('player');
         const invaderImg = document.getElementById('invader');
 
@@ -49,7 +48,7 @@ import GameState from './state';
                 drawPlayer(gameState.player);
             }
             setTimeout(() => update(gameState), 1);
-        };
+        }
 
         function update(gameState) {
             let frozenKeys = Object.assign({}, keys);
@@ -57,9 +56,11 @@ import GameState from './state';
             let newGameState = gameState.updateIfGameIsRunning(frozenKeys);
             playSounds(gameState, newGameState);
             draw(newGameState);
-        };
+        }
+
         draw(GameState({
             inputs
         }));
+
     });
 }());
