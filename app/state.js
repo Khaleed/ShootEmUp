@@ -31,19 +31,8 @@ function createEnemyBodies() {
 }
 
 export default function GameState(args) {
-    let {
-        inputs,
-        x = 0,
-        y = 0,
-        gameRunning = true,
-        playerBullets = [],
-        enemyBullets = [],
-        enemies = createEnemyBodies(),
-        player = Player({}),
-        playerBulletNframeCounter = 0,
-        playerFinalBulletNframeCount = 40,
-        velX = 2
-    } = args;
+    let { inputs, x = 0, y = 0, gameRunning = true, playerBullets = [], enemyBullets = [], enemies = createEnemyBodies(),
+    	player = Player({}), playerBulletNframeCounter = 0, playerFinalBulletNframeCount = 40, velX = 2 } = args;
     let assoc = AssocMixin(GameState, args);
     let merge = MergeMixin(GameState, args);
     Object.freeze(enemies);
