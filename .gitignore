@@ -1,7 +1,5 @@
 envs
 node_modules/
-public/bundle*
-bundle.js
 build/Release
 .npm
 .node_repl_history
