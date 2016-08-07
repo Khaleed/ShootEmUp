@@ -113,3 +113,16 @@ export function EnemyBullet(args) {
         color: '#FF9900'
     });
 }
+
+export function Particle(args) {
+    let {x, y} = args;
+    let assoc = AssocMixin(Particle, args);
+    let merge = MergeMixin(Particle, args);
+    let that = Object.freeze({
+        x,
+        y,
+        color: 'red',
+        vx: (2 * Math.random()) - 1,
+        vy: Math.random()
+    });
+}
