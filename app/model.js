@@ -20,7 +20,7 @@ export function MergeMixin(constr, args) {
     };
 }
 
-// helper 1 -> Currying function
+// helper 1
 export function cond(test, result, ...args) {
     if (test()) {
         return result();
@@ -115,14 +115,23 @@ export function EnemyBullet(args) {
 }
 
 export function Particle(args) {
-    let {x, y} = args;
+    let { x, y } = args;
     let assoc = AssocMixin(Particle, args);
     let merge = MergeMixin(Particle, args);
     let that = Object.freeze({
         x,
         y,
+        w: 5,
+        h: 5,
+        assoc,
+        merge,
         color: 'red',
         vx: (2 * Math.random()) - 1,
-        vy: Math.random()
+        vy: Math.random(),
+        update: () => merge({x: x + vx,
+                             y: y + vy,
+                             vx: vx,
+                             vy: vy + 0.05})
     });
+    return that;
 }

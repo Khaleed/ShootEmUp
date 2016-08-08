@@ -1,6 +1,6 @@
 'use strict';
 
-import { AssocMixin, MergeMixin, Player, Enemy, EnemyBullet, PlayerBullet, cond, conjoin } from './model';
+import { AssocMixin, MergeMixin, Player, Enemy, EnemyBullet, PlayerBullet, Particle, cond, conjoin } from './model';
 
 function sqCollide(s1, s2) {
     const c1 = s1.x < s2.x + s2.w; // right edge of square 1 is to the right of left edge of square 2
@@ -31,13 +31,14 @@ function createEnemyBodies() {
 }
 
 export default function GameState(args) {
-    let { inputs, x = 0, y = 0, gameRunning = true, playerBullets = [], enemyBullets = [], enemies = createEnemyBodies(),
+    let { inputs, x = 0, y = 0, gameRunning = true, playerBullets = [], enemyBullets = [], particles = [], enemies = createEnemyBodies(),
     	player = Player({}), playerBulletNframeCounter = 0, playerFinalBulletNframeCount = 40, velX = 2 } = args;
     let assoc = AssocMixin(GameState, args);
     let merge = MergeMixin(GameState, args);
     Object.freeze(enemies);
     Object.freeze(playerBullets);
     Object.freeze(enemyBullets);
+    Object.freeze(particles);
     let velY = 10;
     let playerVel = 5;
     let killPlayerZone = 500;
@@ -74,6 +75,7 @@ export default function GameState(args) {
         return merge({
             playerBullets: playerBullets.map(bullet => bullet.update()),
             enemyBullets: enemyBullets.map(bullet => bullet.update()),
+            particles: particles.map(particle => particle.update()),
             player: player.update(),
             enemies: enemies.map(enemy => enemy.update(velX))
         });
@@ -186,11 +188,24 @@ export default function GameState(args) {
             let newPlayer = player;
             let deadEnemies = [];
             let usedBullets = [];
+            let newParticles = [];
             playerBullets.forEach(bullet => {
                 let hit = enemyHitBy(bullet);
                 if (hit) {
                     deadEnemies.push(hit);
                     usedBullets.push(bullet);
+                    newParticles.push(Particle ({
+                        x: bullet.x,
+                        y: bullet.y
+                    }));
+                    newParticles.push(Particle ({
+                        x: bullet.x,
+                        y: bullet.y
+                    }));
+                    newParticles.push(Particle ({
+                        x: bullet.x,
+                        y: bullet.y
+                    }));
                 }
             });
             let newPlayerBullets = playerBullets.filter(b => usedBullets.indexOf(b) === -1);
@@ -202,7 +217,8 @@ export default function GameState(args) {
                 let newGameState = merge({
                     gameRunning: newGameRunning,
                     playerBullets: newPlayerBullets,
-                    enemies: newEnemies
+                    enemies: newEnemies,
+                    particles: particles.concat(newParticles)
                 });
                 return newGameState;
             }

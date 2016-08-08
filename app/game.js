@@ -44,6 +44,7 @@ import GameState from './state';
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             gameState.enemies.map(enemy => drawInvader(enemy));
             gameState.enemyBullets.concat(gameState.playerBullets).map(bullet => drawRect(bullet));
+            gameState.particles.map(particle => drawRect(particle));
             if (gameState.player) {
                 drawPlayer(gameState.player);
             }
