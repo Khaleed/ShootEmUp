@@ -127,11 +127,12 @@ export function Particle(args) {
         h: 3,
         assoc,
         merge,
-        color: 'white',
-        update: () => merge({x: that.x + that.vx,
+        //        color: 'white',
+        color: "rgba(255, 255, 255," + Math.random() + ")",
+        update: () => merge({ x: that.x + that.vx,
                              y: that.y + that.vy,
                              vx: that.vx,
-                             vy: that.vy + 0.01}) // acceleration (gravity which is constant)
+                             vy: that.vy + 0.01 }) // acceleration (gravity which is constant)
     });
     return that;
 }
