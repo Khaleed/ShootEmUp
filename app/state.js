@@ -181,11 +181,10 @@ export default function GameState(args) {
 
     function bulletCollision() {
         if (gameRunning) {
-            if (enemyBullets.some(bullet => sqCollide(bullet, player))) { // some checks if elems pass function test
+            if (enemyBullets.some(bullet => sqCollide(bullet, player))) {
                 return playerDies();
             }
             let newGameRunning = gameRunning;
-            let newPlayer = player;
             let deadEnemies = [];
             let usedBullets = [];
             let newParticles = [];
