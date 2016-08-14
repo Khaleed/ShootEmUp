@@ -110,28 +110,28 @@ export function EnemyBullet(args) {
         x,
         y,
         d: 1,
-        color: '#FF9900'
+        color: 'red'
     });
 }
 
 export function Particle(args) {
-    let { x, y } = args;
+    let { x, y, vx, vy } = args;
     let assoc = AssocMixin(Particle, args);
     let merge = MergeMixin(Particle, args);
     let that = Object.freeze({
         x,
         y,
-        w: 5,
-        h: 5,
+        vx,
+        vy,
+        w: 3,
+        h: 3,
         assoc,
         merge,
-        color: 'red',
-        vx: (2 * Math.random()) - 1,
-        vy: Math.random(),
+        color: 'yellow',
         update: () => merge({x: that.x + that.vx,
                              y: that.y + that.vy,
                              vx: that.vx,
-                             vy: that.vy + 0.05}) // gravity constant
+                             vy: that.vy}) // acceleration (gravity which is constant)
     });
     return that;
 }
