@@ -4,7 +4,7 @@ body, canvas {
 	border: 0;
 }
 
-canvas {	
+canvas {
 	background-color: black;
 	margin: auto;
 	display: block;
@@ -14,4 +14,8 @@ canvas {
 	padding-top: 24px;
 	font-size: 24px;
 	text-align: center;
+}
+
+#player, #invader {
+    display: none;
 }
