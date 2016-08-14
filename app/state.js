@@ -195,15 +195,21 @@ export default function GameState(args) {
                     usedBullets.push(bullet);
                     newParticles.push(Particle ({
                         x: bullet.x,
-                        y: bullet.y
+                        y: bullet.y,
+                        vx: 15 * ((2 * Math.random()) - 1),
+                        vy: -0.5 * Math.random()
                     }));
                     newParticles.push(Particle ({
                         x: bullet.x,
-                        y: bullet.y
+                        y: bullet.y,
+                        vx: 15 * ((2 * Math.random()) - 1),
+                        vy: -0.5 * Math.random()
                     }));
                     newParticles.push(Particle ({
                         x: bullet.x,
-                        y: bullet.y
+                        y: bullet.y,
+                        vx: 15 * ((2 * Math.random()) - 1),
+                        vy: -0.5 * Math.random()
                     }));
                 }
             });
