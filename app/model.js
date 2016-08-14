@@ -128,10 +128,10 @@ export function Particle(args) {
         color: 'red',
         vx: (2 * Math.random()) - 1,
         vy: Math.random(),
-        update: () => merge({x: x + vx,
-                             y: y + vy,
-                             vx: vx,
-                             vy: vy + 0.05})
+        update: () => merge({x: that.x + that.vx,
+                             y: that.y + that.vy,
+                             vx: that.vx,
+                             vy: that.vy + 0.05}) // gravity constant
     });
     return that;
 }
