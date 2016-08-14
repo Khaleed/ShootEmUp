@@ -100,7 +100,7 @@ export function PlayerBullet(args) {
         x,
         y,
         d: -1,
-        color: 'white'
+        color: 'yellow'
     });
 }
 
