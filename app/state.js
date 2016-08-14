@@ -250,7 +250,7 @@ export default function GameState(args) {
         playerShoots,
         updateGameLoop,
         assoc,
-        merge,
+        merge
     });
     return that;
 }
