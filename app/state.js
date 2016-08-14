@@ -193,24 +193,14 @@ export default function GameState(args) {
                 if (hit) {
                     deadEnemies.push(hit);
                     usedBullets.push(bullet);
-                    newParticles.push(Particle ({
-                        x: bullet.x,
-                        y: bullet.y,
-                        vx: 15 * ((2 * Math.random()) - 1),
-                        vy: -0.5 * Math.random()
-                    }));
-                    newParticles.push(Particle ({
-                        x: bullet.x,
-                        y: bullet.y,
-                        vx: 15 * ((2 * Math.random()) - 1),
-                        vy: -0.5 * Math.random()
-                    }));
-                    newParticles.push(Particle ({
-                        x: bullet.x,
-                        y: bullet.y,
-                        vx: 15 * ((2 * Math.random()) - 1),
-                        vy: -0.5 * Math.random()
-                    }));
+                    for (var i = 0; i < 10; i++) {
+                        newParticles.push(Particle ({
+                            x: bullet.x,
+                            y: bullet.y,
+                            vx: 0.3 * ((2 * Math.random()) - 1),
+                            vy: -1 * Math.random()
+                        }));
+                    }
                 }
             });
             let newPlayerBullets = playerBullets.filter(b => usedBullets.indexOf(b) === -1);
