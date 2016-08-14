@@ -237,6 +237,7 @@ export default function GameState(args) {
         gameRunning,
         enemyBullets,
         playerBullets,
+        particles,
         enemies,
         playerFinalBulletNframeCount,
         playerBulletNframeCounter,
