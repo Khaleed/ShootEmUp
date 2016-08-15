@@ -8,7 +8,7 @@ This is a bare-bones implementation of the classic shooting game Space Invaders.
 
 ## Approach
 
-Drawing on the canvas, the game loop, and collision detection are all done without any libraries or frameworks. This project was written in a functional programming style using ideas borrowed from Clojure's and Elm. It's not purely functional because of the limitations of JavaScript and I/O being inheritently impure. Instead of deep cloning objects and arrays, one could use a persistent data structure library such as MORI.
+Drawing on the canvas, the game loop, and collision detection are all done without any libraries or frameworks. This project was written in a functional programming style using ideas borrowed from Clojure and Elm. It's not purely functional because of the limitations of JavaScript and I/O being inheritently impure. Instead of deep cloning objects and arrays, one could use a persistent data structure library such as MORI.
 
 ## Contributors
 
