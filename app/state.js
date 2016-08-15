@@ -132,6 +132,7 @@ export default function GameState(args) {
             enemies: [],
             enemyBullets: [],
             playerBullets: [],
+            particles:[],
             player: false
         });
     }
@@ -142,7 +143,8 @@ export default function GameState(args) {
             gameRunning: false,
             enemies: [],
             playerBullets: [],
-            enemyBullets: []
+            enemyBullets: [],
+            particles:[]
         });
     }
 
