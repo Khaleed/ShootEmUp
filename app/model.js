@@ -71,7 +71,7 @@ export function Enemy(args) {
         color: 'white',
         assoc,
         merge,
-        update: velX => assoc("x", x + velX)
+        update: velX => assoc('x', x + velX)
     });
     return that;
 }
@@ -89,7 +89,7 @@ export function Bullet(args) {
         color,
         assoc,
         merge,
-        update: () => assoc("y", y + d)
+        update: () => assoc('y', y + d)
     });
     return that;
 }
@@ -127,12 +127,11 @@ export function Particle(args) {
         h: 3,
         assoc,
         merge,
-        //        color: 'white',
-        color: "rgba(255, 255, 255," + Math.random() + ")",
+        color: 'rgba(255, 255, 255,' + Math.random() + ')',
         update: () => merge({ x: that.x + that.vx,
                              y: that.y + that.vy,
                              vx: that.vx,
-                             vy: that.vy + 0.01 }) // acceleration (gravity which is constant)
+                             vy: that.vy + 0.01 })
     });
     return that;
 }
