@@ -10,12 +10,16 @@ function sqCollide(s1, s2) {
     return (c1 && c2 && c3 && c4);
 }
 
+function createSizedArr(x) {
+    return Array.apply(null, Array(x));
+}
+
 function range(start, end) {
-    let result = [];
-    for (let i = start; i < end; i += 1) {
-        result.push(i);
+    if (end > start) {
+        return Object.freeze(createSizedArr(end - start).map((_, i) => start + i));
+    } else {
+        return [start];
     }
-    return Object.freeze(result);
 }
 
 function createEnemyBodies() {
