@@ -6,7 +6,7 @@ const canvas = inputs.canvas;
 
 export function AssocMixin(constr, args) {
     return (key, val) => {
-        let newArgs = Object.assign({}, args);
+        const newArgs = Object.assign({}, args);
         newArgs[key] = val;
         return constr(newArgs);
     };
@@ -14,8 +14,8 @@ export function AssocMixin(constr, args) {
 
 export function MergeMixin(constr, args) {
     return obj => {
-        let copy = Object.assign({}, args);
-        let newArgs = Object.assign(copy, obj);
+        const copy = Object.assign({}, args);
+        const newArgs = Object.assign(copy, obj);
         return constr(newArgs);
     };
 }
@@ -36,17 +36,17 @@ export function cond(test, result, ...args) {
 
 // helper 2
 export function conjoin(list, val) {
-    let newList = Object.assign([], list);
+    const newList = Object.assign([], list);
     newList.push(val);
     Object.freeze(newList);
     return newList;
 }
 
 export function Player(args) {
-    let { x = canvas.width / 2 } = args;
-    let assoc = AssocMixin(Player, args);
-    let merge = MergeMixin(Player, args);
-    let that = Object.freeze({
+    const { x = canvas.width / 2 } = args;
+    const assoc = AssocMixin(Player, args);
+    const merge = MergeMixin(Player, args);
+    const that = Object.freeze({
         x,
         y: canvas.height - 50,
         w: 55,
@@ -60,10 +60,10 @@ export function Player(args) {
 }
 
 export function Enemy(args) {
-    let { x, y } = args;
-    let assoc = AssocMixin(Enemy, args);
-    let merge = MergeMixin(Enemy, args);
-    let that = Object.freeze({
+    const { x, y } = args;
+    const assoc = AssocMixin(Enemy, args);
+    const merge = MergeMixin(Enemy, args);
+    const that = Object.freeze({
         x,
         y,
         w: 25,
@@ -77,10 +77,10 @@ export function Enemy(args) {
 }
 
 export function Bullet(args) {
-    let { x, y, d, color } = args;
-    let assoc = AssocMixin(Bullet, args);
-    let merge = MergeMixin(Bullet, args);
-    let that = Object.freeze({
+    const { x, y, d, color } = args;
+    const assoc = AssocMixin(Bullet, args);
+    const merge = MergeMixin(Bullet, args);
+    const that = Object.freeze({
         x,
         y,
         w: 5,
@@ -95,7 +95,7 @@ export function Bullet(args) {
 }
 
 export function PlayerBullet(args) {
-    let { x, y } = args;
+    const { x, y } = args;
     return Bullet({
         x,
         y,
@@ -105,7 +105,7 @@ export function PlayerBullet(args) {
 }
 
 export function EnemyBullet(args) {
-    let { x, y } = args;
+    const { x, y } = args;
     return Bullet({
         x,
         y,
@@ -115,10 +115,10 @@ export function EnemyBullet(args) {
 }
 
 export function Particle(args) {
-    let { x, y, vx, vy } = args;
-    let assoc = AssocMixin(Particle, args);
-    let merge = MergeMixin(Particle, args);
-    let that = Object.freeze({
+    const { x, y, vx, vy } = args;
+    const assoc = AssocMixin(Particle, args);
+    const merge = MergeMixin(Particle, args);
+    const that = Object.freeze({
         x,
         y,
         vx,
