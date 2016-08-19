@@ -129,9 +129,9 @@ export function Particle(args) {
         merge,
         color: 'rgba(255, 255, 255,' + Math.random() + ')',
         update: () => merge({ x: that.x + that.vx,
-                             y: that.y + that.vy,
-                             vx: that.vx,
-                             vy: that.vy + 0.01 })
+                              y: that.y + that.vy,
+                              vx: that.vx,
+                              vy: that.vy + 0.01 })
     });
     return that;
 }
