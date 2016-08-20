@@ -185,6 +185,18 @@ export default function GameState(args) {
             found || (sqCollide(enemy, bullet) ? enemy : null), null);
     }
 
+    function createParticles(bullet, newParticles) {
+        const iter = range(0, 5);
+        return iter.map(() => {
+            return newParticles.push(Particle({
+                x: bullet.x,
+                y: bullet.y,
+                vx: 0.3 * ((2 * Math.random()) - 1),
+                vy: -1 * Math.random()
+            }));
+        });
+    }
+
     function bulletCollision() {
         if (gameRunning) {
             if (enemyBullets.some(bullet => sqCollide(bullet, player))) {
@@ -199,14 +211,7 @@ export default function GameState(args) {
                 if (hit) {
                     deadEnemies.push(hit);
                     usedBullets.push(bullet);
-                    for (let i = 0; i < 10; i++) {
-                        newParticles.push(Particle ({
-                            x: bullet.x,
-                            y: bullet.y,
-                            vx: 0.3 * ((2 * Math.random()) - 1),
-                            vy: -1 * Math.random()
-                        }));
-                    }
+                    createParticles(bullet, newParticles);
                 }
             });
             const newPlayerBullets = playerBullets.filter(b => usedBullets.indexOf(b) === -1);
