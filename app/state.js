@@ -157,6 +157,7 @@ export default function GameState(args) {
         let newEnemies = enemies;
         const newGameRunning = gameRunning;
         if (enemies.length > 0) {
+            //detect if enemies block has hit wall, and if so make it bounce...
             const leftMostEnemPix = enemies[0].x;
             const rightMostEnemPix = enemies[enemies.length - 1].x + enemies[0].w;
             if (leftMostEnemPix < 0 || rightMostEnemPix > inputs.canvas.width) {
@@ -166,6 +167,7 @@ export default function GameState(args) {
                     return enemy.assoc('y', newY);
                 });
             }
+           //either detect game-over, or return a new game-frame...
             const killPlayerZoneReached = newEnemies.some(enemy => enemy.y > killPlayerZone);
             if (killPlayerZoneReached) {
                 return playerDies();
@@ -177,6 +179,8 @@ export default function GameState(args) {
                 });
                 return newGameState;
             }
+        } else {
+            return null;
         }
     }
 
