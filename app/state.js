@@ -43,9 +43,6 @@ export default function GameState(args) {
     Object.freeze(playerBullets);
     Object.freeze(enemyBullets);
     Object.freeze(particles);
-    const velY = 10;
-    const playerVel = 5;
-    const killPlayerZone = 500;
 
     function newDir(keys) {
         return cond(
@@ -56,7 +53,7 @@ export default function GameState(args) {
 
     function updatePlayerMovement(keys) {
         return assoc("player", cond(
-            () => player, () => player.assoc("x", player.x + newDir(keys) * playerVel),
+            () => player, () => player.assoc("x", player.x + newDir(keys) * 5),
             () => false));
     }
 
@@ -155,6 +152,7 @@ export default function GameState(args) {
     function enemyCollisionWithBorder() {
         let newVelX = velX;
         let newEnemies = enemies;
+        let velY = 10;
         const newGameRunning = gameRunning;
         if (enemies.length > 0) {
             //detect if enemies block has hit wall, and if so make it bounce...
@@ -168,7 +166,7 @@ export default function GameState(args) {
                 });
             }
            //either detect game-over, or return a new game state...
-            const killPlayerZoneReached = newEnemies.some(enemy => enemy.y > killPlayerZone);
+            const killPlayerZoneReached = newEnemies.some(enemy => enemy.y > 500);
             if (killPlayerZoneReached) {
                 return playerDies();
             } else {
