@@ -37,12 +37,15 @@ function createEnemyBodies() {
 export default function GameState(args) {
     const { inputs, x = 0, y = 0, gameRunning = true, playerBullets = [], enemyBullets = [], particles = [], enemies = createEnemyBodies(),
     	player = Player({}), playerBulletNframeCounter = 0, playerFinalBulletNframeCount = 40, velX = 2 } = args;
+
     const assoc = AssocMixin(GameState, args);
     const merge = MergeMixin(GameState, args);
+
     Object.freeze(enemies);
     Object.freeze(playerBullets);
     Object.freeze(enemyBullets);
     Object.freeze(particles);
+
     const velY = 10;
     const playerVel = 5;
     const killPlayerZone = 500;
@@ -167,7 +170,7 @@ export default function GameState(args) {
                     return enemy.assoc('y', newY);
                 });
             }
-           //either detect game-over, or return a new game-frame...
+           //either detect game-over, or return a new game state...
             const killPlayerZoneReached = newEnemies.some(enemy => enemy.y > killPlayerZone);
             if (killPlayerZoneReached) {
                 return playerDies();
