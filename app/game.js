@@ -5,7 +5,7 @@ import keys from './keystate';
 import GameState from './state';
 
 (function() {
-    let canvas = inputs.canvas;
+    const canvas = inputs.canvas;
     keys.addListeners();
 
     function playSounds(oldState, newState) {
@@ -52,9 +52,9 @@ import GameState from './state';
         }
 
         function update(gameState) {
-            let frozenKeys = Object.assign({}, keys);
+            const frozenKeys = Object.assign({}, keys);
             Object.freeze(frozenKeys);
-            let newGameState = gameState.updateIfGameIsRunning(frozenKeys);
+            const newGameState = gameState.updateIfGameIsRunning(frozenKeys);
             playSounds(gameState, newGameState);
             draw(newGameState);
         }
