@@ -72,11 +72,21 @@ export default function GameState(args) {
         return gameRunning ? state.updateGameLoop(keys) : state;
     }
 
+    function removeOffscreen(objects) {
+	return objects.filter(
+	    function(obj) {
+		return ((obj.x > 0) &&
+			(obj.y > 0) &&
+			(obj.x < inputs.canvas.width) &&
+			(obj.y < inputs.canvas.height));
+	    });
+    }
+
     function updateBodies() {
         return merge({
-            playerBullets: playerBullets.map(bullet => bullet.update()),
-            enemyBullets: enemyBullets.map(bullet => bullet.update()),
-            particles: particles.map(particle => particle.update()),
+            playerBullets: removeOffscreen(playerBullets.map(bullet => bullet.update())),
+            enemyBullets: removeOffscreen(enemyBullets.map(bullet => bullet.update())),
+            particles: removeOffscreen(particles.map(particle => particle.update())),
             player: player.update(),
             enemies: enemies.map(enemy => enemy.update(velX))
         });
@@ -187,14 +197,20 @@ export default function GameState(args) {
             found || (sqCollide(enemy, bullet) ? enemy : null), null);
     }
 
+    function randomBetween(a, b)
+    {
+	return ( a +
+		 (b - a) * Math.random() )
+    }
+
     function createParticles(bullet, newParticles) {
         const iter = range(0, 5);
         return iter.map(() => {
             return newParticles.push(Particle({
-                x: bullet.x,
-                y: bullet.y,
-                vx: 0.3 * ((2 * Math.random()) - 1),
-                vy: -1 * Math.random()
+                x:  bullet.x,
+                y:  bullet.y,
+                vx: randomBetween (-0.3, 0.3),
+                vy: randomBetween (-1.0, 0.0)
             }));
         });
     }
