@@ -72,11 +72,21 @@ export default function GameState(args) {
         return gameRunning ? state.updateGameLoop(keys) : state;
     }
 
+    function removeOffscreen(objects) {
+	return objects.filter(
+	    function(obj) {
+		return ((obj.x > 0) &&
+			(obj.y > 0) &&
+			(obj.x < inputs.canvas.width) &&
+			(obj.y < inputs.canvas.height));
+	    });
+    }
+
     function updateBodies() {
         return merge({
-            playerBullets: playerBullets.map(bullet => bullet.update()),
-            enemyBullets: enemyBullets.map(bullet => bullet.update()),
-            particles: particles.map(particle => particle.update()),
+            playerBullets: removeOffscreen(playerBullets.map(bullet => bullet.update())),
+            enemyBullets: removeOffscreen(enemyBullets.map(bullet => bullet.update())),
+            particles: removeOffscreen(particles.map(particle => particle.update())),
             player: player.update(),
             enemies: enemies.map(enemy => enemy.update(velX))
         });
