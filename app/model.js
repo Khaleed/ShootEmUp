@@ -71,7 +71,7 @@ export function Enemy(args) {
         color: 'white',
         assoc,
         merge,
-        update: velX => assoc('x', x + velX)
+        update: (velX, thisFrameDuration) => assoc('x', x + velX * thisFrameDuration)  // velX in pixels/s     frameDuration in s/frame.   velX * frameDuration = pixels/frame
     });
     return that;
 }

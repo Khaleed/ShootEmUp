@@ -39,7 +39,7 @@ window.addEventListener('load', () => {
         ctx.drawImage(invaderImg, pos.x, pos.y);
     }
 
-    function draw(gameState) {
+    function draw(gameState, lastFrameTime) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         gameState.enemies.map(enemy => drawInvader(enemy));
         gameState.enemyBullets.concat(gameState.playerBullets).map(bullet => drawRect(bullet));
@@ -47,19 +47,17 @@ window.addEventListener('load', () => {
         if (gameState.player) {
             drawPlayer(gameState.player);
         }
-        setTimeout(() => update(gameState), 1);
+        requestAnimationFrame(() => update(gameState, lastFrameTime));
     }
 
-    function update(gameState) {
+    function update(gameState, lastFrameTime) {
+        const thisFrameTime = new Date().getTime();
+        const thisFrameDuration = thisFrameTime - (lastFrameTime || thisFrameTime);
         const frozenKeys = Object.assign({}, keys);
         Object.freeze(frozenKeys);
-        const newGameState = gameState.updateIfGameIsRunning(frozenKeys);
+        const newGameState = gameState.updateIfGameIsRunning(frozenKeys, thisFrameDuration);
         playSounds(gameState, newGameState);
-        draw(newGameState);
+        draw(newGameState, thisFrameTime);
     }
-
-    draw(GameState({
-        inputs
-    }));
-
+    draw(GameState({inputs}), undefined); // lastFrameTime = null at the first frame
 });
