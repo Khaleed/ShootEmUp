@@ -89,7 +89,7 @@ export function Bullet(args) {
         color,
         assoc,
         merge,
-        update: () => assoc('y', y + d)
+        update: thisFrameDuration => assoc('y', y + d * thisFrameDuration)
     });
     return that;
 }
@@ -99,7 +99,7 @@ export function PlayerBullet(args) {
     return Bullet({
         x,
         y,
-        d: -1,
+        d: -0.2,
         color: 'yellow'
     });
 }
@@ -109,12 +109,12 @@ export function EnemyBullet(args) {
     return Bullet({
         x,
         y,
-        d: 1,
+        d: 0.2,
         color: 'red'
     });
 }
 
-const force = 0.01 // Gravity
+const force = 0.001; // Gravity -> divide it by 20-ish
 
 export function Particle(args) {
     const { x, y, vx, vy } = args;
@@ -130,10 +130,10 @@ export function Particle(args) {
         assoc,
         merge,
         color: 'rgba(255, 255, 255,' + Math.random() + ')',
-        update: () => merge({ x: that.x + that.vx,
-                              y: that.y + that.vy,
-                              vx: that.vx,
-                              vy: that.vy + force })
+        update: thisFrameDuration => merge({ x: that.x + that.vx * thisFrameDuration,
+                                             y: that.y + that.vy * thisFrameDuration,
+                                             vx: that.vx,
+                                             vy: that.vy + force * thisFrameDuration })
     });
     return that;
 }
