@@ -114,6 +114,8 @@ export function EnemyBullet(args) {
     });
 }
 
+const force = 0.01 // Gravity
+
 export function Particle(args) {
     const { x, y, vx, vy } = args;
     const assoc = AssocMixin(Particle, args);
@@ -131,7 +133,7 @@ export function Particle(args) {
         update: () => merge({ x: that.x + that.vx,
                               y: that.y + that.vy,
                               vx: that.vx,
-                              vy: that.vy + 0.01 })
+                              vy: that.vy + force })
     });
     return that;
 }

@@ -197,14 +197,20 @@ export default function GameState(args) {
             found || (sqCollide(enemy, bullet) ? enemy : null), null);
     }
 
+    function randomBetween(a, b)
+    {
+	return ( a +
+		 (b - a) * Math.random() )
+    }
+
     function createParticles(bullet, newParticles) {
         const iter = range(0, 5);
         return iter.map(() => {
             return newParticles.push(Particle({
-                x: bullet.x,
-                y: bullet.y,
-                vx: 0.3 * ((2 * Math.random()) - 1),
-                vy: -1 * Math.random()
+                x:  bullet.x,
+                y:  bullet.y,
+                vx: randomBetween (-0.3, 0.3),
+                vy: randomBetween (-1.0, 0.0)
             }));
         });
     }
