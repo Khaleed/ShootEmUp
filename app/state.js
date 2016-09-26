@@ -36,7 +36,7 @@ function createEnemyBodies() {
 
 export default function GameState(args) {
     const { inputs, x = 0, y = 0, gameRunning = true, playerBullets = [], enemyBullets = [], particles = [], enemies = createEnemyBodies(),
-    	player = Player({}), playerBulletNframeCounter = 0, playerFinalBulletNframeCount = 40, velX = 2 } = args;
+      player = Player({}), playerBulletNframeCounter = 0, playerFinalBulletNframeCount = 10, velX = 0.2 } = args;
     const assoc = AssocMixin(GameState, args);
     const merge = MergeMixin(GameState, args);
     Object.freeze(enemies);
@@ -51,44 +51,46 @@ export default function GameState(args) {
             () => 0);
     }
 
-    function updatePlayerMovement(keys) {
+    function updatePlayerMovement(keys, thisFrameDuration) {
         return assoc("player", cond(
-            () => player, () => player.assoc("x", player.x + newDir(keys) * 5),
+            () => player, () => player.assoc("x", player.x + newDir(keys) * 0.5 * thisFrameDuration),
             () => false));
     }
 
-    function updatePlayerAction(keys) {
+    function updatePlayerAction(keys, thisFrameDuration) {
         return cond(
-            () => keys.spacePressedKey === true, () => updatePlayerMovement(keys).playerShoots(),
-            () => updatePlayerMovement(keys));
+            () => keys.spacePressedKey === true, () => updatePlayerMovement(keys, thisFrameDuration).playerShoots(),
+            () => updatePlayerMovement(keys, thisFrameDuration));
     }
 
     function maybeRestart(keys) {
         return keys.rPressedKey ? GameState({ args }) : that;
     }
 
-    function updateIfGameIsRunning(keys) {
+    function updateIfGameIsRunning(keys, thisFrameDuration) {
         const state = maybeRestart(keys);
-        return gameRunning ? state.updateGameLoop(keys) : state;
+        return gameRunning ? state.updateGameLoop(keys, thisFrameDuration) : state;
     }
 
-    function removeOffscreen(objects) {
-	return objects.filter(
-	    function(obj) {
-		return ((obj.x > 0) &&
-			(obj.y > 0) &&
-			(obj.x < inputs.canvas.width) &&
-			(obj.y < inputs.canvas.height));
-	    });
+    function removeOffscreen(bodies) {
+        // return only the bodies that are within the canvas
+        return bodies.filter(
+            obj => {
+                // filter only
+                return ((obj.x > 0) &&
+                        (obj.y > 0) &&
+                        (obj.x < inputs.canvas.width) &&
+                        (obj.y < inputs.canvas.height));
+            });
     }
 
-    function updateBodies() {
+    function updateBodies(thisFrameDuration) {
         return merge({
-            playerBullets: removeOffscreen(playerBullets.map(bullet => bullet.update())),
-            enemyBullets: removeOffscreen(enemyBullets.map(bullet => bullet.update())),
-            particles: removeOffscreen(particles.map(particle => particle.update())),
+            playerBullets: removeOffscreen(playerBullets.map(bullet => bullet.update(thisFrameDuration))),
+            enemyBullets: removeOffscreen(enemyBullets.map(bullet => bullet.update(thisFrameDuration))),
+            particles: removeOffscreen(particles.map(particle => particle.update(thisFrameDuration))),
             player: player.update(),
-            enemies: enemies.map(enemy => enemy.update(velX))
+            enemies: enemies.map(enemy => enemy.update(velX, thisFrameDuration))
         });
     }
 
@@ -102,7 +104,7 @@ export default function GameState(args) {
 
     function playerShoots() {
         const newBullets = cond(
-            () => playerBulletNframeCounter === 0, makeNewBullet,
+            () => playerBulletNframeCounter === 0, makeNewBullet, // playerBulletNframeCounter => counting frames between shots
             () => playerBullets);
         const newCounter = cond(
             () => playerBulletNframeCounter > 0, () => playerBulletNframeCounter - 1,
@@ -129,7 +131,7 @@ export default function GameState(args) {
     }
 
     function enemyShootsAI() {
-        if ((Math.random() * 100) <= 1) {
+        if ((Math.random() * 20) <= 1) {
             return enemyShoots();
         } else {
             return that;
@@ -197,10 +199,9 @@ export default function GameState(args) {
             found || (sqCollide(enemy, bullet) ? enemy : null), null);
     }
 
-    function randomBetween(a, b)
-    {
-	return ( a +
-		 (b - a) * Math.random() )
+    // return a random number between a and b
+    function randomBetween(a, b) {
+        return (a + (b - a) * Math.random());
     }
 
     function createParticles(bullet, newParticles) {
@@ -209,8 +210,8 @@ export default function GameState(args) {
             return newParticles.push(Particle({
                 x:  bullet.x,
                 y:  bullet.y,
-                vx: randomBetween (-0.3, 0.3),
-                vy: randomBetween (-1.0, 0.0)
+                vx: randomBetween (-0.1, 0.1),
+                vy: randomBetween (-0.5, 0.0)
             }));
         });
     }
@@ -251,8 +252,8 @@ export default function GameState(args) {
         }
     }
 
-    function updateGameLoop(keys) {
-        return updatePlayerAction(keys).updateBodies().enemyCollisionWithBorder().enemyShootsAI().bulletCollision();
+    function updateGameLoop(keys, thisFrameDuration) {
+        return updatePlayerAction(keys, thisFrameDuration).updateBodies(thisFrameDuration).enemyCollisionWithBorder().enemyShootsAI().bulletCollision();
     }
 
     const that = Object.freeze({
