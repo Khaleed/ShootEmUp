@@ -36,7 +36,7 @@ function createEnemyBodies() {
 
 export default function GameState(args) {
     const { inputs, x = 0, y = 0, gameRunning = true, playerBullets = [], enemyBullets = [], particles = [], enemies = createEnemyBodies(),
-      player = Player({}), playerBulletNframeCounter = 0, playerFinalBulletNframeCount = 10, velX = 0.2 } = args;
+            player = Player({}), playerBulletNframeCounter = 0, playerFinalBulletNframeCount = 10, velX = 0.2 } = args;
     const assoc = AssocMixin(GameState, args);
     const merge = MergeMixin(GameState, args);
     Object.freeze(enemies);
@@ -199,7 +199,6 @@ export default function GameState(args) {
             found || (sqCollide(enemy, bullet) ? enemy : null), null);
     }
 
-    // return a random number between a and b
     function randomBetween(a, b) {
         return (a + (b - a) * Math.random());
     }
