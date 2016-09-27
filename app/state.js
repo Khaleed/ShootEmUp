@@ -24,8 +24,8 @@ function range(start, end) {
 
 function createEnemyBodies() {
     const iter = range(0, 8);
-    return iter.map(function(i) {
-        return iter.map(function(j) {
+    return iter.map(i => {
+        return iter.map(j => {
             return Enemy({
                 x: 45 * i,
                 y: 20 + 45 * j
