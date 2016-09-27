@@ -35,7 +35,7 @@ export function cond(test, result, ...args) {
 }
 
 // helper 2
-export function conjoin(list, val) {
+export function conj(list, val) {
     const newList = Object.assign([], list);
     newList.push(val);
     Object.freeze(newList);
