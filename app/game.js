@@ -44,7 +44,7 @@ window.addEventListener('load', () => {
         gameState.enemies.map(enemy => drawInvader(enemy));
         gameState.enemyBullets.concat(gameState.playerBullets).map(bullet => drawRect(bullet));
         gameState.particles.map(particle => drawRect(particle));
-        if (gameState.player) {
+        if (gameState.player && !gameState.playerDying) {
             drawPlayer(gameState.player);
         }
         requestAnimationFrame(() => update(gameState, lastFrameTime));

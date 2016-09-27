@@ -117,7 +117,7 @@ export function EnemyBullet(args) {
 const force = 0.001; // Gravity -> divide it by 20-ish
 
 export function Particle(args) {
-    const { x, y, vx, vy } = args;
+    const { x, y, vx, vy, color } = args;
     const assoc = AssocMixin(Particle, args);
     const merge = MergeMixin(Particle, args);
     const that = Object.freeze({
@@ -129,7 +129,7 @@ export function Particle(args) {
         h: 3,
         assoc,
         merge,
-        color: 'rgba(255, 255, 255,' + Math.random() + ')',
+        color,
         update: thisFrameDuration => merge({ x: that.x + that.vx * thisFrameDuration,
                                              y: that.y + that.vy * thisFrameDuration,
                                              vx: that.vx,
