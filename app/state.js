@@ -35,7 +35,7 @@ function createEnemyBodies() {
 }
 
 export default function GameState(args) {
-    const { inputs, x = 0, y = 0, gameRunning = true, playerBullets = [], enemyBullets = [], particles = [], enemies = createEnemyBodies(),
+    const { inputs, x = 0, y = 0, gameRunning = true, playerDying = false, playerBullets = [], enemyBullets = [], particles = [], enemies = createEnemyBodies(),
             player = Player({}), playerBulletNframeCounter = 0, playerFinalBulletNframeCount = 10, velX = 0.2 } = args;
     const assoc = AssocMixin(GameState, args);
     const merge = MergeMixin(GameState, args);
@@ -142,6 +142,7 @@ export default function GameState(args) {
         inputs.status.innerHTML = 'You lose';
         return merge({
             gameRunning: false,
+            playerDying: false,
             enemies: [],
             enemyBullets: [],
             playerBullets: [],
@@ -154,6 +155,7 @@ export default function GameState(args) {
         inputs.status.innerHTML = 'You win';
         return merge({
             gameRunning: false,
+            playerDying: false,
             enemies: [],
             playerBullets: [],
             enemyBullets: [],
@@ -179,7 +181,7 @@ export default function GameState(args) {
             }
            //either detect game-over, or return a new game state...
             const killPlayerZoneReached = newEnemies.some(enemy => enemy.y > 500);
-            if (killPlayerZoneReached) {
+            if (killPlayerZoneReached && !playerDying) {
                 return playerDies();
             } else {
                 const newGameState = merge({
@@ -203,27 +205,46 @@ export default function GameState(args) {
         return (a + (b - a) * Math.random());
     }
 
-    function createParticles(bullet, newParticles) {
+    function createParticles(origin, newParticles) {
         const iter = range(0, 5);
         return iter.map(() => {
             return newParticles.push(Particle({
-                x:  bullet.x,
-                y:  bullet.y,
+                x:  origin.x,
+                y:  origin.y,
                 vx: randomBetween (-0.1, 0.1),
-                vy: randomBetween (-0.5, 0.0)
+                vy: randomBetween (-0.5, 0.0),
+		color: 'rgba(255, 255, 255,' + Math.random() + ')'
+            }));
+        });
+    }
+
+    function createDeathParticles(origin, newParticles) {
+        const iter = range(0, 60);
+        return iter.map(() => {
+            return newParticles.push(Particle({
+                x:  origin.x + 15,
+                y:  origin.y - 15,
+                vx: randomBetween (-0.4, 0.4),
+                vy: randomBetween (-3.5, 0.0),
+		color: 'rgba(0, 255, 0, 255)'
             }));
         });
     }
 
     function bulletCollision() {
-        if (gameRunning) {
+        if (gameRunning && !playerDying) {
+            const newParticles = [];
             if (enemyBullets.some(bullet => sqCollide(bullet, player))) {
-                return playerDies();
+                createDeathParticles(player, newParticles);
+                const newGameState = merge({
+                    playerDying: true,
+                    particles: particles.concat(newParticles)
+                });
+                return newGameState;
             }
             const newGameRunning = gameRunning;
             const deadEnemies = [];
             const usedBullets = [];
-            const newParticles = [];
             playerBullets.forEach(bullet => {
                 const hit = enemyHitBy(bullet);
                 if (hit) {
@@ -252,13 +273,21 @@ export default function GameState(args) {
     }
 
     function updateGameLoop(keys, thisFrameDuration) {
-        return updatePlayerAction(keys, thisFrameDuration).updateBodies(thisFrameDuration).enemyCollisionWithBorder().enemyShootsAI().bulletCollision();
+	if (playerDying) {
+	    if (particles.length == 0)
+		return playerDies();
+	    else
+		return updateBodies(thisFrameDuration).enemyCollisionWithBorder().enemyShootsAI().bulletCollision();
+	}
+	else
+            return updatePlayerAction(keys, thisFrameDuration).updateBodies(thisFrameDuration).enemyCollisionWithBorder().enemyShootsAI().bulletCollision();
     }
 
     const that = Object.freeze({
         x,
         y,
         gameRunning,
+        playerDying,
         enemyBullets,
         playerBullets,
         particles,
