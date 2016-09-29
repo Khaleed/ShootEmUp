@@ -213,7 +213,7 @@ export default function GameState(args) {
                 y:  origin.y,
                 vx: randomBetween (-0.1, 0.1),
                 vy: randomBetween (-0.5, 0.0),
-		color: 'rgba(255, 255, 255,' + Math.random() + ')'
+                color: 'rgba(255, 255, 255,' + Math.random() + ')'
             }));
         });
     }
@@ -226,7 +226,7 @@ export default function GameState(args) {
                 y:  origin.y - 15,
                 vx: randomBetween (-0.4, 0.4),
                 vy: randomBetween (-3.5, 0.0),
-		color: 'rgba(0, 255, 0, 255)'
+                color: 'rgba(0, 255, 0, 255)'
             }));
         });
     }
@@ -273,13 +273,13 @@ export default function GameState(args) {
     }
 
     function updateGameLoop(keys, thisFrameDuration) {
-	if (playerDying) {
-	    if (particles.length == 0)
-		return playerDies();
-	    else
-		return updateBodies(thisFrameDuration).enemyCollisionWithBorder().enemyShootsAI().bulletCollision();
-	}
-	else
+        if (playerDying) {
+            if (particles.length == 0)
+                return playerDies();
+            else
+                return updateBodies(thisFrameDuration).enemyCollisionWithBorder().enemyShootsAI().bulletCollision();
+        }
+        else
             return updatePlayerAction(keys, thisFrameDuration).updateBodies(thisFrameDuration).enemyCollisionWithBorder().enemyShootsAI().bulletCollision();
     }
 
