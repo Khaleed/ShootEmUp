@@ -64,7 +64,7 @@ export default function GameState(args) {
     }
 
     function maybeRestart(keys) {
-        return keys.rPressedKey ? GameState({ args }) : that;
+        return keys.rPressedKey ? GameState({inputs}) : that;
     }
 
     function updateIfGameIsRunning(keys, thisFrameDuration) {
