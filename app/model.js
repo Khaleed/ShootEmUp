@@ -4,6 +4,12 @@ import inputs from './input';
 
 const canvas = inputs.canvas;
 
+/**
+ * Mixin that returns a constructor with new args when there is only one change
+ * @function
+ * @param { function } constr - The constructor function
+ * @param { object } args - The arguments supplied to the constructor
+ */
 export function AssocMixin(constr, args) {
     return (key, val) => {
         const newArgs = Object.assign({}, args);
@@ -12,6 +18,12 @@ export function AssocMixin(constr, args) {
     };
 }
 
+/**
+ * Mixin that returns a constructor with new args when there are mutiple changes
+ * @function
+ * @param { function } constr - The constructor function
+ * @param { object } args - The arguments supplied to the constructor
+ */
 export function MergeMixin(constr, args) {
     return obj => {
         const copy = Object.assign({}, args);
@@ -20,12 +32,16 @@ export function MergeMixin(constr, args) {
     };
 }
 
-// helper 1
+/**
+ * Function that takes a test and expression pairs. It evaluates each test one at a time. If the test returns true, cond returns the value from the corresponding expression and doesn't evaluate any of the other tests and expressions.
+ * @param { function } test
+ * @param { function } result
+ * @param { object } args - The arguments supplied to the function
+ */
 export function cond(test, result, ...args) {
     if (test()) {
         return result();
     } else if (args.length > 1) {
-        // recursively call cond for every arg
         return cond(...args);
     } else if (args.length === 1) {
         return args[0]();
@@ -42,6 +58,11 @@ export function conj(list, val) {
     return newList;
 }
 
+/**
+ * Represents the player.
+ * @constructor
+ * @param { object } arg -The arguments of the player
+ */
 export function Player(args) {
     const { x = canvas.width / 2 } = args;
     const assoc = AssocMixin(Player, args);
@@ -59,6 +80,11 @@ export function Player(args) {
     return that;
 }
 
+/**
+ * Represents each enemy.
+ * @constructor
+ * @param { object } args - The arguments of the enemy
+ */
 export function Enemy(args) {
     const { x, y } = args;
     const assoc = AssocMixin(Enemy, args);
@@ -76,6 +102,11 @@ export function Enemy(args) {
     return that;
 }
 
+/**
+ * Represents each bullet
+ * @constructor
+ * @param { object} args - The arguments of each bullet
+ */
 export function Bullet(args) {
     const { x, y, d, color } = args;
     const assoc = AssocMixin(Bullet, args);
@@ -94,6 +125,11 @@ export function Bullet(args) {
     return that;
 }
 
+/**
+ * Represents player's bullet
+ * @constructor
+ * @param { object} args - The arguments of player's bullet
+ */
 export function PlayerBullet(args) {
     const { x, y } = args;
     return Bullet({
@@ -104,6 +140,11 @@ export function PlayerBullet(args) {
     });
 }
 
+/**
+ * Represents player's bullet
+ * @constructor
+ * @param { object} args - The arguments of each enemy's bullet
+ */
 export function EnemyBullet(args) {
     const { x, y } = args;
     return Bullet({
@@ -116,6 +157,11 @@ export function EnemyBullet(args) {
 
 const force = 0.001; // Gravity -> divide it by 20-ish
 
+/**
+ * Represents each particle that explodes
+ * @constructor
+ * @param { object } - args - The arguments of each particle
+ */
 export function Particle(args) {
     const { x, y, vx, vy, color } = args;
     const assoc = AssocMixin(Particle, args);
