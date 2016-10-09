@@ -55,7 +55,7 @@ export function cond(test, result, ...args) {
 /**
  *Function that takes list and val and returns a new immutable list
  *@param { array }  list - any list
- *@param { object } val - any valu
+ *@param { object } val - any value
  * @constructor
  * @param { object } arg -The arguments of the player
  */
