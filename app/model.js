@@ -14,6 +14,7 @@ export function AssocMixin(constr, args) {
     return (key, val) => {
         const newArgs = Object.assign({}, args);
         newArgs[key] = val;
+        // return a new constr with newArgs
         return constr(newArgs);
     };
 }
@@ -28,14 +29,15 @@ export function MergeMixin(constr, args) {
     return obj => {
         const copy = Object.assign({}, args);
         const newArgs = Object.assign(copy, obj);
+        // spit out new constr with multiple args changes
         return constr(newArgs);
     };
 }
 
 /**
  * Function that takes a test and expression pairs. It evaluates each test one at a time. If the test returns true, cond returns the value from the corresponding expression and doesn't evaluate any of the other tests and expressions.
- * @param { function } test
- * @param { function } result
+ * @param { function } test - conditional check
+ * @param { function } result - any value
  * @param { object } args - The arguments supplied to the function
  */
 export function cond(test, result, ...args) {
@@ -50,16 +52,10 @@ export function cond(test, result, ...args) {
     }
 }
 
-// helper 2
-export function conj(list, val) {
-    const newList = Object.assign([], list);
-    newList.push(val);
-    Object.freeze(newList);
-    return newList;
-}
-
 /**
- * Represents the player.
+ *Function that takes list and val and returns a new immutable list
+ *@param { array }  list - any list
+ *@param { object } val - any valu
  * @constructor
  * @param { object } arg -The arguments of the player
  */
