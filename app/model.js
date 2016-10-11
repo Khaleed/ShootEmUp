@@ -59,7 +59,7 @@ export function cond(test, result, ...args) {
  * @constructor
  * @param { object } arg -The arguments of the player
  */
-export function Conj(list, val) {
+export function conj(list, val) {
     const newList = Object.assign([], list);
     newList.push(val);
     Object.freeze(newList);
