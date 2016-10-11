@@ -14,7 +14,6 @@ export function AssocMixin(constr, args) {
     return (key, val) => {
         const newArgs = Object.assign({}, args);
         newArgs[key] = val;
-        // return a new constr with newArgs
         return constr(newArgs);
     };
 }
@@ -100,7 +99,7 @@ export function Enemy(args) {
         color: 'white',
         assoc,
         merge,
-        update: (velX, thisFrameDuration) => assoc('x', x + velX * thisFrameDuration)  // velX in pixels/s     frameDuration in s/frame.   velX * frameDuration = pixels/frame
+        update: (velX, thisFrameDuration) => assoc('x', x + velX * thisFrameDuration)
     });
     return that;
 }
