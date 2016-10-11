@@ -59,6 +59,13 @@ export function cond(test, result, ...args) {
  * @constructor
  * @param { object } arg -The arguments of the player
  */
+export function Conj(list, val) {
+    const newList = Object.assign([], list);
+    newList.push(val);
+    Object.freeze(newList);
+    return newList;
+}
+
 export function Player(args) {
     const { x = canvas.width / 2 } = args;
     const assoc = AssocMixin(Player, args);
