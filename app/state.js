@@ -1,38 +1,7 @@
 'use strict';
 
-import { AssocMixin, MergeMixin, Player, Enemy, EnemyBullet, PlayerBullet, Particle, cond, conj } from './model';
-
-function sqCollide(s1, s2) {
-    const c1 = s1.x < s2.x + s2.w; // right edge of square 1 is to the right of left edge of square 2
-    const c2 = s2.x < s1.x + s1.w; // left edge of square 1 is to the left of right edge of square 2
-    const c3 = s1.y + s1.h > s2.y; // top edge of square 1 is above bottom edge of square 2
-    const c4 = s2.y + s2.h > s1.y; //  bottom edge of the square 1 is below the top edge of the square 2
-    return (c1 && c2 && c3 && c4);
-}
-
-function createSizedArr(x) {
-    return Array.apply(null, Array(x));
-}
-
-function range(start, end) {
-    if (end > start) {
-        return Object.freeze(createSizedArr(end - start).map((_, i) => start + i));
-    } else {
-        return [start];
-    }
-}
-
-function createEnemyBodies() {
-    const iter = range(0, 8);
-    return iter.map(i => {
-        return iter.map(j => {
-            return Enemy({
-                x: 45 * i,
-                y: 20 + 45 * j
-            });
-        });
-    }).reduce((result, next) => result.concat(next));
-}
+import { AssocMixin, MergeMixin, Player, Enemy, EnemyBullet, PlayerBullet, Particle } from "./model";
+import { range, cond, conj, randomBetween } from "./helpers";
 
 export default function GameState(args) {
     const { inputs, x = 0, y = 0, gameRunning = true, playerDying = false, playerBullets = [], enemyBullets = [], particles = [], enemies = createEnemyBodies(),
@@ -43,6 +12,19 @@ export default function GameState(args) {
     Object.freeze(playerBullets);
     Object.freeze(enemyBullets);
     Object.freeze(particles);
+
+    // return a list of 64 enemy objects
+    function createEnemyBodies() {
+        const iter = range(0, 8);
+        return iter.map(i => {
+            return iter.map(j => {
+                return Enemy({
+                    x: 45 * i,
+                    y: 20 + 45 * j
+                });
+            });
+        }).reduce((result, next) => result.concat(next), []);
+    }
 
     function newDir(keys) {
         return cond(
@@ -76,7 +58,6 @@ export default function GameState(args) {
         // return only the bodies that are within the canvas
         return bodies.filter(
             obj => {
-                // filter only
                 return ((obj.x > 0) &&
                         (obj.y > 0) &&
                         (obj.x < inputs.canvas.width) &&
@@ -196,13 +177,17 @@ export default function GameState(args) {
         }
     }
 
+    function sqCollide(s1, s2) {
+        const c1 = s1.x < s2.x + s2.w; // right edge of square 1 is to the right of left edge of square 2
+        const c2 = s2.x < s1.x + s1.w; // left edge of square 1 is to the left of right edge of square 2
+        const c3 = s1.y + s1.h > s2.y; // top edge of square 1 is above bottom edge of square 2
+        const c4 = s2.y + s2.h > s1.y; //  bottom edge of the square 1 is below the top edge of the square 2
+        return (c1 && c2 && c3 && c4);
+    }
+
     function enemyHitBy(bullet) {
         return enemies.reduce((found, enemy) =>
             found || (sqCollide(enemy, bullet) ? enemy : null), null);
-    }
-
-    function randomBetween(a, b) {
-        return (a + (b - a) * Math.random());
     }
 
     function createParticles(origin, newParticles) {
