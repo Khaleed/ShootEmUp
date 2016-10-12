@@ -5,10 +5,12 @@ import inputs from './input';
 const canvas = inputs.canvas;
 
 /**
- * Mixin that returns a constructor with new args when there is only one change
+ * Mixin that returns a constructor with new arguments object when only one value inside the arguments object changes
  * @function
  * @param { function } constr - The constructor function
- * @param { object } args - The arguments supplied to the constructor
+ * @param { object } args - The optional object supplied to the constructor as an argument
+ * @param { key } key - The key that is being mapped to a value inside args
+ * param { val } val = The value in args that the key maps to
  */
 export function AssocMixin(constr, args) {
     return (key, val) => {
@@ -19,51 +21,25 @@ export function AssocMixin(constr, args) {
 }
 
 /**
- * Mixin that returns a constructor with new args when there are mutiple changes
+ * Mixin that returns a constructor with new arguments object when there are mutiple changes
  * @function
  * @param { function } constr - The constructor function
- * @param { object } args - The arguments supplied to the constructor
+ * @param { object } args - The optional object supplied to the constructor as an argument
+ * @param { obj  } obj - The object that will over-write the old arguments object
  */
 export function MergeMixin(constr, args) {
     return obj => {
         const copy = Object.assign({}, args);
         const newArgs = Object.assign(copy, obj);
-        // spit out new constr with multiple args changes
         return constr(newArgs);
     };
 }
 
 /**
- * Function that takes a test and expression pairs. It evaluates each test one at a time. If the test returns true, cond returns the value from the corresponding expression and doesn't evaluate any of the other tests and expressions.
- * @param { function } test - conditional check
- * @param { function } result - any value
- * @param { object } args - The arguments supplied to the function
- */
-export function cond(test, result, ...args) {
-    if (test()) {
-        return result();
-    } else if (args.length > 1) {
-        return cond(...args);
-    } else if (args.length === 1) {
-        return args[0]();
-    } else {
-        throw ('no matching values');
-    }
-}
-
-/**
- *Function that takes list and val and returns a new immutable list
- *@param { array }  list - any list
- *@param { object } val - any value
+ * Represents a constructor that returns an immutable player object
  * @constructor
- * @param { object } arg -The arguments of the player
+ * @param { object } args - The optional object that is passed as an argument
  */
-export function conj(list, val) {
-    const newList = Object.assign([], list);
-    newList.push(val);
-    Object.freeze(newList);
-    return newList;
-}
 
 export function Player(args) {
     const { x = canvas.width / 2 } = args;
@@ -74,18 +50,17 @@ export function Player(args) {
         y: canvas.height - 50,
         w: 55,
         h: 34,
-        color: 'blue',
+        color: "blue",
         assoc,
-        merge,
-        update: () => that
+        merge
     });
     return that;
 }
 
 /**
- * Represents each enemy.
+ * Represents a constructor that returns an immutable enemy object
  * @constructor
- * @param { object } args - The arguments of the enemy
+ * @param { object } args - The optional object that is passed as an argument
  */
 export function Enemy(args) {
     const { x, y } = args;
@@ -96,18 +71,17 @@ export function Enemy(args) {
         y,
         w: 25,
         h: 25,
-        color: 'white',
+        color: "white",
         assoc,
-        merge,
-        update: (velX, thisFrameDuration) => assoc('x', x + velX * thisFrameDuration)
+        merge
     });
     return that;
 }
 
 /**
- * Represents each bullet
+ * Represents a constructor that returns an immutable bullet object
  * @constructor
- * @param { object} args - The arguments of each bullet
+ * @param { object } args - The optional object that is passed as an argument
  */
 export function Bullet(args) {
     const { x, y, d, color } = args;
@@ -122,15 +96,15 @@ export function Bullet(args) {
         color,
         assoc,
         merge,
-        update: thisFrameDuration => assoc('y', y + d * thisFrameDuration)
+        update: thisFrameDuration => assoc("y", y + d * thisFrameDuration)
     });
     return that;
 }
 
 /**
- * Represents player's bullet
+ * Represents a function that returns an immutable player bullet
  * @constructor
- * @param { object} args - The arguments of player's bullet
+ * @param { object } args - The optional object that is passed as an argument
  */
 export function PlayerBullet(args) {
     const { x, y } = args;
@@ -138,14 +112,14 @@ export function PlayerBullet(args) {
         x,
         y,
         d: -0.2,
-        color: 'yellow'
+        color: "yellow"
     });
 }
 
 /**
- * Represents player's bullet
+ * Represents a function that returns an immutabe enemy bullet object
  * @constructor
- * @param { object} args - The arguments of each enemy's bullet
+ * @param { object } args - The optional object that is passed as an argument
  */
 export function EnemyBullet(args) {
     const { x, y } = args;
@@ -153,16 +127,14 @@ export function EnemyBullet(args) {
         x,
         y,
         d: 0.2,
-        color: 'red'
+        color: "red"
     });
 }
 
-const force = 0.001; // Gravity -> divide it by 20-ish
-
 /**
- * Represents each particle that explodes
+ * Represents a function that returns an immutable particle object
  * @constructor
- * @param { object } - args - The arguments of each particle
+ * @param { object } args - The optional object that is passed as an argument
  */
 export function Particle(args) {
     const { x, y, vx, vy, color } = args;
@@ -181,7 +153,7 @@ export function Particle(args) {
         update: thisFrameDuration => merge({ x: that.x + that.vx * thisFrameDuration,
                                              y: that.y + that.vy * thisFrameDuration,
                                              vx: that.vx,
-                                             vy: that.vy + force * thisFrameDuration })
+                                             vy: that.vy + 0.001 * thisFrameDuration }) // force = 0.001
     });
     return that;
 }
