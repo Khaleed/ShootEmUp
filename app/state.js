@@ -39,6 +39,12 @@ export default function GameState(args) {
             () => false));
     }
 
+    function updateEnemiesMovement(thisFrameDuration) {
+        return assoc("enemies", cond(
+            () => enemies.length === 0, () => enemies.map(enemy => enemy.assoc("x", x + velX * thisFrameDuration))
+        ));
+    }
+
     function updatePlayerAction(keys, thisFrameDuration) {
         return cond(
             () => keys.spacePressedKey === true, () => updatePlayerMovement(keys, thisFrameDuration).playerShoots(),
@@ -69,9 +75,7 @@ export default function GameState(args) {
         return merge({
             playerBullets: removeOffscreen(playerBullets.map(bullet => bullet.update(thisFrameDuration))),
             enemyBullets: removeOffscreen(enemyBullets.map(bullet => bullet.update(thisFrameDuration))),
-            particles: removeOffscreen(particles.map(particle => particle.update(thisFrameDuration))),
-            player: player.update(),
-            enemies: enemies.map(enemy => enemy.update(velX, thisFrameDuration))
+            particles: removeOffscreen(particles.map(particle => particle.update(thisFrameDuration)))
         });
     }
 
@@ -262,10 +266,10 @@ export default function GameState(args) {
             if (particles.length == 0)
                 return playerDies();
             else
-                return updateBodies(thisFrameDuration).enemyCollisionWithBorder().enemyShootsAI().bulletCollision();
+                return updateEnemiesMovement(thisFrameDuration).updateBodies(thisFrameDuration).enemyCollisionWithBorder().enemyShootsAI().bulletCollision();
         }
         else
-            return updatePlayerAction(keys, thisFrameDuration).updateBodies(thisFrameDuration).enemyCollisionWithBorder().enemyShootsAI().bulletCollision();
+            return updatePlayerAction(keys, thisFrameDuration).updateEnemiesMovement(thisFrameDuration).updateBodies(thisFrameDuration).enemyCollisionWithBorder().enemyShootsAI().bulletCollision();
     }
 
     const that = Object.freeze({
