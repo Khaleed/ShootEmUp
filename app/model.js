@@ -10,7 +10,7 @@ const canvas = inputs.canvas;
  * @param { function } constr - The constructor function
  * @param { object } args - The optional object supplied to the constructor as an argument
  * @param { key } key - The key that is being mapped to a value inside args
- * param { val } val = The value in args that the key maps to
+ * @param { val } val = The value in args that the key maps to
  */
 export function AssocMixin(constr, args) {
     return (key, val) => {
