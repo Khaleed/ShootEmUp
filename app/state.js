@@ -281,6 +281,7 @@ export default function GameState(args) {
         playerFinalBulletNframeCount,
         playerBulletNframeCounter,
         player,
+        updatePlayerAction,
         updateIfGameIsRunning,
         bulletCollision,
         enemyCollisionWithBorder,
