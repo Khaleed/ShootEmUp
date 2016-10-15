@@ -73,7 +73,8 @@ export function Enemy(args) {
         h: 25,
         color: "white",
         assoc,
-        merge
+        merge,
+        update: (velX, thisFrameDuration) => assoc("x", x + velX * thisFrameDuration)
     });
     return that;
 }

@@ -6,12 +6,9 @@ import { range, cond, conj, randomBetween } from "./helpers";
 export default function GameState(args) {
     const { inputs, x = 0, y = 0, gameRunning = true, playerDying = false, playerBullets = [], enemyBullets = [], particles = [], enemies = createEnemyBodies(),
             player = Player({}), playerBulletNframeCounter = 0, playerFinalBulletNframeCount = 10, velX = 0.2 } = args;
+
     const assoc = AssocMixin(GameState, args);
     const merge = MergeMixin(GameState, args);
-    Object.freeze(enemies);
-    Object.freeze(playerBullets);
-    Object.freeze(enemyBullets);
-    Object.freeze(particles);
 
     // return a list of 64 enemy objects
     function createEnemyBodies() {
@@ -25,6 +22,11 @@ export default function GameState(args) {
             });
         }).reduce((result, next) => result.concat(next), []);
     }
+
+    Object.freeze(enemies);
+    Object.freeze(playerBullets);
+    Object.freeze(enemyBullets);
+    Object.freeze(particles);
 
     function newDir(keys) {
         return cond(
