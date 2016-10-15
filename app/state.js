@@ -6,7 +6,6 @@ import { range, cond, conj, randomBetween } from "./helpers";
 export default function GameState(args) {
     const { inputs, x = 0, y = 0, gameRunning = true, playerDying = false, playerBullets = [], enemyBullets = [], particles = [], enemies = createEnemyBodies(),
             player = Player({}), playerBulletNframeCounter = 0, playerFinalBulletNframeCount = 10, velX = 0.2 } = args;
-
     const assoc = AssocMixin(GameState, args);
     const merge = MergeMixin(GameState, args);
 
@@ -72,6 +71,7 @@ export default function GameState(args) {
             playerBullets: removeOffscreen(playerBullets.map(bullet => bullet.update(thisFrameDuration))),
             enemyBullets: removeOffscreen(enemyBullets.map(bullet => bullet.update(thisFrameDuration))),
             particles: removeOffscreen(particles.map(particle => particle.update(thisFrameDuration))),
+            player: player.update(),
             enemies: enemies.map(enemy => enemy.update(thisFrameDuration))
         });
     }
