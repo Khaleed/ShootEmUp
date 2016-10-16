@@ -52,8 +52,7 @@ export function Player(args) {
         h: 34,
         color: "blue",
         assoc,
-        merge,
-        update: () => that
+        merge
     });
     return that;
 }
