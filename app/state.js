@@ -113,7 +113,7 @@ export default function GameState(args) {
     }
 
     function enemyShootsAI() {
-        if ((Math.random() * 20) <= 1) {
+        if ((Math.random() * 20) <= 1 && !playerDying) {
             return enemyShoots();
         } else {
             return that;
@@ -224,7 +224,9 @@ export default function GameState(args) {
                 createDeathParticles(player, newParticles);
                 const newGameState = merge({
                     playerDying: true,
-                    particles: particles.concat(newParticles)
+                    particles: particles.concat(newParticles),
+                    playerBullets: [],
+                    enemyBullets: []
                 });
                 return newGameState;
             }
