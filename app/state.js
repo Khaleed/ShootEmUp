@@ -292,7 +292,8 @@ export default function GameState(args) {
         playerShoots,
         updateGameLoop,
         assoc,
-        merge
+        merge,
+        thisFrameDuration
     });
     return that;
 }
