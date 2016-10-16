@@ -11,9 +11,10 @@ export default function GameState(args) {
 
     // return a list of 64 enemy objects
     function createEnemyBodies() {
-        const iter = range(0, 8);
-        return iter.map(i => {
-            return iter.map(j => {
+        const iter1 = range(0, 8);
+        const iter2 = range(0, 8);
+        return iter1.map(i => {
+            return iter2.map(j => {
                 return Enemy({
                     x: 45 * i,
                     y: 20 + 45 * j
