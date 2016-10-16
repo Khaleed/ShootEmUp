@@ -71,8 +71,7 @@ export default function GameState(args) {
             playerBullets: removeOffscreen(playerBullets.map(bullet => bullet.update(thisFrameDuration))),
             enemyBullets: removeOffscreen(enemyBullets.map(bullet => bullet.update(thisFrameDuration))),
             particles: removeOffscreen(particles.map(particle => particle.update(thisFrameDuration))),
-            player: player.update(),
-            enemies: enemies.map(enemy => enemy.update(thisFrameDuration))
+            enemies: enemies.map(enemy => enemy.update(velX, thisFrameDuration))
         });
     }
 

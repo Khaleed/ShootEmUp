@@ -63,6 +63,6 @@ import GameState from './state';
             playSounds(gameState, newGameState);
             draw(newGameState, thisFrameTime);
         }
-        draw(GameState({inputs}), undefined);
+        draw(GameState({inputs}), 0);
     });
 }());
