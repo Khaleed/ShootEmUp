@@ -154,14 +154,14 @@ export default function GameState(args) {
             //detect if enemies block has hit wall, and if so make it bounce...
             const leftMostEnemPix = enemies[0].x;
             const rightMostEnemPix = enemies[enemies.length - 1].x + enemies[0].w;
-            if (leftMostEnemPix < 0 || rightMostEnemPix > inputs.canvas.width) {
+            if ((leftMostEnemPix < 0 && velX < 0) || (rightMostEnemPix > inputs.canvas.width && velX > 0)) {
                 newVelX = newVelX * -1;
                 newEnemies = enemies.map(enemy => {
                     const newY = enemy.y + velY;
                     return enemy.assoc('y', newY);
                 });
             }
-           //either detect game-over, or return a new game state...
+            //either detect game-over, or return a new game state...
             const killPlayerZoneReached = newEnemies.some(enemy => enemy.y > 500);
             if (killPlayerZoneReached && !playerDying) {
                 return playerDies();
