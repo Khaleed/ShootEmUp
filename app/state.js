@@ -113,7 +113,7 @@ export default function GameState(args) {
     }
 
     function enemyShootsAI() {
-        if ((Math.random() * 20) <= 1 && !playerDying) {
+        if ((Math.random() * 30) <= 1 && !playerDying) {
             return enemyShoots();
         } else {
             return that;
