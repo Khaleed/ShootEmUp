@@ -23,7 +23,7 @@ Install Webpack globally
 
 ### Server
 
-To serve at https://localhost:3000/public
+To serve at http://localhost:8080/webpack-dev-server/
 
 `npm run watch`
 
