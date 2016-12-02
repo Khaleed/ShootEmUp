@@ -5,7 +5,6 @@ build/Release
 .node_repl_history
 *.xls
 *.csv
-*.json
 .awspublish*
 logs
 *.log
