@@ -57,7 +57,6 @@ export default function GameState(args) {
     }
 
     function removeOffscreen(bodies) {
-        // return only the bodies that are within the canvas
         return bodies.filter(
             obj => {
                 return ((obj.x > 0) &&
