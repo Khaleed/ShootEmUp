@@ -53,7 +53,7 @@ I would like to thank the following awesome people:-
 
  - David Hargat for showing me how to make JavaScript games 
  - Sal Becker for teaching me functional programming
- - Diego Berrocal for introducing me to JavasScript ES2015 
+ - Diego Berrocal for introducing me to JavaScript ES2015 
  - Ralph Barton and Pierre-Yves Baccou for helping me with the computer animation physics
  - Marijn Haverbeke, the author of _Eloquent JavaScript_, for helping me refactor to make the game even more functional.
 
