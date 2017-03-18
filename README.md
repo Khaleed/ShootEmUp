@@ -1,15 +1,29 @@
+# ShootEmUp
+
 ## Why?
 
-Pick up higher-level problem solving skills and dive deeper into writing functional JavaScript using the better parts of ES2015/ES2016 by making a real-time action game from scratch.
+- Pick up higher-level problem solving skills.
+- Dive deeper into writing functional JavaScript using the better parts of ES2015/ES2016.
+- Making a real-time action game from scratch.
 
 ## Game Logic
 
-This is a bare-bones implementation of the classic shooting game Space Invaders. The player must shoot all the invaders before they reach the player to win. The invaders randomly keep shooting and slowly move towards the player.
+- This is a bare-bones implementation of the classic shooting game _Space Invaders_. 
+- The player must shoot all the invaders before they reach the player to win. 
+- The invaders randomly keep shooting and slowly move towards the player.
 
 ## Approach
 
-Drawing on the canvas, the game loop, and collision detection are all done without any libraries or frameworks. This project was written in a functional programming style using ideas borrowed from Clojure and Elm. It's not purely functional because of the limitations of JavaScript and I/O being inheritently impure. Instead of deep cloning objects and arrays, one could use a persistent data structure library such as MORI.
-## Instructions
+- Drawing on the canvas, the game loop, and collision detection are all done without any libraries or frameworks. 
+- This project was written in a functional programming style using ideas borrowed from [Clojure](https://clojure.org/) and [Elm Architecture](https://guide.elm-lang.org/architecture/). 
+- It's not purely functional because of the limitations of JavaScript and [I/O](https://en.wikipedia.org/wiki/Input/output) being inheritently impure. 
+- Instead of deep cloning objects and arrays, one could use a persistent data structure library such as MORI. 
+
+## Play
+
+Play the game on http://Khaleed.github.io/ShootEmUp
+
+## Installation
 
 ### Dependencies
 
@@ -17,7 +31,7 @@ To get dependencies
 
 `npm install`
 
-Install Webpack globally 
+Install [Webpack](https://webpack.js.org/) globally 
 
 `npm install webpack-devserver webpack -g`
 
@@ -29,17 +43,22 @@ To serve at http://localhost:8080/webpack-dev-server/
 
 ### Build
 
-To build when NODE_ENV is set to production
+To build when NODE_ENV environmental variable is set to production
 
 `npm run deploy`
 
 ## Contributors
 
-Many people from the Recurse Centre have paired with me on this project. I would like to thank David Hargat for showing me how to make JavaScript games, Sal Becker for teaching me functional programming, Diego Berrocal for introducing me to JavasScript ES2015, Ralph Barton and Pierre-Yves Baccou for helping me with the computer animation physics, and Marijn Haverbeke, the author of Eloquent JavaScript, for helping me refactor to make the game even more functional.
+I would like to thank the following awesome people:-
 
-## Play
+ - David Hargat for showing me how to make JavaScript games 
+ - Sal Becker for teaching me functional programming
+ - Diego Berrocal for introducing me to JavasScript ES2015 
+ - Ralph Barton and Pierre-Yves Baccou for helping me with the computer animation physics
+ - Marijn Haverbeke, the author of _Eloquent JavaScript_, for helping me refactor to make the game even more functional.
 
-Play the game on http://Khaleed.github.io/ShootEmUp
+## License
 
+ShootEmUp is released under the The [MIT](https://opensource.org/licenses/MIT) License.
 
 <a href='http://www.recurse.com' title='Made with love at the Recurse Center'><img src='https://cloud.githubusercontent.com/assets/2883345/11322973/9e557144-910b-11e5-959a-8fdaaa4a88c5.png' height='14px'/></a>
