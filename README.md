@@ -4,7 +4,7 @@
 
 - Pick up higher-level problem solving skills.
 - Dive deeper into writing functional JavaScript using the better parts of ES2015/ES2016.
-- Making a real-time action game from scratch.
+- Make a real-time action game from scratch.
 
 ## Game Logic
 
