@@ -11,8 +11,8 @@ export default function GameState(args) {
 
     // return a list of 64 enemy objects
     function createEnemyBodies() {
-        const iter1 = range(0, 8);
-        const iter2 = range(0, 8);
+        const iter1 = range(8);
+        const iter2 = range(8);
         return iter1.map(i => {
             return iter2.map(j => {
                 return Enemy({
@@ -191,7 +191,7 @@ export default function GameState(args) {
     }
 
     function createParticles(origin, newParticles) {
-        const iter = range(0, 5);
+        const iter = range(5);
         return iter.map(() => {
             return newParticles.push(Particle({
                 x:  origin.x,
@@ -204,7 +204,7 @@ export default function GameState(args) {
     }
 
     function createDeathParticles(origin, newParticles) {
-        const iter = range(0, 60);
+        const iter = range(60);
         return iter.map(() => {
             return newParticles.push(Particle({
                 x:  origin.x + 15,

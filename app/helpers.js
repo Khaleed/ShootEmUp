@@ -1,24 +1,9 @@
 // helper functions
 /**
- *Function that creates an empty list of any size
- *@param { number } x - The array length
+ *Function that returns a sequence of numbers from start to end
+ *@param { number } length - The length of an Array
  */
-export function createSizedArr(n) {
-    return Array.apply(null, Array(n));
-}
-
-/**
- *Function that returns a lazy sequence of numbers from start to end
- *@param { number } start - The starting index number, which defaults to 0
- *@param { number } end - The last index number
- */
-export function range(start, end) {
-    if (end > start) {
-        return Object.freeze(createSizedArr(end - start).map((_, i) => start + i));
-    } else {
-        return [start];
-    }
-}
+export const range = (length) => Object.freeze([...Array(length).keys()]);
 
 /**
  * Function that takes a test and expression pairs. It evaluates each test one at a time. If the test returns true, cond returns the value from the corresponding expression and doesn't evaluate any of the other tests and expressions.
