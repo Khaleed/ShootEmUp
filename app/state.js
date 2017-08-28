@@ -105,7 +105,7 @@ export default function GameState(args) {
             x: enemy.x,
             y: enemy.y
         });
-        newBullets.push(b);
+        newBullets.concat(b);
         inputs.invaderShootSound.play();
         const newGameState = assoc('enemyBullets', newBullets);
         return newGameState;
@@ -193,7 +193,7 @@ export default function GameState(args) {
     function createParticles(origin, newParticles) {
         const iter = range(5);
         return iter.map(() => {
-            return newParticles.push(Particle({
+            return newParticles.concat(Particle({
                 x:  origin.x,
                 y:  origin.y,
                 vx: randomBetween (-0.1, 0.1),
@@ -206,7 +206,7 @@ export default function GameState(args) {
     function createDeathParticles(origin, newParticles) {
         const iter = range(60);
         return iter.map(() => {
-            return newParticles.push(Particle({
+            return newParticles.concat(Particle({
                 x:  origin.x + 15,
                 y:  origin.y - 15,
                 vx: randomBetween (-0.4, 0.4),
@@ -235,8 +235,8 @@ export default function GameState(args) {
             playerBullets.forEach(bullet => {
                 const hit = enemyHitBy(bullet);
                 if (hit) {
-                    deadEnemies.push(hit);
-                    usedBullets.push(bullet);
+                    deadEnemies.concat(hit);
+                    usedBullets.concat(bullet);
                     createParticles(bullet, newParticles);
                 }
             });
