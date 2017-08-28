@@ -57,6 +57,8 @@ I would like to thank the following awesome people:-
  - Ralph Barton and Pierre-Yves Baccou for helping me with the computer animation physics
  - Marijn Haverbeke, the author of _Eloquent JavaScript_, for helping me refactor to make the game even more functional.
 
+© github.com/Khaleed
+
 ## License
 
 ShootEmUp is released under the [GPL-3.O](https://opensource.org/licenses/lgpl-3.0.html) License.
